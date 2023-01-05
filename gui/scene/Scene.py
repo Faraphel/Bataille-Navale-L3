@@ -28,6 +28,7 @@ class Scene(pyglet.event.EventDispatcher):
     def on_context_state_lost(self, window: Window): pass
     def on_key_press(self, window: Window, symbol: int, modifiers: int): pass
     def on_key_release(self, window: Window, symbol: int, modifiers: int): pass
+    def on_key_held(self, window: Window, dt: float, symbol: int, modifiers: int): pass
     def on_mouse_enter(self, window: Window, x: int, y: int): pass
     def on_mouse_leave(self, window: Window, x: int, y: int): pass
     def on_text_motion(self, window: Window, motion: int): pass
@@ -37,7 +38,6 @@ class Scene(pyglet.event.EventDispatcher):
     def on_mouse_release(self, window: Window, x: int, y: int, button: int, modifiers: int): pass
     def on_mouse_drag(self, window: Window, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int): pass
     def on_mouse_scroll(self, window: Window, x: int, y: int, scroll_x: float, scroll_y: float): pass
-
 
 
 

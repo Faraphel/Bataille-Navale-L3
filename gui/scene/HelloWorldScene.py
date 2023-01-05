@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import pyglet
 
 from gui.scene import Scene
@@ -13,21 +15,16 @@ class HelloWorldScene(Scene):
     """
 
     def __init__(self):
-        self._backspace_hold_frame: int = 0
-
         self.label = pyglet.text.Label(
             "Hello World !",
             anchor_x="center",
             anchor_y="center"
         )
 
-    def on_draw(self, window: Window) -> None:
-        if window.keys[pyglet.window.key.BACKSPACE]:
-            if self._backspace_hold_frame % 5 == 0: self.label.text = self.label.text[:-1]
-            self._backspace_hold_frame += 1
-        else:
-            self._backspace_hold_frame = 0
+        # remember the cooldown for the backspace button
+        self._hold_backspace_last_call: datetime = datetime.now()
 
+    def on_draw(self, window: Window) -> None:
         self.label.draw()
 
     def on_resize(self, window: Window, width: int, height: int) -> None:
@@ -36,3 +33,13 @@ class HelloWorldScene(Scene):
 
     def on_text(self, window: Window, char: str):
         self.label.text += char
+
+    def on_key_held(self, window: Window, dt: float, symbol: int, modifiers: int):
+        if symbol == pyglet.window.key.BACKSPACE:
+
+            # add a cooldown of 0.1 second on the backspace key
+            now = datetime.now()
+            if self._hold_backspace_last_call + timedelta(seconds=0.1) < now:
+                self._hold_backspace_last_call = now
+
+                self.label.text = self.label.text[:-1]

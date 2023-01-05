@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Callable
 
 import pyglet.window
 
@@ -21,6 +21,9 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
         # add a keys handler to the window
         self.keys = pyglet.window.key.KeyStateHandler()
         self.push_handlers(self.keys)
+
+        #
+        self._on_key_held_events: dict[(int, int), Callable] = {}
 
     # scene methods
 
@@ -104,10 +107,28 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
 
     def on_key_press(self, symbol: int, modifiers: int):
         super().on_key_press(symbol, modifiers)  # this function is already defined and used
+
+        # this allows the on_key_held event to be called every frame after a press
+        pyglet.clock.schedule(self.get_on_key_held_function(symbol, modifiers))
+
         for scene in self._scenes: scene.on_key_press(self, symbol, modifiers)
 
     def on_key_release(self, symbol: int, modifiers: int):
+        # this allows the on_key_held event to stop after the key is released
+        pyglet.clock.unschedule(self.get_on_key_held_function(symbol, modifiers))
+
         for scene in self._scenes: scene.on_key_release(self, symbol, modifiers)
+
+    def get_on_key_held_function(self, symbol: int, modifiers: int):
+        key: tuple[int, int] = (symbol, modifiers)
+
+        if key not in self._on_key_held_events:
+            self._on_key_held_events[key] = lambda dt: self.on_key_held(dt, symbol, modifiers)
+
+        return self._on_key_held_events[key]
+
+    def on_key_held(self, dt: float, symbol: int, modifiers: int):
+        for scene in self._scenes: scene.on_key_held(self, dt, symbol, modifiers)
 
     def on_mouse_enter(self, x: int, y: int):
         for scene in self._scenes: scene.on_mouse_enter(self, x, y)
