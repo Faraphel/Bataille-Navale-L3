@@ -22,7 +22,7 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
         self.keys = pyglet.window.key.KeyStateHandler()
         self.push_handlers(self.keys)
 
-        #
+        # a dictionary linking a key pressed to the corresponding event function
         self._on_key_held_events: dict[(int, int), Callable] = {}
 
     # scene methods
@@ -32,8 +32,8 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
         Set the scene of the window
         :param scene: the scene to set
         """
-        self._scenes = [scene]
-        scene.on_window_added(self)
+        self.clear_scene()
+        self.add_scene(scene)
 
     def clear_scene(self) -> None:
         """
