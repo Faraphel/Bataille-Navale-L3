@@ -27,13 +27,13 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
 
     # scene methods
 
-    def set_scene(self, scene: Scene) -> None:
+    def set_scene(self, *scenes: Scene) -> None:
         """
-        Set the scene of the window
-        :param scene: the scene to set
+        Set the scene(s) of the window
+        :param scenes: the scene(s) to set
         """
         self.clear_scene()
-        self.add_scene(scene)
+        for scene in scenes: self.add_scene(scene)
 
     def clear_scene(self) -> None:
         """
@@ -42,22 +42,31 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
         for scene in self._scenes: scene.on_window_removed(self)
         self._scenes.clear()
 
-    def add_scene(self, scene: Scene, priority: int = 0) -> None:
+    def add_scene(self, *scenes: Scene, priority: int = 0) -> None:
         """
         Add a scene to the window
-        :param scene: the scene to add
+        :param scenes: the scene to add
         :param priority: the priority level of the scene. The higher, the more the scene will be drawn on top
         """
-        self._scenes.insert(priority, scene)
-        scene.on_window_added(self)
+        for scene in scenes:
+            self._scenes.insert(priority, scene)
+            scene.on_window_added(self)
 
-    def remove_scene(self, scene: Scene) -> None:
+    def remove_scene(self, *scenes: Scene) -> None:
         """
         Remove a scene from the window
-        :param scene: the scene to remove
+        :param scenes: the scene to remove
         """
-        scene.on_window_removed(self)
-        self._scenes.remove(scene)
+        for scene in scenes:
+            scene.on_window_removed(self)
+            self._scenes.remove(scene)
+
+    def get_scenes(self):
+        """
+        Get the list of the scenes
+        :return: the list of all the scenes currently used
+        """
+        return self._scenes.copy()
 
     # window event methods
 
