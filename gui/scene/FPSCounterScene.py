@@ -20,4 +20,3 @@ class FPSCounterScene(Scene):
 
     def on_draw(self, window: Window) -> None:
         self.fps_display.draw()
-
