@@ -2,8 +2,12 @@ from datetime import datetime, timedelta
 
 import pyglet
 
-from gui.scene import Scene
-from gui.window import Window
+from source.gui.scene.base import Scene
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from source.gui.window import Window
 
 
 class HelloWorldScene(Scene):
@@ -14,7 +18,9 @@ class HelloWorldScene(Scene):
     The text is centered on the screen.
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.label = pyglet.text.Label(
             "Hello World !",
             anchor_x="center",
@@ -24,17 +30,25 @@ class HelloWorldScene(Scene):
         # remember the cooldown for the backspace button
         self._hold_backspace_last_call: datetime = datetime.now()
 
-    def on_draw(self, window: Window) -> None:
+    def on_draw(self, window: "Window") -> None:
+        super().on_draw(window)
+
         self.label.draw()
 
-    def on_resize(self, window: Window, width: int, height: int) -> None:
+    def on_resize(self, window: "Window", width: int, height: int) -> None:
+        super().on_resize(window, width, height)
+
         self.label.x = width // 2
         self.label.y = height // 2
 
-    def on_text(self, window: Window, char: str):
+    def on_text(self, window: "Window", char: str):
+        super().on_text(window, char)
+
         self.label.text += char
 
-    def on_key_held(self, window: Window, dt: float, symbol: int, modifiers: int):
+    def on_key_held(self, window: "Window", dt: float, symbol: int, modifiers: int):
+        super().on_key_held(window, dt, symbol, modifiers)
+
         if symbol == pyglet.window.key.BACKSPACE:
 
             # add a cooldown of 0.1 second on the backspace key

@@ -1,12 +1,29 @@
 import pyglet
 
-from gui.window import Window
-from gui.scene import HelloWorldScene, FPSCounterScene
+from source.gui.widget.Button import Button
+from source.gui.window import Window
+from source.gui.scene import HelloWorldScene, FPSCounterScene
 
 # Créer une fenêtre
 window = Window(resizable=True, visible=False)
 
-window.add_scene(HelloWorldScene(), FPSCounterScene())
+button_normal_image = pyglet.image.load("./assets/test_button_normal.png")
+button_hover_image = pyglet.image.load("./assets/test_button_hover.png")
+
+hello_world_scene = HelloWorldScene()
+
+button = Button(
+    50, 50, 300, 100,
+    text="HELLO",
+    on_release=lambda *a, **b: print(a, b),
+    normal_image=button_normal_image,
+    hover_image=button_hover_image,
+)
+
+hello_world_scene.add_widget(button)
+fps_counter_scene = FPSCounterScene()
+
+window.add_scene(hello_world_scene, fps_counter_scene)
 
 # Lance la fenêtre
 window.set_visible(True)

@@ -1,8 +1,8 @@
 import numpy as np
 
-from source import Boat
-from source.enums import Orientation, BombState
-from source.error import InvalidBoatPosition, PositionAlreadyShot
+from source.core import Boat
+from source.core.enums import Orientation, BombState
+from source.core.error import InvalidBoatPosition, PositionAlreadyShot
 from source.utils import copy_array_offset
 
 

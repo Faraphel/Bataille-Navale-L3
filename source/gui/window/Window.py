@@ -1,8 +1,9 @@
-from typing import Optional, Callable
+from typing import Optional, Callable, TYPE_CHECKING
 
 import pyglet.window
 
-from gui.scene import Scene
+if TYPE_CHECKING:
+    from source.gui.scene import Scene
 
 
 class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abstract
@@ -14,9 +15,10 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
     putting everything in the window code.
     """
 
-    def __init__(self, *args, scenes: Optional[Scene] = None, **kwargs):
+    def __init__(self, scenes: Optional["Scene"] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._scenes: list[Scene] = [] if scenes is None else scenes
+        self._scenes: list["Scene"] = []
+        if scenes is not None: self.add_scene(*scenes)
 
         # add a keys handler to the window
         self.keys = pyglet.window.key.KeyStateHandler()
@@ -27,7 +29,7 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
 
     # scene methods
 
-    def set_scene(self, *scenes: Scene) -> None:
+    def set_scene(self, *scenes: "Scene") -> None:
         """
         Set the scene(s) of the window
         :param scenes: the scene(s) to set
@@ -42,7 +44,7 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
         for scene in self._scenes: scene.on_window_removed(self)
         self._scenes.clear()
 
-    def add_scene(self, *scenes: Scene, priority: int = 0) -> None:
+    def add_scene(self, *scenes: "Scene", priority: int = 0) -> None:
         """
         Add a scene to the window
         :param scenes: the scene to add
@@ -52,7 +54,7 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
             self._scenes.insert(priority, scene)
             scene.on_window_added(self)
 
-    def remove_scene(self, *scenes: Scene) -> None:
+    def remove_scene(self, *scenes: "Scene") -> None:
         """
         Remove a scene from the window
         :param scenes: the scene to remove
