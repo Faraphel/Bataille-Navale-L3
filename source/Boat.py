@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.enum import Orientation
+from source.enums import Orientation
 
 
 class Boat:

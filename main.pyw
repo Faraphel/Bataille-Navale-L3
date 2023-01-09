@@ -6,8 +6,7 @@ from gui.scene import HelloWorldScene, FPSCounterScene
 # Créer une fenêtre
 window = Window(resizable=True, visible=False)
 
-window.add_scene(HelloWorldScene())
-window.add_scene(FPSCounterScene())
+window.add_scene(HelloWorldScene(), FPSCounterScene())
 
 # Lance la fenêtre
 window.set_visible(True)

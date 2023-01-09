@@ -1,4 +1,4 @@
-from src import Boat
+from source import Boat
 
 
 class InvalidBoatPosition(Exception):

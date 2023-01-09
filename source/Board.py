@@ -1,22 +1,22 @@
 import numpy as np
 
-from src import Boat
-from src.enum import Orientation, BombState
-from src.error import InvalidBoatPosition, PositionAlreadyShot
-from src.utils import copy_array_offset
+from source import Boat
+from source.enums import Orientation, BombState
+from source.error import InvalidBoatPosition, PositionAlreadyShot
+from source.utils import copy_array_offset
 
 
 class Board:
-    __slots__ = ("width", "height", "_boats", "_bombs")
+    __slots__ = ("_width", "_height", "_boats", "_bombs")
 
     def __init__(self, width: int, height: int = None) -> None:
-        self.width: int = width
-        self.height: int = width if height is None else height
+        self._width: int = width
+        self._height: int = width if height is None else height
         self._boats: dict[Boat, tuple[int, int]] = {}  # associate the boats to their position
-        self._bombs: np.array = np.ones((self.width, self.height), dtype=np.bool_)
+        self._bombs: np.array = np.ones((self._width, self._height), dtype=np.bool_)
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} width={self.width}, height={self.height}>"
+        return f"<{self.__class__.__name__} width={self._width}, height={self._height}>"
 
     def __str__(self) -> str:
         return str(self.get_matrice())
@@ -30,21 +30,22 @@ class Board:
         """
 
         # get the sum of the boat
-        boat_sum: int = boat.get_matrice().sum()
+        boat_mat: np.array = boat.get_matrice()
+        boat_mat_sum: int = boat_mat.sum()
 
         # get the old board matrice sum
         board_mat: np.array = self.get_matrice()
         board_mat_sum_old: int = board_mat.sum()
 
         # add the boat to the board matrice
-        copy_array_offset(boat.get_matrice(), board_mat, offset=position)
+        copy_array_offset(boat_mat, board_mat, offset=position)
 
         #  get the new board matrice sum
         board_mat_sum_new: int = board_mat.sum()
 
         # if the sum of the old board plus the boat sum is different from the new board sum,
         # then the boat have been incorrectly placed (overlapping, outside of bounds, ...)
-        if board_mat_sum_old + boat_sum != board_mat_sum_new: raise InvalidBoatPosition(boat, position)
+        if board_mat_sum_old + boat_mat_sum != board_mat_sum_new: raise InvalidBoatPosition(boat, position)
 
         # otherwise accept the boat in the boats dict
         self._boats[boat] = position
@@ -94,7 +95,7 @@ class Board:
         """
         :return: the boat represented as a matrice
         """
-        board = np.zeros((self.width, self.height), dtype=np.ushort)
+        board = np.zeros((self._width, self._height), dtype=np.ushort)
 
         for index, (boat, position) in enumerate(self._boats.items(), start=1):
             # Paste the boat into the board at the correct position.
@@ -115,5 +116,4 @@ if __name__ == "__main__":
     print(board.bomb((4, 3)))
     print(board.bomb((4, 4)))
     print(board)
-
 
