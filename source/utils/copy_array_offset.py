@@ -1,7 +1,9 @@
 import numpy as np
 
+from source.type import Point2D
 
-def copy_array_offset(src: np.array, dst: np.array, offset: tuple[int, int]) -> None:
+
+def copy_array_offset(src: np.array, dst: np.array, offset: Point2D) -> None:
     """
     Copy a numpy array into another one with an offset
     :source: source array

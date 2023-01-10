@@ -1,4 +1,7 @@
-def in_bbox(point: tuple[int, int], bbox: tuple[int, int, int, int]) -> bool:
+from source.type import Point2D, BBox
+
+
+def in_bbox(point: Point2D, bbox: BBox) -> bool:
     """
     Return true if a point is inside a bounding box
     :param point: the point to check

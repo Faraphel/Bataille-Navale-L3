@@ -4,6 +4,7 @@ import pyglet
 
 from source.gui.sprite import Sprite
 from source.gui.widget.base import Widget
+from source.type import BBox
 from source.utils import in_bbox
 
 if TYPE_CHECKING:
@@ -81,7 +82,7 @@ class Button(Widget):
         return self._hover_sprite if self._hovering else self._normal_sprite
 
     @property
-    def bbox(self) -> tuple[int, int, int, int]:
+    def bbox(self) -> BBox:
         return self.x, self.y, self.x + self.width, self.y + self.height
 
     # label getter and setter

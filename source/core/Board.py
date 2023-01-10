@@ -3,7 +3,8 @@ import numpy as np
 from source.core.Boat import Boat
 from source.core.enums import Orientation, BombState
 from source.core.error import InvalidBoatPosition, PositionAlreadyShot, InvalidBombPosition
-from source.utils import copy_array_offset, in_bbox
+from source.type import Point2D
+from source.utils import copy_array_offset
 
 
 class Board:
@@ -13,7 +14,7 @@ class Board:
             self,
             width: int,
             height: int = None,
-            boats: dict[Boat, tuple[int, int]] = None,
+            boats: dict[Boat, Point2D] = None,
             bombs: np.array = None
     ) -> None:
 
@@ -21,7 +22,7 @@ class Board:
         self._height: int = width if height is None else height
 
         # associate the boats to their position
-        self._boats: dict[Boat, tuple[int, int]] = {} if boats is None else boats
+        self._boats: dict[Boat, Point2D] = {} if boats is None else boats
 
         # position that have been shot by a bomb
         self._bombs: np.array = np.ones((self._width, self._height), dtype=np.bool_) if bombs is None else bombs
@@ -32,7 +33,7 @@ class Board:
     def __str__(self) -> str:
         return str(self.get_matrice())
 
-    def add_boat(self, boat: Boat, position: tuple[int, int]) -> None:
+    def add_boat(self, boat: Boat, position: Point2D) -> None:
         """
         Add a boat to the board. Check before if the position is valid.
         :boat: the boat to add
@@ -68,7 +69,7 @@ class Board:
         """
         self._boats.pop(boat)
 
-    def bomb(self, position: tuple[int, int]) -> BombState:
+    def bomb(self, position: Point2D) -> BombState:
         """
         Hit a position on the board
         :position: the position where to shoot

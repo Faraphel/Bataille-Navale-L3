@@ -3,7 +3,7 @@ from typing import Optional, Callable, TYPE_CHECKING
 import pyglet.window
 
 if TYPE_CHECKING:
-    from source.gui.scene import Scene
+    from source.gui.scene.base import Scene
 
 
 class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abstract
@@ -15,7 +15,7 @@ class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abs
     putting everything in the window code.
     """
 
-    def __init__(self, scenes: Optional["Scene"] = None, *args, **kwargs):
+    def __init__(self, scenes: Optional[list["Scene"]] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._scenes: list["Scene"] = []
         if scenes is not None: self.add_scene(*scenes)
