@@ -1,4 +1,4 @@
-from source import Boat
+from source.core.Boat import Boat
 
 
 class InvalidBoatPosition(Exception):

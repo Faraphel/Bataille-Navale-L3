@@ -1,6 +1,6 @@
 import numpy as np
 
-from source.core import Boat
+from source.core.Boat import Boat
 from source.core.enums import Orientation, BombState
 from source.core.error import InvalidBoatPosition, PositionAlreadyShot
 from source.utils import copy_array_offset
@@ -9,11 +9,22 @@ from source.utils import copy_array_offset
 class Board:
     __slots__ = ("_width", "_height", "_boats", "_bombs")
 
-    def __init__(self, width: int, height: int = None) -> None:
+    def __init__(
+            self,
+            width: int,
+            height: int = None,
+            boats: dict[Boat, tuple[int, int]] = None,
+            bombs: np.array = None
+    ) -> None:
+
         self._width: int = width
         self._height: int = width if height is None else height
-        self._boats: dict[Boat, tuple[int, int]] = {}  # associate the boats to their position
-        self._bombs: np.array = np.ones((self._width, self._height), dtype=np.bool_)
+
+        # associate the boats to their position
+        self._boats: dict[Boat, tuple[int, int]] = {} if boats is None else boats
+
+        # position that have been shot by a bomb
+        self._bombs: np.array = np.ones((self._width, self._height), dtype=np.bool_) if bombs is None else bombs
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} width={self._width}, height={self._height}>"
@@ -105,6 +116,23 @@ class Board:
         board *= self._bombs  # Remove the position that have been bombed
 
         return board
+
+    def to_json(self) -> dict:
+        return {
+            "width": self._width,
+            "height": self._height,
+            "boats": [[boat.to_json(), position] for boat, position in self._boats.items()],
+            "bombs": self._bombs.tolist()
+        }
+
+    @classmethod
+    def from_json(cls, json_: dict) -> "Board":
+        return Board(
+            width=json_["width"],
+            height=json_["height"],
+            boats={Boat.from_json(boat_json): tuple(position) for boat_json, position in json_["boats"]},
+            bombs=np.array(json_["bombs"], dtype=np.bool_)
+        )
 
 
 if __name__ == "__main__":

@@ -27,8 +27,9 @@ class Button(Widget):
                  normal_image: pyglet.image.AbstractImage = None,
                  hover_image: pyglet.image.AbstractImage = None,
 
-                 batch: pyglet.graphics.Batch = None,
-                 group: pyglet.graphics.Group = None,
+                 text_batch: pyglet.graphics.Batch = None,
+                 normal_batch: pyglet.graphics.Batch = None,
+                 hover_batch: pyglet.graphics.Batch = None,
 
                  *args, **kwargs
                  ):
@@ -38,21 +39,21 @@ class Button(Widget):
         # TODO: add an image when the mouse click ?
         # TODO: make x, y, width, height, font_size optionally function to allow dynamic sizing
 
-        # initialise the default value for the property
+        # initialise the value for the property
         self._x, self._y, self._width, self._height = x, y, width, height
 
         # the label used for the text
         self._label = pyglet.text.Label(
-            anchor_x="center",
-            anchor_y="center",
+            anchor_x="center", anchor_y="center",
+            batch=text_batch,
             *args, **kwargs
         )
 
         # hovering and background
         self._hovering = False
 
-        self._normal_sprite = Sprite(normal_image)
-        self._hover_sprite = Sprite(hover_image)
+        self._normal_sprite = Sprite(normal_image, batch=normal_batch)
+        self._hover_sprite = Sprite(hover_image, batch=hover_batch)
 
         # the event when the button is clicked
         self.on_press: Optional[Callable[["Self", "Window", "Scene", int, int, int, int], None]] = on_press
