@@ -14,30 +14,24 @@ if TYPE_CHECKING:
 
 
 class Button(Widget):
-    __slots__ = ("on_press", "on_release", "_x", "_y", "_width", "_height", "_text", "_normal_image", "_hover_image",
-                 "_hovering")
-
     def __init__(self,
                  x: int,
                  y: int,
                  width: int,
                  height: int,
 
+                 normal_image: pyglet.image.AbstractImage,
+                 hover_image: pyglet.image.AbstractImage = None,
+                 click_image: pyglet.image.AbstractImage = None,
+
                  on_press: Optional[Callable] = None,
                  on_release: Optional[Callable] = None,
-                 normal_image: pyglet.image.AbstractImage = None,
-                 hover_image: pyglet.image.AbstractImage = None,
-
-                 text_batch: pyglet.graphics.Batch = None,
-                 normal_batch: pyglet.graphics.Batch = None,
-                 hover_batch: pyglet.graphics.Batch = None,
 
                  *args, **kwargs
                  ):
 
-        # TODO: use batch
+        # TODO: use batch ?
         # TODO: use texture bin and animation to simplify the image handling ?
-        # TODO: add an image when the mouse click ?
         # TODO: make x, y, width, height, font_size optionally function to allow dynamic sizing
 
         # initialise the value for the property
@@ -46,15 +40,18 @@ class Button(Widget):
         # the label used for the text
         self._label = pyglet.text.Label(
             anchor_x="center", anchor_y="center",
-            batch=text_batch,
             *args, **kwargs
         )
 
-        # hovering and background
+        # the button background
         self._hovering = False
+        self._clicking = False
 
-        self._normal_sprite = Sprite(normal_image, batch=normal_batch)
-        self._hover_sprite = Sprite(hover_image, batch=hover_batch)
+        self._sprite = Sprite(normal_image)
+
+        self._normal_image = normal_image
+        self._hover_image = hover_image if hover_image is not None else normal_image
+        self._click_image = click_image if click_image is not None else normal_image
 
         # the event when the button is clicked
         self.on_press: Optional[Callable[["Self", "Window", "Scene", int, int, int, int], None]] = on_press
@@ -65,12 +62,14 @@ class Button(Widget):
 
     # function
 
+    def _update_sprite(self) -> None:
+        self._sprite.image = self.background_image
+
     def _update_size(self):
-        for sprite in self._normal_sprite, self._hover_sprite:
-            sprite.x = self.x
-            sprite.y = self.y
-            sprite.width = self.width
-            sprite.height = self.height
+        self._sprite.x = self.x
+        self._sprite.y = self.y
+        self._sprite.width = self.width
+        self._sprite.height = self.height
 
         self._label.x = self.x + (self.width // 2)
         self._label.y = self.y + (self.height // 2)
@@ -78,8 +77,29 @@ class Button(Widget):
     # button getter and setter
 
     @property
-    def background_sprite(self) -> Optional[pyglet.sprite.Sprite]:
-        return self._hover_sprite if self._hovering else self._normal_sprite
+    def hovering(self) -> bool: return self._hovering
+
+    @hovering.setter
+    def hovering(self, hovering: bool):
+        self._hovering = hovering
+        self._update_sprite()
+
+    @property
+    def clicking(self) -> bool:
+        return self._clicking
+
+    @clicking.setter
+    def clicking(self, clicking: bool):
+        self._clicking = clicking
+        self._update_sprite()
+
+    @property
+    def background_image(self) -> pyglet.image.AbstractImage:
+        return (
+            self._click_image if self._clicking
+            else self._hover_image if self._hovering
+            else self._normal_image
+        )
 
     @property
     def bbox(self) -> BBox:
@@ -123,15 +143,25 @@ class Button(Widget):
 
     def on_mouse_press(self, window: "Window", scene: "Scene", x: int, y: int, button: int, modifiers: int):
         if not in_bbox((x, y), self.bbox): return
-        if self.on_press is not None: self.on_press(self, window, scene, x, y, button, modifiers)
+
+        self.clicking = True
+
+        if self.on_press is not None:
+            self.on_press(self, window, scene, x, y, button, modifiers)
 
     def on_mouse_release(self, window: "Window", scene: "Scene", x: int, y: int, button: int, modifiers: int):
+        old_clicking = self.clicking
+        self.clicking = False
+
         if not in_bbox((x, y), self.bbox): return
-        if self.on_release is not None: self.on_release(self, window, scene, x, y, button, modifiers)
+
+        # if this button was the one hovered when the click was pressed
+        if old_clicking is True and self.on_release is not None:
+            self.on_release(self, window, scene, x, y, button, modifiers)
 
     def on_mouse_motion(self, window: "Window", scene: "Scene", x: int, y: int, dx: int, dy: int):
-        self._hovering = in_bbox((x, y), self.bbox)
+        self.hovering = in_bbox((x, y), self.bbox)
 
     def on_draw(self, window: "Window", scene: "Scene"):
-        if (bg := self.background_sprite) is not None: bg.draw()
+        if self._sprite is not None: self._sprite.draw()
         self._label.draw()

@@ -10,6 +10,7 @@ window = Window(resizable=True, visible=False)
 
 button_normal_image = pyglet.image.load("./assets/test_button_normal.png")
 button_hover_image = pyglet.image.load("./assets/test_button_hover.png")
+button_click_image = pyglet.image.load("./assets/test_button_clicking.png")
 
 # performance and button test
 
@@ -23,7 +24,8 @@ for x in range(10):
             font_size=10,
             on_release=lambda self, *a, **b: setattr(self, "width", self.width + 10),
             normal_image=button_normal_image,
-            hover_image=button_hover_image
+            hover_image=button_hover_image,
+            click_image=button_click_image
         )
         hello_world_scene.add_widget(button)
 
