@@ -20,7 +20,7 @@ for x in range(10):
             200 + y * 50, x * 50, 50, 50,
             text=f"{x}-{y}",
             font_size=10,
-            on_release=lambda self, *a, **b: print(self, a, b),
+            on_release=lambda self, *a, **b: setattr(self, "width", self.width + 10),
             normal_image=button_normal_image,
             hover_image=button_hover_image,
         )

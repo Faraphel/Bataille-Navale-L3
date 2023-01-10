@@ -2,6 +2,7 @@ from typing import Callable, Optional, TYPE_CHECKING
 
 import pyglet
 
+from source.gui.sprite import Sprite
 from source.gui.widget.base import Widget
 from source.utils import in_bbox
 
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Button(Widget):
-    __slots__ = ("_x", "_y", "_width", "_height", "_text", "on_press", "on_release", "_normal_image", "_hover_image",
+    __slots__ = ("on_press", "on_release", "_x", "_y", "_width", "_height", "_text", "_normal_image", "_hover_image",
                  "_hovering")
 
     def __init__(self,
@@ -20,10 +21,15 @@ class Button(Widget):
                  y: int,
                  width: int,
                  height: int,
+
                  on_press: Optional[Callable] = None,
                  on_release: Optional[Callable] = None,
                  normal_image: pyglet.image.AbstractImage = None,
                  hover_image: pyglet.image.AbstractImage = None,
+
+                 batch: pyglet.graphics.Batch = None,
+                 group: pyglet.graphics.Group = None,
+
                  *args, **kwargs
                  ):
 
@@ -45,12 +51,8 @@ class Button(Widget):
         # hovering and background
         self._hovering = False
 
-        self._normal_sprite = pyglet.sprite.Sprite(normal_image)
-        self._normal_sprite.original_width = self._normal_sprite.width
-        self._normal_sprite.original_height = self._normal_sprite.height
-        self._hover_sprite = pyglet.sprite.Sprite(hover_image)
-        self._hover_sprite.original_width = self._hover_sprite.width
-        self._hover_sprite.original_height = self._hover_sprite.height
+        self._normal_sprite = Sprite(normal_image)
+        self._hover_sprite = Sprite(hover_image)
 
         # the event when the button is clicked
         self.on_press: Optional[Callable[["Self", "Window", "Scene", int, int, int, int], None]] = on_press
@@ -65,8 +67,8 @@ class Button(Widget):
         for sprite in self._normal_sprite, self._hover_sprite:
             sprite.x = self.x
             sprite.y = self.y
-            sprite.scale_x = self.width / sprite.original_width
-            sprite.scale_y = self.height / sprite.original_height
+            sprite.width = self.width
+            sprite.height = self.height
 
         self._label.x = self.x + (self.width // 2)
         self._label.y = self.y + (self.height // 2)
@@ -87,32 +89,32 @@ class Button(Widget):
     def x(self) -> int: return self._x
 
     @x.setter
-    def x(self, value: int):
-        self._x = value
+    def x(self, x: int):
+        self._x = x
         self._update_size()
 
     @property
     def y(self) -> int: return self._y
 
     @y.setter
-    def y(self, value: int):
-        self._y = value
+    def y(self, y: int):
+        self._y = y
         self._update_size()
 
     @property
     def width(self) -> int: return self._width
 
     @width.setter
-    def width(self, value: int):
-        self._width = value
+    def width(self, width: int):
+        self._width = width
         self._update_size()
 
     @property
     def height(self) -> int: return self._height
 
     @height.setter
-    def height(self, value: int):
-        self._height = value
+    def height(self, height: int):
+        self._height = height
         self._update_size()
 
     # event
@@ -129,7 +131,5 @@ class Button(Widget):
         self._hovering = in_bbox((x, y), self.bbox)
 
     def on_draw(self, window: "Window", scene: "Scene"):
-        if (bg := self.background_sprite) is not None:
-            bg.draw()
-
+        if (bg := self.background_sprite) is not None: bg.draw()
         self._label.draw()
