@@ -6,6 +6,7 @@ from source.gui.widget.base import Widget
 from source.utils import in_bbox
 
 if TYPE_CHECKING:
+    from typing import Self
     from source.gui.scene.base import Scene
     from source.gui.window import Window
 
@@ -27,33 +28,48 @@ class Button(Widget):
                  ):
 
         # TODO: use batch
-        # TODO: make the label centered in the button
         # TODO: use texture bin and animation to simplify the image handling ?
+        # TODO: add an image when the mouse click ?
+        # TODO: make x, y, width, height, font_size optionally function to allow dynamic sizing
 
-        self.label = pyglet.text.Label(*args, **kwargs)
+        # initialise the default value for the property
+        self._x, self._y, self._width, self._height = x, y, width, height
 
+        # the label used for the text
+        self._label = pyglet.text.Label(
+            anchor_x="center",
+            anchor_y="center",
+            *args, **kwargs
+        )
+
+        # hovering and background
         self._hovering = False
+
         self._normal_sprite = pyglet.sprite.Sprite(normal_image)
+        self._normal_sprite.original_width = self._normal_sprite.width
+        self._normal_sprite.original_height = self._normal_sprite.height
         self._hover_sprite = pyglet.sprite.Sprite(hover_image)
+        self._hover_sprite.original_width = self._hover_sprite.width
+        self._hover_sprite.original_height = self._hover_sprite.height
 
-        self.on_press: Optional[Callable[["Window", "Scene", int, int, int, int], None]] = on_press
-        self.on_release: Optional[Callable[["Window", "Scene", int, int, int, int], None]] = on_release
+        # the event when the button is clicked
+        self.on_press: Optional[Callable[["Self", "Window", "Scene", int, int, int, int], None]] = on_press
+        self.on_release: Optional[Callable[["Self", "Window", "Scene", int, int, int, int], None]] = on_release
 
-        self.x: int = x
-        self.y: int = y
-        self.width: int = width
-        self.height: int = height
+        # update the size of the widget
+        self._update_size()
 
     # function
 
-    def _update_sprite_size(self, x: int = None, y: int = None, width: int = None, height: int = None):
+    def _update_size(self):
         for sprite in self._normal_sprite, self._hover_sprite:
-            sprite.update(
-                x=x,
-                y=y,
-                scale_x=None if width is None else width / sprite.width,
-                scale_y=None if height is None else height / sprite.height,
-            )
+            sprite.x = self.x
+            sprite.y = self.y
+            sprite.scale_x = self.width / sprite.original_width
+            sprite.scale_y = self.height / sprite.original_height
+
+        self._label.x = self.x + (self.width // 2)
+        self._label.y = self.y + (self.height // 2)
 
     # button getter and setter
 
@@ -73,8 +89,7 @@ class Button(Widget):
     @x.setter
     def x(self, value: int):
         self._x = value
-        self.label.x = value
-        self._update_sprite_size(x=value)
+        self._update_size()
 
     @property
     def y(self) -> int: return self._y
@@ -82,8 +97,7 @@ class Button(Widget):
     @y.setter
     def y(self, value: int):
         self._y = value
-        self.label.y = value
-        self._update_sprite_size(y=value)
+        self._update_size()
 
     @property
     def width(self) -> int: return self._width
@@ -91,8 +105,7 @@ class Button(Widget):
     @width.setter
     def width(self, value: int):
         self._width = value
-        self.label.width = value
-        self._update_sprite_size(width=value)
+        self._update_size()
 
     @property
     def height(self) -> int: return self._height
@@ -100,18 +113,17 @@ class Button(Widget):
     @height.setter
     def height(self, value: int):
         self._height = value
-        self.label.height = value
-        self._update_sprite_size(height=value)
+        self._update_size()
 
     # event
 
     def on_mouse_press(self, window: "Window", scene: "Scene", x: int, y: int, button: int, modifiers: int):
         if not in_bbox((x, y), self.bbox): return
-        if self.on_press is not None: self.on_press(window, scene, x, y, button, modifiers)
+        if self.on_press is not None: self.on_press(self, window, scene, x, y, button, modifiers)
 
     def on_mouse_release(self, window: "Window", scene: "Scene", x: int, y: int, button: int, modifiers: int):
         if not in_bbox((x, y), self.bbox): return
-        if self.on_release is not None: self.on_release(window, scene, x, y, button, modifiers)
+        if self.on_release is not None: self.on_release(self, window, scene, x, y, button, modifiers)
 
     def on_mouse_motion(self, window: "Window", scene: "Scene", x: int, y: int, dx: int, dy: int):
         self._hovering = in_bbox((x, y), self.bbox)
@@ -120,4 +132,4 @@ class Button(Widget):
         if (bg := self.background_sprite) is not None:
             bg.draw()
 
-        self.label.draw()
+        self._label.draw()
