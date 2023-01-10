@@ -2,8 +2,8 @@ import numpy as np
 
 from source.core.Boat import Boat
 from source.core.enums import Orientation, BombState
-from source.core.error import InvalidBoatPosition, PositionAlreadyShot
-from source.utils import copy_array_offset
+from source.core.error import InvalidBoatPosition, PositionAlreadyShot, InvalidBombPosition
+from source.utils import copy_array_offset, in_bbox
 
 
 class Board:
@@ -49,7 +49,8 @@ class Board:
         board_mat_sum_old: int = board_mat.sum()
 
         # add the boat to the board matrice
-        copy_array_offset(boat_mat, board_mat, offset=position)
+        try: copy_array_offset(boat_mat, board_mat, offset=position)
+        except ValueError: raise InvalidBoatPosition(boat, position)
 
         #  get the new board matrice sum
         board_mat_sum_new: int = board_mat.sum()
@@ -73,6 +74,11 @@ class Board:
         :position: the position where to shoot
         :raise: PositionAlreadyShot if the position have already been shot before
         """
+
+        # if the bomb is inside the board
+        x, y = position
+        if x >= self._width or y >= self._height: raise InvalidBombPosition(position)
+
         # if this position have already been shot
         if not self._bombs[position]: raise PositionAlreadyShot(position)
 

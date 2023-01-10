@@ -6,3 +6,5 @@ class BombState(Enum):
     TOUCHED = 1
     SUNKEN = 2
     WON = 3
+
+    ERROR = 10
