@@ -3,8 +3,8 @@ from typing import Callable, Optional, TYPE_CHECKING
 import pyglet
 
 from source.gui.sprite import Sprite
-from source.gui.widget.base import Widget
-from source.type import BBox
+from source.gui.widget.base import AdaptativeWidget
+from source.type import Percentage
 from source.utils import in_bbox
 
 if TYPE_CHECKING:
@@ -13,12 +13,13 @@ if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class Button(Widget):
+class Button(AdaptativeWidget):
     def __init__(self,
-                 x: int,
-                 y: int,
-                 width: int,
-                 height: int,
+
+                 x: int | Percentage,
+                 y: int | Percentage,
+                 width: int | Percentage,
+                 height: int | Percentage,
 
                  normal_image: pyglet.image.AbstractImage,
                  hover_image: pyglet.image.AbstractImage = None,
@@ -30,12 +31,11 @@ class Button(Widget):
                  *args, **kwargs
                  ):
 
+        super().__init__(x, y, width, height)
+
         # TODO: use batch ?
         # TODO: use texture bin and animation to simplify the image handling ?
-        # TODO: make x, y, width, height, font_size optionally function to allow dynamic sizing
-
-        # initialise the value for the property
-        self._x, self._y, self._width, self._height = x, y, width, height
+        # TODO: font_size dynamic sizing too ?
 
         # the label used for the text
         self._label = pyglet.text.Label(
@@ -101,42 +101,26 @@ class Button(Widget):
             else self._normal_image
         )
 
-    @property
-    def bbox(self) -> BBox:
-        return self.x, self.y, self.x + self.width, self.y + self.height
-
     # label getter and setter
 
-    @property
-    def x(self) -> int: return self._x
-
-    @x.setter
+    @AdaptativeWidget.x.setter
     def x(self, x: int):
-        self._x = x
+        super().x = x
         self._update_size()
 
-    @property
-    def y(self) -> int: return self._y
-
-    @y.setter
+    @AdaptativeWidget.y.setter
     def y(self, y: int):
-        self._y = y
+        super().y = y
         self._update_size()
 
-    @property
-    def width(self) -> int: return self._width
-
-    @width.setter
+    @AdaptativeWidget.width.setter
     def width(self, width: int):
-        self._width = width
+        super().width = width
         self._update_size()
 
-    @property
-    def height(self) -> int: return self._height
-
-    @height.setter
+    @AdaptativeWidget.height.setter
     def height(self, height: int):
-        self._height = height
+        super().height = height
         self._update_size()
 
     # event
@@ -156,7 +140,7 @@ class Button(Widget):
         if not in_bbox((x, y), self.bbox): return
 
         # if this button was the one hovered when the click was pressed
-        if old_clicking is True and self.on_release is not None:
+        if old_clicking and self.on_release is not None:
             self.on_release(self, window, scene, x, y, button, modifiers)
 
     def on_mouse_motion(self, window: "Window", scene: "Scene", x: int, y: int, dx: int, dy: int):
@@ -165,3 +149,7 @@ class Button(Widget):
     def on_draw(self, window: "Window", scene: "Scene"):
         if self._sprite is not None: self._sprite.draw()
         self._label.draw()
+
+    def on_resize(self, window: "Window", scene: "Scene", width: int, height: int):
+        super().on_resize(window, scene, width, height)
+        self._update_size()
