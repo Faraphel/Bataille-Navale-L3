@@ -2,11 +2,14 @@ import pyglet.sprite
 
 
 class Sprite(pyglet.sprite.Sprite):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, width: int = None, height: int = None, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._orig_width: int = self.width
         self._orig_height: int = self.height
+
+        if width is not None: self.width = width
+        if height is not None: self.height = height
 
     @pyglet.sprite.Sprite.width.setter
     def width(self, width: int):

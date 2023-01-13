@@ -1,1 +1,1 @@
-from .FPSCounterScene import FPSCounterScene
+from .FPSScene import FPSScene

@@ -1,19 +1,14 @@
 import pyglet
 
+from source.gui.scene.debug import FPSScene
+from source.gui.scene.test import HelloWorldScene
 from source.gui.window import Window
-from source.gui.scene.debug import FPSCounterScene
-from source.gui.scene.test import ButtonScene
 
-# Créer une fenêtre
-window = Window(resizable=True, visible=False)
 
-# performance and button test
+# Create a new window
+window = Window(resizable=True, vsync=False)
+window.add_scene(HelloWorldScene(), FPSScene())
 
-button_scene = ButtonScene()
-fps_counter_scene = FPSCounterScene()
+# Start the event loop
+pyglet.app.run(interval=0)
 
-window.add_scene(button_scene, fps_counter_scene)
-
-# Lance la fenêtre
-window.set_visible(True)
-pyglet.app.run()

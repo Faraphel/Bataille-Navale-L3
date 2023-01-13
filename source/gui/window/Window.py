@@ -1,76 +1,47 @@
-from typing import Optional, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 import pyglet.window
 
 if TYPE_CHECKING:
-    from source.gui.scene.base import Scene
+    from source.gui.scene import BaseScene
 
 
-class Window(pyglet.window.Window):  # NOQA - pycharm think pyglet window is abstract
+class Window(pyglet.window.Window):  # NOQA
     """
-    This class represent a Window based on the pyglet Window object.
-
-    Allow to use a "Scene" system to create very different interface like
-    a main menu, options menu, ... that can overlay each other without
-    putting everything in the window code.
+    Same as the original pyglet class, but allow to set a scene.
     """
 
-    def __init__(self, scenes: Optional[list["Scene"]] = None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._scenes: list["Scene"] = []
-        if scenes is not None: self.add_scene(*scenes)
 
-        # add a keys handler to the window
-        self.keys = pyglet.window.key.KeyStateHandler()
-        self.push_handlers(self.keys)
+        # scene
+        self._scenes = []
 
         # a dictionary linking a key pressed to the corresponding event function
         self._on_key_held_events: dict[(int, int), Callable] = {}
 
-    # scene methods
+        # keys event handler
+        self.keys_handler = pyglet.window.key.KeyStateHandler()
+        self.push_handlers(self.keys_handler)
 
-    def set_scene(self, *scenes: "Scene") -> None:
-        """
-        Set the scene(s) of the window
-        :param scenes: the scene(s) to set
-        """
-        self.clear_scene()
-        for scene in scenes: self.add_scene(scene)
+    # scene system
 
-    def clear_scene(self) -> None:
-        """
-        Clear all the scenes of the window
-        """
-        for scene in self._scenes: scene.on_window_removed(self)
-        self._scenes.clear()
+    def set_scene(self, *scenes: "BaseScene"):
+        self.clear()
+        self.add_scene(*scenes)
 
-    def add_scene(self, *scenes: "Scene", priority: int = 0) -> None:
-        """
-        Add a scene to the window
-        :param scenes: the scene to add
-        :param priority: the priority level of the scene. The higher, the more the scene will be drawn on top
-        """
+    def add_scene(self, *scenes: "BaseScene", priority: int = 0):
         for scene in scenes:
             self._scenes.insert(priority, scene)
             scene.on_window_added(self)
 
-    def remove_scene(self, *scenes: "Scene") -> None:
-        """
-        Remove a scene from the window
-        :param scenes: the scene to remove
-        """
+    def remove_scene(self, *scenes: "BaseScene"):
         for scene in scenes:
             scene.on_window_removed(self)
             self._scenes.remove(scene)
 
-    def get_scenes(self):
-        """
-        Get the list of the scenes
-        :return: the list of all the scenes currently used
-        """
-        return self._scenes.copy()
-
-    # window event methods
+    def clear_scene(self):
+        self.remove_scene(*self._scenes)
 
     # NOTE: it is too difficult to refactor all the event because :
     #     - There is no event "on_any_event" or equivalent

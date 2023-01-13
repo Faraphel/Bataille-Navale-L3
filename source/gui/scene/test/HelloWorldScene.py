@@ -1,59 +1,55 @@
-from datetime import datetime, timedelta
+from typing import TYPE_CHECKING
 
 import pyglet
 
-from source.gui.scene.base import Scene
-
-from typing import TYPE_CHECKING
+from source.gui.scene.base import BaseScene
+from source.gui.widget.Button import Button
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class HelloWorldScene(Scene):
-    """
-    This scene is a simple Hello World.
+class HelloWorldScene(BaseScene):
+    def __init__(self):
+        super().__init__()
 
-    You can type anything with the keyboard or use backspace to remove characters.
-    The text is centered on the screen.
-    """
+        self.button_atlas = None
+        self.sprite_batch = None
+        self.label_batch = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def on_window_added(self, window: "Window") -> None:
+        normal_texture = pyglet.image.load("./assets/image/button/test_button_normal.png")
+        hover_texture = pyglet.image.load("./assets/image/button/test_button_hover.png")
+        click_texture = pyglet.image.load("./assets/image/button/test_button_clicking.png")
 
-        self.label = pyglet.text.Label(
-            "Hello World !",
-            anchor_x="center",
-            anchor_y="center"
-        )
+        self.button_atlas = pyglet.image.atlas.TextureAtlas()
+        normal_region = self.button_atlas.add(normal_texture)
+        hover_region = self.button_atlas.add(hover_texture)
+        click_region = self.button_atlas.add(click_texture)
 
-        # remember the cooldown for the backspace button
-        self._hold_backspace_last_call: datetime = datetime.now()
+        self.sprite_batch = pyglet.graphics.Batch()
+        self.label_batch = pyglet.graphics.Batch()
 
-    def on_draw(self, window: "Window") -> None:
+        for x in range(10):
+            for y in range(10):
+                self.add_widget(Button(
+                    x=x*0.1, y=y*0.1, width=0.1, height=0.1,
+
+                    normal_texture=normal_region,
+                    hover_texture=hover_region,
+                    click_texture=click_region,
+
+                    label_text=f"TEST TEST CENTERING {x}.{y}",
+                    label_multiline=True,
+
+                    label_batch=self.label_batch,
+                    sprite_batch=self.sprite_batch,
+                ))
+
+        super().on_window_added(window)
+
+    def on_draw(self, window: "Window"):
         super().on_draw(window)
 
-        self.label.draw()
-
-    def on_resize(self, window: "Window", width: int, height: int) -> None:
-        super().on_resize(window, width, height)
-
-        self.label.x = width // 2
-        self.label.y = height // 2
-
-    def on_text(self, window: "Window", char: str):
-        super().on_text(window, char)
-
-        self.label.text += char
-
-    def on_key_held(self, window: "Window", dt: float, symbol: int, modifiers: int):
-        super().on_key_held(window, dt, symbol, modifiers)
-
-        if symbol == pyglet.window.key.BACKSPACE:
-
-            # add a cooldown of 0.1 second on the backspace key
-            now = datetime.now()
-            if self._hold_backspace_last_call + timedelta(seconds=0.1) < now:
-                self._hold_backspace_last_call = now
-
-                self.label.text = self.label.text[:-1]
+        self.sprite_batch.draw()
+        self.label_batch.draw()

@@ -1,1 +1,1 @@
-from .Scene import Scene
+from .BaseScene import BaseScene

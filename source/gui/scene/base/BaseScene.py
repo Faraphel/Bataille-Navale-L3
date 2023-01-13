@@ -1,37 +1,33 @@
-from pyglet.event import EventDispatcher
-
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from source.gui.widget.base import Widget
     from source.gui.window import Window
+    from source.gui.widget.base import BaseWidget
 
 
-class Scene(EventDispatcher):
+class BaseScene:
     """
-    This class represent a scene that can be applied to a pyglet window.
-
-    The scene can represent anything like the main menu, the game, the
-    options' menu, the multiplayer menu, ...
+    A scene that can be attached to a window
     """
 
-    def __init__(self, widgets: list["Widget"] = None):
-        self._widgets: list["Widget"] = []
-        if widgets is not None: self.add_widget(*widgets)
+    def __init__(self):
+        self._widgets: list["BaseWidget"] = []
+        self._window: Optional["Window"] = None
 
-    def add_widget(self, *widgets: "Widget", priority: int = 0) -> None:
+    # widget
+
+    def add_widget(self, *widgets: "BaseWidget", priority: int = 0) -> None:
         for widget in widgets:
             self._widgets.insert(priority, widget)
             widget.on_scene_added(self)
 
-    def remove_widget(self, *widgets: "Widget") -> None:
+    def remove_widget(self, *widgets: "BaseWidget") -> None:
         for widget in widgets:
             widget.on_scene_removed(self)
             self._widgets.remove(widget)
 
     def clear_widget(self) -> None:
-        for widget in self._widgets: widget.on_scene_removed(self)
-        self._widgets.clear()
+        self.remove_widget(*self._widgets)
 
     # scene event
 
@@ -41,7 +37,19 @@ class Scene(EventDispatcher):
     def on_window_removed(self, window: "Window"):  # when the Scene is removed from a window
         for widget in self._widgets: widget.on_window_removed(window, self)
 
-    # window event
+    # window
+
+    @property
+    def window(self) -> "Window":
+        return self._window
+
+    @window.setter
+    def window(self, window: "Window"):
+        if self._window is not None: self.on_window_removed(self._window)
+        self._window = window
+        if self._window is not None: self.on_window_added(self._window)
+
+    # event
 
     def on_draw(self, window: "Window"):
         for widget in self._widgets: widget.on_draw(window, self)

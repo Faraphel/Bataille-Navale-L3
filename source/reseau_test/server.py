@@ -8,7 +8,8 @@ from source.core.enums import Orientation, BombState
 from source.core.error import InvalidBoatPosition, InvalidBombPosition, PositionAlreadyShot
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind(("127.0.0.1", 7878))
+    host = socket.gethostname()
+    s.bind((host, 52321))
     s.listen()
     conn, addr = s.accept()
 

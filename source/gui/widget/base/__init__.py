@@ -1,2 +1,3 @@
-from .Widget import Widget
-from .AdaptativeWidget import AdaptativeWidget
+from .BaseWidget import BaseWidget
+from .BaseBoxWidget import BaseBoxWidget
+from .BaseAdaptativeWidget import BaseAdaptativeWidget
