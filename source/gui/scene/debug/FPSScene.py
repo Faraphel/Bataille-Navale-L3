@@ -1,17 +1,21 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import pyglet.window
 
-from source.gui.scene.base import BaseScene
+from source.gui.scene.abc import AbstractScene
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class FPSScene(BaseScene):
+class FPSAbstractScene(AbstractScene):
+    """
+    A base scene that can be used as an overlay to display the FPS
+    """
+
     def __init__(self):
         super().__init__()
-        self._fps_display = None
+        self._fps_display: Optional[pyglet.window.FPSDisplay] = None
 
     def on_window_added(self, window: "Window"):
         self._fps_display = pyglet.window.FPSDisplay(window)

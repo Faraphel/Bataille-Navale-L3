@@ -11,6 +11,8 @@ class Sprite(pyglet.sprite.Sprite):
         if width is not None: self.width = width
         if height is not None: self.height = height
 
+    # property
+
     @pyglet.sprite.Sprite.width.setter
     def width(self, width: int):
         self.scale_x = width / self._orig_width
@@ -18,3 +20,11 @@ class Sprite(pyglet.sprite.Sprite):
     @pyglet.sprite.Sprite.height.setter
     def height(self, height: int):
         self.scale_y = height / self._orig_height
+
+    # other event
+
+    def update_size(self, x: int, y: int, width: int, height: int):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height

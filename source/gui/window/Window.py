@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Callable
 import pyglet.window
 
 if TYPE_CHECKING:
-    from source.gui.scene import BaseScene
+    from source.gui.scene.abc import AbstractScene
 
 
 class Window(pyglet.window.Window):  # NOQA
@@ -26,16 +26,16 @@ class Window(pyglet.window.Window):  # NOQA
 
     # scene system
 
-    def set_scene(self, *scenes: "BaseScene"):
+    def set_scene(self, *scenes: "AbstractScene"):
         self.clear()
         self.add_scene(*scenes)
 
-    def add_scene(self, *scenes: "BaseScene", priority: int = 0):
+    def add_scene(self, *scenes: "AbstractScene", priority: int = 0):
         for scene in scenes:
             self._scenes.insert(priority, scene)
             scene.on_window_added(self)
 
-    def remove_scene(self, *scenes: "BaseScene"):
+    def remove_scene(self, *scenes: "AbstractScene"):
         for scene in scenes:
             scene.on_window_removed(self)
             self._scenes.remove(scene)

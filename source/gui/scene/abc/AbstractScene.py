@@ -1,27 +1,29 @@
+from abc import ABC
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from source.gui.window import Window
-    from source.gui.widget.base import BaseWidget
+    from source.gui.widget.abc import AbstractWidget
 
 
-class BaseScene:
+class AbstractScene(ABC):
     """
-    A scene that can be attached to a window
+    An abstract scene that can be attached to a window.
+    Can be used to create a menu, an overlay, ...
     """
 
     def __init__(self):
-        self._widgets: list["BaseWidget"] = []
-        self._window: Optional["Window"] = None
+        self._widgets: list["AbstractWidget"] = []  # the lists of the widgets in the scene
+        self._window: Optional["Window"] = None  # the window where the scene is attached
 
     # widget
 
-    def add_widget(self, *widgets: "BaseWidget", priority: int = 0) -> None:
+    def add_widget(self, *widgets: "AbstractWidget", priority: int = 0) -> None:
         for widget in widgets:
             self._widgets.insert(priority, widget)
             widget.on_scene_added(self)
 
-    def remove_widget(self, *widgets: "BaseWidget") -> None:
+    def remove_widget(self, *widgets: "AbstractWidget") -> None:
         for widget in widgets:
             widget.on_scene_removed(self)
             self._widgets.remove(widget)
@@ -44,12 +46,12 @@ class BaseScene:
         return self._window
 
     @window.setter
-    def window(self, window: "Window"):
+    def window(self, window: "Window"):  # trying to change the window will trigger the event
         if self._window is not None: self.on_window_removed(self._window)
         self._window = window
         if self._window is not None: self.on_window_added(self._window)
 
-    # event
+    # all the events of the window are directly available here or in the widgets
 
     def on_draw(self, window: "Window"):
         for widget in self._widgets: widget.on_draw(window, self)

@@ -1,8 +1,10 @@
-from source.gui.widget.base import BaseWidget
+from abc import ABC
+
+from source.gui.widget.abc import AbstractWidget
 from source.type import BBox
 
 
-class BaseBoxWidget(BaseWidget):
+class AbstractBoxWidget(AbstractWidget, ABC):
     def __init__(self, x: int, y: int, width: int, height: int):
         self._x = x
         self._y = y

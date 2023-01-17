@@ -1,1 +1,3 @@
-from .HelloWorldScene import HelloWorldScene
+from .TestButtonScene import TestButtonScene
+from .TestLabelScene import TestLabelScene
+

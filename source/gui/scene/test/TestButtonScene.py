@@ -2,19 +2,23 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
-from source.gui.scene.base import BaseScene
-from source.gui.widget.Button import Button
+from source.gui.scene.abc import AbstractScene
+from source.gui.widget import Button
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class HelloWorldScene(BaseScene):
+class TestButtonScene(AbstractScene):
+    """
+    A scene used to test the Button widget
+    """
+
     def __init__(self):
         super().__init__()
 
         self.button_atlas = None
-        self.sprite_batch = None
+        self.background_batch = None
         self.label_batch = None
 
     def on_window_added(self, window: "Window") -> None:
@@ -27,7 +31,7 @@ class HelloWorldScene(BaseScene):
         hover_region = self.button_atlas.add(hover_texture)
         click_region = self.button_atlas.add(click_texture)
 
-        self.sprite_batch = pyglet.graphics.Batch()
+        self.background_batch = pyglet.graphics.Batch()
         self.label_batch = pyglet.graphics.Batch()
 
         for x in range(10):
@@ -43,7 +47,7 @@ class HelloWorldScene(BaseScene):
                     label_multiline=True,
 
                     label_batch=self.label_batch,
-                    sprite_batch=self.sprite_batch,
+                    background_batch=self.background_batch,
                 ))
 
         super().on_window_added(window)
@@ -51,5 +55,5 @@ class HelloWorldScene(BaseScene):
     def on_draw(self, window: "Window"):
         super().on_draw(window)
 
-        self.sprite_batch.draw()
+        self.background_batch.draw()
         self.label_batch.draw()

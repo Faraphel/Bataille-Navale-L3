@@ -1,3 +1,2 @@
-from .BaseWidget import BaseWidget
-from .BaseBoxWidget import BaseBoxWidget
-from .BaseAdaptativeWidget import BaseAdaptativeWidget
+from .Label import Label
+from .Sprite import Sprite
