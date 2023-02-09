@@ -1,92 +1,96 @@
-from typing import TYPE_CHECKING, Callable, Type
+from functools import lru_cache
+from typing import Type, Callable, TYPE_CHECKING, Any
 
-import pyglet.window
+import pyglet
+
 
 if TYPE_CHECKING:
-    from source.gui.scene.abc import AbstractScene
+    from source.gui.scene import Scene
 
 
 class Window(pyglet.window.Window):  # NOQA
     """
-    Similaire à la fenêtre de base de pyglet, mais permet d'ajouter des scènes.
+    A window. Based on the pyglet window object.
+    Scene can be added to the window
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # scene
-        self._scenes: list["AbstractScene"] = []
+        self._scenes: set["Scene"] = set()
 
-        # a dictionary linking a key pressed to the corresponding event function
-        self._on_key_held_events: dict[tuple[int, int], Callable] = {}
+    # Scene Managing
 
-        # keys event handler
-        self.keys_handler = pyglet.window.key.KeyStateHandler()
-        self.push_handlers(self.keys_handler)
-
-    # scene system
-
-    def set_scene(self, scenes_type: Type["AbstractScene"]) -> "AbstractScene":
+    def set_scene(self, scene_class: Type["Scene"], *scene_args, **scene_kwargs) -> "Scene":
         """
-        Clear all the previous scene and add a scene to the window
-        :param scenes_type: the class of the scene to add
-        :return: the scene
+        Set the scene of the window.
+        :scene_class: the class of the scene to add.
+        :scene_args: args for the creation of the scene object.
+        :scene_kwargs: kwargs for the creation of the scene object.
+        :return: the new created scene.
         """
-        self.clear()
-        return self.add_scene(scenes_type)
 
-    def add_scene(self, scene_type: Type["AbstractScene"], priority: int = 0) -> "AbstractScene":
+        self.clear_scene()
+        return self.add_scene(scene_class, *scene_args, **scene_kwargs)
+
+    def add_scene(self, scene_class: Type["Scene"], *scene_args, **scene_kwargs) -> "Scene":
         """
-        Add a scene to the window
-        :param scene_type: the class of the scene to add
-        :param priority: the priority of the scene in the display
-        :return: the scene
+        Add a scene of the window.
+        :scene_class: the class of the scene to add.
+        :scene_args: args for the creation of the scene object.
+        :scene_kwargs: kwargs for the creation of the scene object.
+        :return: the new created scene.
         """
-        scene: "AbstractScene" = scene_type(self)
-        self._scenes.insert(priority, scene)
+
+        scene: "Scene" = scene_class(window=self, *scene_args, **scene_kwargs)
+        self._scenes.add(scene)
         return scene
 
-    def remove_scene(self, *scenes: "AbstractScene") -> None:
+    def remove_scene(self, scene: "Scene") -> None:
         """
-        Remove scenes from the window
-        :param scenes: the scenes to remove
+        Remove a scene from the window.
+        :scene: the scene to remove.
         """
-        for scene in scenes:
-            self._scenes.remove(scene)
+
+        self._scenes.remove(scene)
 
     def clear_scene(self) -> None:
         """
-        Remove all the scenes from the window
+        Clear the window from all the scenes.
         """
-        self.remove_scene(*self._scenes)
 
-    # event
+        self._scenes.clear()
 
-    def scene_event_wrapper(self, name: str, func: Callable) -> Callable:
+    # Base Event
+
+    def on_draw(self):  # NOQA
+        self.clear()
+
+    # Event Handling
+
+    @lru_cache
+    def _event_wrapper(self, item: str) -> Callable:
         """
         Un wrapper permettant d'appeler l'événement de toutes les scènes attachées.
         :param name: nom de la fonction à appeler dans la scène.
-        :param func: fonction originale à entourer du wrapper
         :return: une fonction appelant l'événement original ainsi que ceux des scènes.
         """
 
-        def _func(*args, **kwargs):
+        func = super().__getattribute__(item)
+
+        def _func(*args, **kwargs) -> None:
             func(*args, **kwargs)
-            for scene in self._scenes: getattr(scene, name, lambda *_, **__: "pass")(*args, **kwargs)
+            for scene in self._scenes:
+                getattr(scene, item)(*args, **kwargs)
 
         return _func
 
-    def __getattribute__(self, item: str):
+    def __getattribute__(self, item: str) -> Any:
         """
         Fonction appelée dès que l'on essaye d'accéder à l'un des attributs de l'objet.
         :param item: nom de l'attribut recherché
         :return: l'attribut de l'objet correspondant.
         """
 
-        # print(".", end="")
-
-        attribute = super().__getattribute__(item)
-
-        # si l'attribut est un évenement (commence par "on_"), alors renvoie le dans un wrapper
-        return self.scene_event_wrapper(item, attribute) if item.startswith("on_") else attribute
-
+        # si l'attribut est un événement (commence par "on_"), alors renvoie le dans un wrapper
+        return self._event_wrapper(item) if item.startswith("on_") else super().__getattribute__(item)

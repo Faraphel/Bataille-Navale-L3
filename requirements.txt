@@ -1,2 +1,2 @@
-pyglet
-numpy
+pyglet==2.0.4
+numpy==1.24.2

@@ -1,1 +1,1 @@
-from .MainMenuScene import MainMenuScene
+from .Scene import Scene

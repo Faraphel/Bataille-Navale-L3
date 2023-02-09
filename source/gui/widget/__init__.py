@@ -1,4 +1,3 @@
-from .WidgetLabel import WidgetLabel
-from .WidgetInput import WidgetInput
-from .WidgetButton import WidgetButton
-from .WidgetImage import WidgetImage
+from .Widget import Widget
+from .Text import Text
+from .FPSDisplay import FPSDisplay

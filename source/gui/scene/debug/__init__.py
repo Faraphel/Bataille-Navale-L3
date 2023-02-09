@@ -1,1 +1,0 @@
-from .FPSScene import FPSScene
