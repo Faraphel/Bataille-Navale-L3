@@ -1,1 +1,1 @@
-from .FPSScene import FPSAbstractScene
+from .FPSScene import FPSScene

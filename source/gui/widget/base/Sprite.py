@@ -2,6 +2,11 @@ import pyglet.sprite
 
 
 class Sprite(pyglet.sprite.Sprite):
+    """
+    Similar to the pyglet Sprite, but allow to change the width and height directly
+    and update the size from a function
+    """
+
     def __init__(self, *args, width: int = None, height: int = None, **kwargs):
         super().__init__(*args, **kwargs)
 

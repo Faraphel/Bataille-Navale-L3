@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from source.gui.scene.abc import AbstractScene
 
 
-class Input(AbstractResizableWidget):
+class WidgetInput(AbstractResizableWidget):
     def __init__(self,
 
                  # position

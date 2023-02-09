@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from source.gui.scene.abc import AbstractScene
 
 
-class Button(AbstractResizableWidget):
+class WidgetButton(AbstractResizableWidget):
     def __init__(self,
 
                  # position

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pyglet
 
 from source.gui.scene.abc import AbstractScene
-from source.gui.widget import Label
+from source.gui.widget import WidgetLabel
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -24,7 +24,7 @@ class TestLabelScene(AbstractScene):
 
         for x in range(10):
             for y in range(10):
-                self.add_widget(Label(
+                self.add_widget(WidgetLabel(
                     x=x*0.1, y=y*0.1, width=0.1, height=0.1,
 
                     text=f"{x}.{y}",

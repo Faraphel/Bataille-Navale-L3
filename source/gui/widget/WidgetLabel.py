@@ -1,8 +1,8 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import pyglet.text
 
-from source.gui.widget.base import Sprite
+from source.gui.widget.base import Sprite, Label
 from source.gui.widget.abc import AbstractResizableWidget
 from source.type import Percentage
 
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from source.gui.scene.abc import AbstractScene
 
 
-class Label(AbstractResizableWidget):
+class WidgetLabel(AbstractResizableWidget):
     def __init__(self,
 
                  # position
@@ -47,7 +47,7 @@ class Label(AbstractResizableWidget):
 
         super().__init__(x, y, width, height)
 
-        self._label = None
+        self._label: Optional[Label] = None
         self._label_kwargs = {
             "text": text,
             "font_name": font_name,
@@ -78,7 +78,7 @@ class Label(AbstractResizableWidget):
     def on_window_added(self, window: "Window", scene: "AbstractScene"):
         super().on_window_added(window, scene)
 
-        self._label = pyglet.text.Label(
+        self._label = Label(
             x=self.x, y=self.y, width=self.width, height=self.height,
             **self._label_kwargs
         )
@@ -90,13 +90,5 @@ class Label(AbstractResizableWidget):
             )
 
     def update_size(self):
-        self._label.x = self.x
-        self._label.y = self.y
-        self._label.width = self.width
-        self._label.height = self.height
-
-        if self._background is not None:
-            self._background.x = self.x
-            self._background.y = self.y
-            self._background.width = self.width
-            self._background.height = self.height
+        self._label.update_size(self.x, self.y, self.width, self.height)
+        if self._background is not None: self._background.update_size(self.x, self.y, self.width, self.height)

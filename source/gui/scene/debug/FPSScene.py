@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class FPSAbstractScene(AbstractScene):
+class FPSScene(AbstractScene):
     """
     A base scene that can be used as an overlay to display the FPS
     """

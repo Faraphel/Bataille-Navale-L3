@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pyglet
 
 from source.gui.scene.abc import AbstractScene
-from source.gui.widget import Button
+from source.gui.widget import WidgetButton
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -36,7 +36,7 @@ class TestButtonScene(AbstractScene):
 
         for x in range(10):
             for y in range(10):
-                self.add_widget(Button(
+                self.add_widget(WidgetButton(
                     x=x*0.1, y=y*0.1, width=0.1, height=0.1,
 
                     normal_texture=normal_region,
