@@ -1,12 +1,13 @@
+from abc import ABC
 from functools import lru_cache
 from typing import TYPE_CHECKING, Callable, Type, Any
 
 if TYPE_CHECKING:
     from source.gui.window import Window
-    from source.gui.widget import Widget
+    from source.gui.widget.abc import Widget
 
 
-class Scene:
+class Scene(ABC):
     """
     A scene that can be attached to a window.
     It allows to switch the whole comportment of the window in a simpler way.

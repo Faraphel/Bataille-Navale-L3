@@ -1,4 +1,4 @@
-from source.gui.widget import Widget
+from source.gui.widget.abc import Widget
 
 from typing import TYPE_CHECKING
 
@@ -13,8 +13,8 @@ class FPSDisplay(Widget):
     A widget that display the current FPS of the scene's window
     """
 
-    def __init__(self, scene: "Scene", *args, **kwargs):
-        super().__init__(scene, *args, **kwargs)
+    def __init__(self, scene: "Scene"):
+        super().__init__(scene)
 
         self.fps_display = pyglet.window.FPSDisplay(scene.window)
 

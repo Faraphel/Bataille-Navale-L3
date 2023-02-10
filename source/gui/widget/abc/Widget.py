@@ -1,10 +1,11 @@
+from abc import ABC
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from source.gui.scene import Scene
+    from source.gui.scene.abc import Scene
 
 
-class Widget:
+class Widget(ABC):
     """
     A Widget that can be attached to a scene.
 
