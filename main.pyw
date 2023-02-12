@@ -12,7 +12,10 @@ class TestScene(Scene):
         super().__init__(window)
 
         self.add_widget(FPSDisplay)
-        self.add_widget(Text, text="Hello World !", x=0.5, y=0.5, anchor_x="center", anchor_y="center")
+        label = self.add_widget(Text, text="Hello World !", x=0.5, y=0.5, width=0.5, height=0.5, anchor_x="center", anchor_y="center")
+
+        label.on_pressed = lambda self, button, modifiers: print("pressed", self, button, modifiers)
+        label.on_release = lambda self, button, modifiers: print("release", self, button, modifiers)
 
 
 # Create a new window
