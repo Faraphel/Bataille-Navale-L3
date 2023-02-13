@@ -76,10 +76,12 @@ class Window(pyglet.window.Window):  # NOQA
         :return: une fonction appelant l'événement original ainsi que ceux des scènes.
         """
 
-        func = super().__getattribute__(item)
+        func = None
+        try: func = super().__getattribute__(item)
+        except AttributeError: pass
 
         def _func(*args, **kwargs) -> None:
-            func(*args, **kwargs)
+            if func is not None: func(*args, **kwargs)
             for scene in self._scenes:
                 getattr(scene, item)(*args, **kwargs)
 

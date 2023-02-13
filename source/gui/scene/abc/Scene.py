@@ -59,14 +59,13 @@ class Scene(ABC):
         :return: une fonction appelant l'événement original ainsi que ceux des scènes.
         """
 
-        # Récupère la fonction originale. S'il n'y en a pas, renvoie une fonction sans effet.
-        try:
-            func = super().__getattribute__(item)
-        except AttributeError:
-            func = lambda *_, **__: "pass"  # NOQA E731
+        # Récupère la fonction originale. S'il n'y en a pas, renvoie une fonction sans effet.*
+        func = None
+        try: func = super().__getattribute__(item)
+        except AttributeError: pass
 
         def _func(*args, **kwargs) -> None:
-            func(*args, **kwargs)
+            if func is not None: func(*args, **kwargs)
             for widget in self._widgets:
                 getattr(widget, item, lambda *_, **__: "pass")(*args, **kwargs)
 

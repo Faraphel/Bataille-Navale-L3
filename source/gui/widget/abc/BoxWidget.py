@@ -72,7 +72,7 @@ class BoxWidget(Widget, ABC):
 
     @property
     def bbox(self) -> tuple[int, int, int, int]:
-        return self.x, self.y, self.width, self.height
+        return self.x, self.y, self.x + self.width, self.y + self.height
 
     # event
 
