@@ -27,7 +27,8 @@ class TestScene(Scene):
 
         # the widgets
 
-        self.add_widget(FPSDisplay)
+        self.fps_display = self.add_widget(FPSDisplay)
+
         label = self.add_widget(
             Button,
 
@@ -49,6 +50,7 @@ class TestScene(Scene):
     def on_draw(self):
         self.background_batch.draw()
         self.label_batch.draw()
+        self.fps_display.draw()
 
 
 # Create a new window

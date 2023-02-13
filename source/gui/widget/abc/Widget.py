@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -14,3 +14,9 @@ class Widget(ABC):
 
     def __init__(self, scene: "Scene", *args, **kwargs):
         self.scene = scene
+
+    @abstractmethod
+    def draw(self):
+        """
+        The draw function. Can be called to draw the widget.
+        """

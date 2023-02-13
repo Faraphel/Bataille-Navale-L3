@@ -97,10 +97,6 @@ class Button(BoxWidget):
         self._refresh_size()
 
     def draw(self):
-        """
-        The draw function. Can be called to draw the widget, but can be ignored to draw it with batchs.
-        """
-
         self.background.draw()
         self.label.draw()
 
