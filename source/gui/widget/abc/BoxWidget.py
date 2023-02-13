@@ -30,6 +30,8 @@ class BoxWidget(Widget, ABC):
         self._hovering = False  # is the button currently hovered ?
         self._clicking = False  # is the button currently clicked ?
 
+    # property
+
     @property
     def x(self) -> int:
         return self.scene.window.width * self._p_x
@@ -74,6 +76,24 @@ class BoxWidget(Widget, ABC):
     def bbox(self) -> tuple[int, int, int, int]:
         return self.x, self.y, self.x + self.width, self.y + self.height
 
+    # property that can be used to add event when these value are modified in some specific widget.
+
+    @property
+    def hovering(self):
+        return self._hovering
+
+    @hovering.setter
+    def hovering(self, hovering: bool):
+        self._hovering = hovering
+
+    @property
+    def clicking(self):
+        return self._clicking
+
+    @clicking.setter
+    def clicking(self, clicking: bool):
+        self._clicking = clicking
+
     # event
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):  # NOQA
@@ -86,11 +106,11 @@ class BoxWidget(Widget, ABC):
         :dy: the difference of the y mouse axis
         """
 
-        old_hovering = self._hovering
-        self._hovering = in_bbox((x, y), self.bbox)
+        old_hovering = self.hovering
+        self.hovering = in_bbox((x, y), self.bbox)
 
-        if old_hovering != self._hovering:  # if the hover changed
-            if self._hovering: self.on_hover_enter()  # call the hover enter event
+        if old_hovering != self.hovering:  # if the hover changed
+            if self.hovering: self.on_hover_enter()  # call the hover enter event
             else: self.on_hover_leave()  # call the hover leave event
 
     def on_hover_enter(self):
@@ -107,13 +127,13 @@ class BoxWidget(Widget, ABC):
         # if this button was the one hovered when the click was pressed
         if not in_bbox((x, y), self.bbox): return
 
-        self._clicking = True
+        self.clicking = True
 
         self.on_press(button, modifiers)
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         old_click: bool = self._clicking
-        self._clicking = False
+        self.clicking = False
 
         if not in_bbox((x, y), self.bbox): return
 

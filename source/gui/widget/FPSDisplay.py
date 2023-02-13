@@ -18,5 +18,9 @@ class FPSDisplay(Widget):
 
         self.fps_display = pyglet.window.FPSDisplay(scene.window)
 
-    def on_draw(self):
+    def draw(self):
+        """
+        The draw function. Can be called to draw the widget, but can be ignored to draw it with batchs.
+        """
+
         self.fps_display.draw()

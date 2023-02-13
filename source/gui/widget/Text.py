@@ -34,5 +34,9 @@ class Text(BoxWidget):
         self.label.width = self.width
         self.label.height = self.height
 
-    def on_draw(self):
+    def draw(self):
+        """
+        The draw function. Can be called to draw the widget, but can be ignored to draw it with batchs.
+        """
+
         self.label.draw()
