@@ -24,15 +24,19 @@ class Text(BoxWidget):
         super().__init__(scene, x, y, width, height)
 
         self.label = pyglet.text.Label(
-            x=self.x, y=self.y, width=self.width, height=self.height,
             *args, **kwargs
         )
 
-    def on_resize(self, width: int, height: int):
+        self._refresh_size()
+
+    def _refresh_size(self):
         self.label.x = self.x
         self.label.y = self.y
         self.label.width = self.width
         self.label.height = self.height
+
+    def on_resize(self, width: int, height: int):
+        self._refresh_size()
 
     def draw(self):
         """

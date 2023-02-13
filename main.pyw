@@ -13,14 +13,14 @@ class TestScene(Scene):
 
         # loading resource
 
-        normal_texture = pyglet.image.load("./assets/image/button/test_button_normal.png")
-        hover_texture = pyglet.image.load("./assets/image/button/test_button_hover.png")
-        click_texture = pyglet.image.load("./assets/image/button/test_button_clicking.png")
+        texture_normal = pyglet.image.load("./assets/image/button/test_button_normal.png")
+        texture_hover = pyglet.image.load("./assets/image/button/test_button_hover.png")
+        texture_click = pyglet.image.load("./assets/image/button/test_button_clicking.png")
 
         button_atlas = pyglet.image.atlas.TextureAtlas()
-        normal_region = button_atlas.add(normal_texture)
-        hover_region = button_atlas.add(hover_texture)
-        click_region = button_atlas.add(click_texture)
+        region_normal = button_atlas.add(texture_normal)
+        region_hover = button_atlas.add(texture_hover)
+        region_click = button_atlas.add(texture_click)
 
         self.background_batch = pyglet.graphics.Batch()
         self.label_batch = pyglet.graphics.Batch()
@@ -33,9 +33,9 @@ class TestScene(Scene):
 
             x=0.5, y=0.5, width=0.5, height=0.5,
 
-            texture_normal=normal_region,
-            texture_hover=hover_region,
-            texture_click=click_region,
+            texture_normal=region_normal,
+            texture_hover=region_hover,
+            texture_click=region_click,
 
             label_text="Hello World !",
 
@@ -49,8 +49,6 @@ class TestScene(Scene):
     def on_draw(self):
         self.background_batch.draw()
         self.label_batch.draw()
-
-
 
 
 # Create a new window

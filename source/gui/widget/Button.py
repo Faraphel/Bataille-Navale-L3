@@ -38,14 +38,15 @@ class Button(BoxWidget):
 
         self.background = Sprite(
             img=self._texture_normal,
-            x=self.x, y=self.y, width=self.width, height=self.height,
             **dict_prefix("background_", kwargs)
         )
 
         self.label = pyglet.text.Label(
-            x=self.x, y=self.y, width=self.width, height=self.height,
+            anchor_x="center", anchor_y="center",
             **dict_prefix("label_", kwargs)
         )
+
+        self._refresh_size()  # refresh the size and position for the background and label
 
     # background
 
@@ -64,8 +65,19 @@ class Button(BoxWidget):
             self._texture_normal
         )
 
+    # refresh
+
     def _refresh_background(self) -> None:
         self.background.image = self.background_texture
+
+    def _refresh_size(self) -> None:
+        self.background.x = self.x
+        self.background.y = self.y
+        self.background.width = self.width
+        self.background.height = self.height
+
+        self.label.x = self.x + (self.width / 2)
+        self.label.y = self.y + (self.height / 2)
 
     @BoxWidget.hovering.setter
     def hovering(self, hovering: bool):
@@ -82,15 +94,7 @@ class Button(BoxWidget):
     # event
 
     def on_resize(self, width: int, height: int):
-        self.background.x = self.x
-        self.background.y = self.y
-        self.background.width = self.width
-        self.background.height = self.height
-
-        self.label.x = self.x
-        self.label.y = self.y
-        self.label.width = self.width
-        self.label.height = self.height
+        self._refresh_size()
 
     def draw(self):
         """
