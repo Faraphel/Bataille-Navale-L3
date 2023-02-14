@@ -46,6 +46,8 @@ class Input(BoxWidget):
             **dict_prefix("label_", kwargs)
         )
 
+        self._refresh_size()
+
     # background
 
     @property
@@ -92,20 +94,28 @@ class Input(BoxWidget):
         self._invalid = invalid
         self._refresh_background()
 
+    @property
+    def text(self):
+        return self.label.text
+
+    @text.setter
+    def text(self, text: str):
+        self.label.text = text
+
     # event
 
     def on_key_press(self, symbol: int, modifiers: int):
         if not self.activated: return  # ignore si ce widget est désactivé / non sélectionné
 
         if symbol == pyglet.window.key.BACKSPACE:  # si la touche "supprimé" est enfoncé
-            self.label.text = self.label.text[0:-1]  # retire le dernier caractère du texte
+            self.text = self.text[0:-1]  # retire le dernier caractère du texte
 
     def on_text(self, char: str):
         if not self.activated: return  # ignore si ce widget est désactivé / non sélectionné
-        self.label.text += char  # ajoute le caractère au label
+        self.text += char  # ajoute le caractère au label
 
         if self.regex is not None:  # si il y a un regex de validation, applique le pour vérifier le texte
-            self.invalid = self.regex.fullmatch(self.label.text) is None
+            self.invalid = self.regex.fullmatch(self.text) is None
 
     def on_resize(self, width: int, height: int):
         self._refresh_size()

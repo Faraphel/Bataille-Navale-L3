@@ -51,7 +51,7 @@ class BoxWidget(Widget, ABC):
 
     @property
     def width(self) -> int:
-        return None if self._p_width is None else self.scene.window.width * self._p_width
+        return 0 if self._p_width is None else self.scene.window.width * self._p_width
 
     @width.setter
     def width(self, width: Optional[Percentage]):
@@ -59,7 +59,7 @@ class BoxWidget(Widget, ABC):
 
     @property
     def height(self) -> int:
-        return None if self._p_height is None else self.scene.window.height * self._p_height
+        return 0 if self._p_height is None else self.scene.window.height * self._p_height
 
     @height.setter
     def height(self, height: Optional[Percentage]):

@@ -5,7 +5,7 @@ import pyglet
 
 
 if TYPE_CHECKING:
-    from source.gui.scene import Scene
+    from source.gui.scene.abc import Scene
 
 
 class Window(pyglet.window.Window):  # NOQA

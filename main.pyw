@@ -1,5 +1,6 @@
 import pyglet
 
+from source.gui.scene import MainMenu
 from source.gui.scene.abc import Scene
 from source.gui.widget import FPSDisplay, Button, Image, Input
 from source.gui.window import Window
@@ -16,7 +17,7 @@ class TestScene(Scene):
         texture_button_normal = pyglet.image.load("./assets/image/button/normal.png")
         texture_button_hover = pyglet.image.load("./assets/image/button/hovering.png")
         texture_button_click = pyglet.image.load("./assets/image/button/clicking.png")
-        texture_input_normal = pyglet.image.load("./assets/image/input/inputbox.png")
+        texture_input_normal = pyglet.image.load("assets/image/input/normal.png")
         texture_input_active = pyglet.image.load("./assets/image/input/active.png")
         texture_input_error = pyglet.image.load("./assets/image/input/error.png")
 
@@ -95,7 +96,7 @@ class TestScene2(Scene):
 
 # Create a new window
 window = Window(resizable=True, vsync=False)
-window.add_scene(TestScene)
+window.add_scene(MainMenu)
 
 # Start the event loop
 pyglet.app.run(interval=0)
