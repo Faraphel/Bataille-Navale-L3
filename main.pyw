@@ -44,7 +44,7 @@ class TestScene(Scene):
             batch=self.background_batch,
         )
 
-        label = self.add_widget(
+        button = self.add_widget(
             Button,
 
             x=0.5, y=0.5, width=0.5, height=0.5,
@@ -59,8 +59,8 @@ class TestScene(Scene):
             label_batch=self.label_batch,
         )
 
-        label.on_pressed = lambda button, modifiers: window.set_scene(TestScene2)
-        label.on_release = lambda button, modifiers: print("release", label, button, modifiers)
+        button.on_pressed = lambda button, modifiers: "pass"
+        button.on_release = lambda button, modifiers: window.set_scene(TestScene2)
 
         input_ = self.add_widget(
             Input,
@@ -71,7 +71,7 @@ class TestScene(Scene):
             texture_active=region_input_active,
             texture_error=region_input_error,
 
-            # 4 numéros de 1 à 3 chiffres aséparés par des points (IP), optionnellement suivi
+            # 4 numéros de 1 à 3 chiffres séparés par des points (IP), optionnellement suivi
             # de deux points ainsi que de 1 à 5 chiffres (port)
             regex=r"\d{1,3}(\.\d{1,3}){3}(:\d{1,5})?",
 
@@ -88,6 +88,9 @@ class TestScene(Scene):
 class TestScene2(Scene):
     def __init__(self, window: "Window"):
         super().__init__(window)
+
+    def on_draw(self):
+        self.window.clear()
 
 
 # Create a new window

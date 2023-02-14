@@ -142,7 +142,7 @@ class BoxWidget(Widget, ABC):
         self.activated = True  # if the click is inside the bbox, enable the activated state
         self.clicking = True  # the widget is now clicked
 
-        self.on_press(button, modifiers)
+        self.on_pressed(button, modifiers)
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         old_click: bool = self._clicking
@@ -153,7 +153,7 @@ class BoxWidget(Widget, ABC):
         # if this button was the one hovered when the click was pressed
         if old_click: self.on_release(button, modifiers)
 
-    def on_press(self, button: int, modifiers: int):
+    def on_pressed(self, button: int, modifiers: int):
         """
         This event is called when the bbox is pressed
         """
