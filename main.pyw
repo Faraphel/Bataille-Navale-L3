@@ -1,7 +1,7 @@
 import pyglet
 
 from source.gui.scene.abc import Scene
-from source.gui.widget import Text, FPSDisplay, Button
+from source.gui.widget import FPSDisplay, Button, Image, Input
 from source.gui.window import Window
 
 # Test Scene
@@ -13,30 +13,45 @@ class TestScene(Scene):
 
         # loading resource
 
-        texture_normal = pyglet.image.load("./assets/image/button/test_button_normal.png")
-        texture_hover = pyglet.image.load("./assets/image/button/test_button_hover.png")
-        texture_click = pyglet.image.load("./assets/image/button/test_button_clicking.png")
+        texture_button_normal = pyglet.image.load("./assets/image/button/normal.png")
+        texture_button_hover = pyglet.image.load("./assets/image/button/hovering.png")
+        texture_button_click = pyglet.image.load("./assets/image/button/clicking.png")
+        texture_input_normal = pyglet.image.load("./assets/image/input/inputbox.png")
+        texture_input_active = pyglet.image.load("./assets/image/input/active.png")
+        texture_input_error = pyglet.image.load("./assets/image/input/error.png")
 
-        button_atlas = pyglet.image.atlas.TextureAtlas()
-        region_normal = button_atlas.add(texture_normal)
-        region_hover = button_atlas.add(texture_hover)
-        region_click = button_atlas.add(texture_click)
+        texture_atlas = pyglet.image.atlas.TextureAtlas()
+        region_button_normal = texture_atlas.add(texture_button_normal)
+        region_button_hover = texture_atlas.add(texture_button_hover)
+        region_button_click = texture_atlas.add(texture_button_click)
+        region_input_normal = texture_atlas.add(texture_input_normal)
+        region_input_active = texture_atlas.add(texture_input_active)
+        region_input_error = texture_atlas.add(texture_input_error)
 
         self.background_batch = pyglet.graphics.Batch()
         self.label_batch = pyglet.graphics.Batch()
 
         # the widgets
 
-        self.fps_display = self.add_widget(FPSDisplay)
+        self.fps_display = self.add_widget(FPSDisplay, color=(255, 255, 255, 127))
+
+        background = self.add_widget(
+            Image,
+
+            x=0, y=0, width=1, height=1,
+
+            image=region_input_normal,
+            batch=self.background_batch,
+        )
 
         label = self.add_widget(
             Button,
 
             x=0.5, y=0.5, width=0.5, height=0.5,
 
-            texture_normal=region_normal,
-            texture_hover=region_hover,
-            texture_click=region_click,
+            texture_normal=region_button_normal,
+            texture_hover=region_button_hover,
+            texture_click=region_button_click,
 
             label_text="Hello World !",
 
@@ -44,13 +59,35 @@ class TestScene(Scene):
             label_batch=self.label_batch,
         )
 
-        label.on_pressed = lambda button, modifiers: print("pressed", label, button, modifiers)
+        label.on_pressed = lambda button, modifiers: window.set_scene(TestScene2)
         label.on_release = lambda button, modifiers: print("release", label, button, modifiers)
+
+        input_ = self.add_widget(
+            Input,
+
+            x=0.1, y=0.2, width=0.4, height=0.1,
+
+            texture_normal=region_input_normal,
+            texture_active=region_input_active,
+            texture_error=region_input_error,
+
+            # 4 numéros de 1 à 3 chiffres aséparés par des points (IP), optionnellement suivi
+            # de deux points ainsi que de 1 à 5 chiffres (port)
+            regex=r"\d{1,3}(\.\d{1,3}){3}(:\d{1,5})?",
+
+            background_batch=self.background_batch,
+            label_batch=self.label_batch,
+        )
 
     def on_draw(self):
         self.background_batch.draw()
         self.label_batch.draw()
         self.fps_display.draw()
+
+
+class TestScene2(Scene):
+    def __init__(self, window: "Window"):
+        super().__init__(window)
 
 
 # Create a new window

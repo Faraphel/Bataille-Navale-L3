@@ -29,6 +29,7 @@ class BoxWidget(Widget, ABC):
 
         self._hovering = False  # is the button currently hovered ?
         self._clicking = False  # is the button currently clicked ?
+        self._activated = False  # is the button activated ? (the last click was inside this widget)
 
     # property
 
@@ -94,6 +95,14 @@ class BoxWidget(Widget, ABC):
     def clicking(self, clicking: bool):
         self._clicking = clicking
 
+    @property
+    def activated(self):
+        return self._activated
+
+    @activated.setter
+    def activated(self, activated: bool):
+        self._activated = activated
+
     # event
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):  # NOQA
@@ -125,15 +134,19 @@ class BoxWidget(Widget, ABC):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         # if this button was the one hovered when the click was pressed
-        if not in_bbox((x, y), self.bbox): return
 
-        self.clicking = True
+        if not in_bbox((x, y), self.bbox):
+            self.activated = False  # if the click was not in the bbox, disable the activated state
+            return
+
+        self.activated = True  # if the click is inside the bbox, enable the activated state
+        self.clicking = True  # the widget is now clicked
 
         self.on_press(button, modifiers)
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         old_click: bool = self._clicking
-        self.clicking = False
+        self.clicking = False  # the widget is no longer clicked
 
         if not in_bbox((x, y), self.bbox): return
 

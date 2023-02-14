@@ -1,6 +1,7 @@
+import re
 from typing import TYPE_CHECKING, Optional
 
-import pyglet
+import pyglet.image
 
 from source.gui.sprite import Sprite
 from source.gui.widget.abc import BoxWidget
@@ -11,43 +12,39 @@ if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
 
 
-class Button(BoxWidget):
-    """
-    A button widget with a background texture that change depending on if it is clicked or hovered, and a label.
-    You can pass parameter to the background and label by adding "background_" and "label_" before the parameter.
-    """
-
+class Input(BoxWidget):
     def __init__(self, scene: "Scene",
 
                  texture_normal: pyglet.image.AbstractImage,
+                 texture_active: pyglet.image.AbstractImage = None,
+                 texture_error: pyglet.image.AbstractImage = None,
+
+                 regex: Optional[str | re.Pattern] = None,
 
                  x: Percentage = 0,
                  y: Percentage = 0,
                  width: Percentage = None,
                  height: Percentage = None,
-
-                 texture_hover: pyglet.image.AbstractImage = None,
-                 texture_click: pyglet.image.AbstractImage = None,
-
-                 **kwargs):
+                 *args, **kwargs):
         super().__init__(scene, x, y, width, height)
 
         self._texture_normal: pyglet.image.AbstractImage = texture_normal
-        self._texture_hover: Optional[pyglet.image.AbstractImage] = texture_hover
-        self._texture_click: Optional[pyglet.image.AbstractImage] = texture_click
+        self._texture_active: Optional[pyglet.image.AbstractImage] = texture_active
+        self._texture_error: Optional[pyglet.image.AbstractImage] = texture_error
+
+        self._invalid = False
+
+        self.regex = re.compile(regex) if isinstance(regex, str) else regex
 
         self.background = Sprite(
             img=self._texture_normal,
             **dict_prefix("background_", kwargs)
         )
-
         self.label = pyglet.text.Label(
             width=None, height=None,
             anchor_x="center", anchor_y="center",
             **dict_prefix("label_", kwargs)
         )
-
-        self._refresh_size()  # refresh the size and position for the background and label
 
     # background
 
@@ -61,8 +58,8 @@ class Button(BoxWidget):
         """
 
         return (
-            self._texture_click if self.clicking and self._texture_click is not None else
-            self._texture_hover if self.hovering and self._texture_hover is not None else
+            self._texture_active if self.activated and self._texture_active is not None else
+            self._texture_error if self.invalid and self._texture_error is not None else
             self._texture_normal
         )
 
@@ -79,19 +76,36 @@ class Button(BoxWidget):
         self.label.x = self.x + (self.width / 2)
         self.label.y = self.y + (self.height / 2)
 
-    @BoxWidget.hovering.setter
-    def hovering(self, hovering: bool):
-        # when the hover state is changed, update the background
-        BoxWidget.hovering.fset(self, hovering)
+    @BoxWidget.activated.setter
+    def activated(self, activated: bool) -> None:
+        BoxWidget.activated.fset(self, activated)
         self._refresh_background()
 
-    @BoxWidget.clicking.setter
-    def clicking(self, clicking: bool):
-        # when the clicking state is changed, update the background
-        BoxWidget.clicking.fset(self, clicking)
+    # property
+
+    @property
+    def invalid(self):
+        return self._invalid
+
+    @invalid.setter
+    def invalid(self, invalid: bool):
+        self._invalid = invalid
         self._refresh_background()
 
     # event
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        if not self.activated: return  # ignore si ce widget est désactivé / non sélectionné
+
+        if symbol == pyglet.window.key.BACKSPACE:  # si la touche "supprimé" est enfoncé
+            self.label.text = self.label.text[0:-1]  # retire le dernier caractère du texte
+
+    def on_text(self, char: str):
+        if not self.activated: return  # ignore si ce widget est désactivé / non sélectionné
+        self.label.text += char  # ajoute le caractère au label
+
+        if self.regex is not None:  # si il y a un regex de validation, applique le pour vérifier le texte
+            self.invalid = self.regex.fullmatch(self.label.text) is None
 
     def on_resize(self, width: int, height: int):
         self._refresh_size()
@@ -99,4 +113,3 @@ class Button(BoxWidget):
     def draw(self):
         self.background.draw()
         self.label.draw()
-
