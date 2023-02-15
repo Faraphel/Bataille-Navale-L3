@@ -1,7 +1,6 @@
 A faire :  
 Widgets:  
-- Slider   
-- Checkbox
+- Slider
 - Grille (bataille navale)
 
 
