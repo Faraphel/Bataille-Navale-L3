@@ -65,7 +65,7 @@ class Checkbox(BoxWidget):
     def on_resize(self, width: int, height: int):
         self._refresh_size()
 
-    def on_release(self, button: int, modifiers: int):
+    def on_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):
         # lorsque le bouton est enclenché, inverse son état
         self.state = not self.state
 

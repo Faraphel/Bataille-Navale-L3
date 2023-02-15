@@ -33,7 +33,7 @@ class RoomJoin(Scene):
         )
 
         from source.gui.scene import MainMenu
-        self.back.on_release = lambda button, modifiers: self.window.set_scene(MainMenu)
+        self.back.on_release = lambda *_: self.window.set_scene(MainMenu)
 
         self.entry_ip = self.add_widget(
             Input,
