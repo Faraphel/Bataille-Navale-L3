@@ -23,7 +23,7 @@ class RoomJoin(Scene):
 
         self.back = self.add_widget(
             Button,
-            x=0.02, y=0.02, width=0.2, height=0.1,
+            x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
@@ -39,7 +39,7 @@ class RoomJoin(Scene):
             Input,
             x=0.4, y=0.5, width=0.13, height=0.1,
 
-            regex=r"\d{1,3}(.\d{1,3}){3}",
+            regex=r"\d{1,3}(\.\d{1,3}){3}",
 
             texture_normal=texture_input_normal,
             texture_active=texture_input_active,

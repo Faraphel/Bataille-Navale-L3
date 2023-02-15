@@ -21,7 +21,7 @@ class MainMenu(Scene):
 
         self.background = self.add_widget(
             Image,
-            x=0, y=0, width=1, height=1,
+            x=0.0, y=0.0, width=1.0, height=1.0,
             image=texture_background
         )
 

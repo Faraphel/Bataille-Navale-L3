@@ -1,3 +1,13 @@
+A faire :  
+Widgets:  
+- Slider   
+- Checkbox
+- Grille (bataille navale)
+
+
+
+Réseau :
+
 - Connexion entre les joueurs
 - Envoie des paramètres à l'autre joueur (largeur longueur du plateau, nombre de bateau et leur taille, ...)
 - Phase de placement des bateaux

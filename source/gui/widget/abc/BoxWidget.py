@@ -2,7 +2,7 @@ from abc import ABC
 from typing import TYPE_CHECKING, Optional
 
 from source.gui.widget.abc import Widget
-from source.type import Percentage
+from source.type import Distance, Percentage
 from source.utils import in_bbox
 
 if TYPE_CHECKING:
@@ -15,10 +15,10 @@ class BoxWidget(Widget, ABC):
     """
 
     def __init__(self, scene: "Scene",
-                 x: Percentage = 0,
-                 y: Percentage = 0,
-                 width: Percentage = None,
-                 height: Percentage = None):
+                 x: Distance = 0,
+                 y: Distance = 0,
+                 width: Distance = None,
+                 height: Distance = None):
         super().__init__(scene)
 
         # memorize the value with a percent value
@@ -33,37 +33,52 @@ class BoxWidget(Widget, ABC):
 
     # property
 
+    def _getter_distance(self, max_distance: int, raw_distance: Distance) -> int:
+        """
+        Return the true distance in pixel from a more abstract distance
+        :param max_distance: the max value the distance in pixel should have
+        :param raw_distance: the distance object to convert to pixel
+        :return: the true distance in pixel
+        """
+
+        if isinstance(raw_distance, Percentage): return int(max_distance * raw_distance)
+        if isinstance(raw_distance, int): return raw_distance
+        if callable(raw_distance): return raw_distance(self)
+        if raw_distance is None: return 0
+
+        raise TypeError(f"Invalid type for the distance : {type(raw_distance)}")
+
     @property
     def x(self) -> int:
-        return self.scene.window.width * self._p_x
+        return self._getter_distance(self.scene.window.width, self._x)
 
     @x.setter
-    def x(self, x: Percentage):
-        self._p_x = x
+    def x(self, x: Distance):
+        self._x = x
 
     @property
     def y(self) -> int:
-        return self.scene.window.height * self._p_y
+        return self._getter_distance(self.scene.window.height, self._y)
 
     @y.setter
-    def y(self, y: Percentage):
-        self._p_y = y
+    def y(self, y: Distance):
+        self._y = y
 
     @property
     def width(self) -> int:
-        return 0 if self._p_width is None else self.scene.window.width * self._p_width
+        return self._getter_distance(self.scene.window.width, self._width)
 
     @width.setter
-    def width(self, width: Optional[Percentage]):
-        self._p_width = width
+    def width(self, width: Optional[Distance]):
+        self._width = width
 
     @property
     def height(self) -> int:
-        return 0 if self._p_height is None else self.scene.window.height * self._p_height
+        return self._getter_distance(self.scene.window.height, self._height)
 
     @height.setter
-    def height(self, height: Optional[Percentage]):
-        self._p_height = height
+    def height(self, height: Optional[Distance]):
+        self._height = height
 
     @property
     def xy(self) -> tuple[int, int]:

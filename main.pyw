@@ -95,7 +95,7 @@ class TestScene2(Scene):
 
 
 # Create a new window
-window = Window(resizable=True, vsync=False)
+window = Window(resizable=True, vsync=True)
 window.add_scene(MainMenu)
 
 # Start the event loop
