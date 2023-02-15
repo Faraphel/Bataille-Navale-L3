@@ -4,8 +4,7 @@ import pyglet.image
 
 from source.gui.sprite import Sprite
 from source.gui.widget.abc import BoxWidget
-from source.type import Percentage
-
+from source.type import Distance
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
@@ -16,10 +15,10 @@ class Image(BoxWidget):
 
                  image: pyglet.image.AbstractImage,
 
-                 x: Percentage = 0,
-                 y: Percentage = 0,
-                 width: Percentage = None,
-                 height: Percentage = None,
+                 x: Distance = 0,
+                 y: Distance = 0,
+                 width: Distance = None,
+                 height: Distance = None,
                  *args, **kwargs):
         super().__init__(scene, x, y, width, height)
 

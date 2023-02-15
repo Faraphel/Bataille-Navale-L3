@@ -5,7 +5,7 @@ import pyglet.image
 
 from source.gui.sprite import Sprite
 from source.gui.widget.abc import BoxWidget
-from source.type import Percentage
+from source.type import Distance
 from source.utils import dict_prefix
 
 if TYPE_CHECKING:
@@ -21,10 +21,10 @@ class Input(BoxWidget):
 
                  regex: Optional[str | re.Pattern] = None,
 
-                 x: Percentage = 0,
-                 y: Percentage = 0,
-                 width: Percentage = None,
-                 height: Percentage = None,
+                 x: Distance = 0,
+                 y: Distance = 0,
+                 width: Distance = None,
+                 height: Distance = None,
                  *args, **kwargs):
         super().__init__(scene, x, y, width, height)
 

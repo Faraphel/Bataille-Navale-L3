@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pyglet
 
 if TYPE_CHECKING:
-    from source.gui.scene import Scene
+    from source.gui.scene.abc import Scene
 
 
 class FPSDisplay(Widget):

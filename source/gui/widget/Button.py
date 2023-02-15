@@ -4,7 +4,7 @@ import pyglet
 
 from source.gui.sprite import Sprite
 from source.gui.widget.abc import BoxWidget
-from source.type import Percentage
+from source.type import Distance
 from source.utils import dict_prefix
 
 if TYPE_CHECKING:
@@ -21,10 +21,10 @@ class Button(BoxWidget):
 
                  texture_normal: pyglet.image.AbstractImage,
 
-                 x: Percentage = 0,
-                 y: Percentage = 0,
-                 width: Percentage = None,
-                 height: Percentage = None,
+                 x: Distance = 0,
+                 y: Distance = 0,
+                 width: Distance = None,
+                 height: Distance = None,
 
                  texture_hover: pyglet.image.AbstractImage = None,
                  texture_click: pyglet.image.AbstractImage = None,

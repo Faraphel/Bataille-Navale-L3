@@ -25,7 +25,7 @@ class RoomCreate(Scene):
 
         self.back = self.add_widget(
             Button,
-            x=0.02, y=0.02, width=0.2, height=0.1,
+            x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
