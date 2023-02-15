@@ -19,10 +19,11 @@ class Image(BoxWidget):
                  y: Distance = 0,
                  width: Distance = None,
                  height: Distance = None,
-                 *args, **kwargs):
+
+                 **kwargs):
         super().__init__(scene, x, y, width, height)
 
-        self.image = Sprite(img=image, *args, **kwargs)
+        self.image = Sprite(img=image, **kwargs)
 
         self._refresh_size()
 

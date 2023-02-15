@@ -1,10 +1,9 @@
 A faire :  
 Widgets:  
-- Slider
 - Grille (bataille navale)
-
-
-
+  
+  
+  
 Réseau :
 
 - Connexion entre les joueurs

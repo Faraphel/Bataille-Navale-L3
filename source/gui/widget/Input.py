@@ -25,7 +25,8 @@ class Input(BoxWidget):
                  y: Distance = 0,
                  width: Distance = None,
                  height: Distance = None,
-                 *args, **kwargs):
+
+                 **kwargs):
         super().__init__(scene, x, y, width, height)
 
         self._texture_normal: pyglet.image.AbstractImage = texture_normal

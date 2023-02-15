@@ -16,16 +16,16 @@ class Text(BoxWidget):
     """
 
     def __init__(self, scene: "Scene",
+
                  x: Distance = 0,
                  y: Distance = 0,
                  width: Distance = None,
                  height: Distance = None,
-                 *args, **kwargs):
+
+                 **kwargs):
         super().__init__(scene, x, y, width, height)
 
-        self.label = pyglet.text.Label(
-            *args, **kwargs
-        )
+        self.label = pyglet.text.Label(**kwargs)
 
         self._refresh_size()
 

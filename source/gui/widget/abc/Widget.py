@@ -12,7 +12,7 @@ class Widget(ABC):
     It can react to any "on_" event from the scene.
     """
 
-    def __init__(self, scene: "Scene", *args, **kwargs):
+    def __init__(self, scene: "Scene", **kwargs):
         self.scene = scene
 
     @abstractmethod

@@ -21,7 +21,7 @@ class Scene(ABC):
 
     # Widget Managing
 
-    def add_widget(self, widget_class: Type["Widget"], *widget_args, **widget_kwargs) -> "Widget":
+    def add_widget(self, widget_class: Type["Widget"], **widget_kwargs) -> "Widget":
         """
         Add a widget to the scene.
         :widget_class: the class of the widget to add.
@@ -30,7 +30,7 @@ class Scene(ABC):
         :return: the new created widget.
         """
 
-        widget: "Widget" = widget_class(self, *widget_args, **widget_kwargs)
+        widget: "Widget" = widget_class(self, **widget_kwargs)
         self._widgets.add(widget)
         return widget
 
