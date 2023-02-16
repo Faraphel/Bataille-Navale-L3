@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pyglet
 
 from source.gui.scene.abc import Scene
-from source.gui.widget import Checkbox, Scroller, Button
+from source.gui.widget import Checkbox, Scroller, Button, GameGrid
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -22,6 +22,8 @@ class Settings(Scene):
         texture_button_normal = pyglet.image.load("./assets/image/button/normal.png")
         texture_button_hover = pyglet.image.load("./assets/image/button/hovering.png")
         texture_button_click = pyglet.image.load("./assets/image/button/clicking.png")
+
+        texture_grid_background = pyglet.image.load("./assets/image/grid/background.png")
 
         self.back = self.add_widget(
             Button,
@@ -57,7 +59,17 @@ class Settings(Scene):
             text_transform=lambda value: round(value, 2),
         )
 
+        self.grid = self.add_widget(
+            GameGrid,
+
+            x=0.5, y=0.5, width=0.4, height=0.4,
+
+            rows=10, columns=5,
+            texture_background=texture_grid_background,
+        )
+
     def on_draw(self):
         self.checkbox.draw()
         self.scroller.draw()
         self.back.draw()
+        self.grid.draw()

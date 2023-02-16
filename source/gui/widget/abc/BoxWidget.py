@@ -133,16 +133,26 @@ class BoxWidget(Widget, ABC):
         old_hovering = self.hovering
         self.hovering = in_bbox((x, y), self.bbox)
 
-        if old_hovering != self.hovering:  # if the hover changed
-            if self.hovering: self.on_hover_enter()  # call the hover enter event
-            else: self.on_hover_leave()  # call the hover leave event
+        rel_x, rel_y = x - self.x, y - self.y
 
-    def on_hover_enter(self):
+        if old_hovering != self.hovering:  # if the hover changed
+            if self.hovering: self.on_hover_enter(rel_x, rel_y)  # call the hover enter event
+            else: self.on_hover_leave(rel_x, rel_y)  # call the hover leave event
+
+        if self.hovering:  # if the mouse motion is inside the collision
+            self.on_hover(rel_x, rel_y)  # call the hover event
+
+    def on_hover(self, rel_x: int, rel_y: int):
+        """
+        This event is called when the mouse move in the bbox of the widget
+        """
+
+    def on_hover_enter(self, rel_x: int, rel_y: int):
         """
         This event is called when the mouse enter the bbox of the widget
         """
 
-    def on_hover_leave(self):
+    def on_hover_leave(self, rel_x: int, rel_y: int):
         """
         This event is called when the mouse leave the bbox of the widget
         """

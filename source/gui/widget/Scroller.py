@@ -26,7 +26,7 @@ class Scroller(BoxWidget):
                  value: float = 0.5,
                  to: float = 1,
 
-                 cursor_width: Percentage = 0.1,
+                 cursor_width: Distance = 0.1,
                  text_transform: Callable[[float], Any] = lambda value: value,
 
                  **kwargs):
