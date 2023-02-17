@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
+from source import network
 from source.gui.scene.abc import Scene
 from source.gui.widget import Input, Button
 
@@ -67,6 +68,12 @@ class RoomJoin(Scene):
             texture_hover=texture_button_hover,
             texture_click=texture_button_click
         )
+
+        self.connect.on_release = lambda *_: network.Client(
+            window=self.window,
+            ip_address=self.entry_ip.text,
+            daemon=True
+        ).start()
 
     def on_draw(self):
         self.back.draw()

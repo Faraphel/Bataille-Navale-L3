@@ -4,7 +4,7 @@ import pyglet.image
 
 from source.gui.sprite import Sprite
 from source.gui.widget.abc import BoxWidget
-from source.type import Distance, Percentage
+from source.type import Distance
 from source.utils import dict_prefix
 
 if TYPE_CHECKING:
@@ -56,8 +56,8 @@ class Scroller(BoxWidget):
 
     def _refresh(self):
         # background
-        self.background.x, self.background.y = self.x, self.y
-        self.background.width, self.background.height = self.width, self.height
+        self.background.x, self.background.y = self.xy
+        self.background.width, self.background.height = self.size
 
         # cursor
         self.cursor.width = self.width * self.cursor_width

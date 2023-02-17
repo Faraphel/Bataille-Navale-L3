@@ -72,8 +72,8 @@ class Button(BoxWidget):
         self.background.image = self.background_texture
 
     def _refresh_size(self) -> None:
-        self.background.x, self.background.y = self.x, self.y
-        self.background.width, self.background.height = self.width, self.height
+        self.background.x, self.background.y = self.xy
+        self.background.width, self.background.height = self.size
 
         # center the label
         self.label.x = self.x + (self.width / 2)

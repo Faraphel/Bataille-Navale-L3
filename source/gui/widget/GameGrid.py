@@ -5,7 +5,7 @@ import pyglet.shapes
 from source.gui.sprite import Sprite
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
-
+from source.utils import dict_prefix
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
@@ -19,8 +19,6 @@ class GameGrid(BoxWidget):
 
                  texture_background: pyglet.image.AbstractImage,
 
-                 line_width: int = 2,
-
                  x: Distance = 0,
                  y: Distance = 0,
                  width: Distance = None,
@@ -32,14 +30,24 @@ class GameGrid(BoxWidget):
         self._rows = rows
         self._columns = columns
 
-        self.background = Sprite(img=texture_background)
+        self.background = Sprite(
+            img=texture_background,
+            **dict_prefix("background_", kwargs)
+        )
 
         self.lines: list[pyglet.shapes.Line] = [
-            pyglet.shapes.Line(0, 0, 0, 0, width=line_width)
+            pyglet.shapes.Line(
+                0, 0, 0, 0,
+                **dict_prefix("line_", kwargs)
+            )
             for _ in range((self._columns - 1) + (self._rows - 1))
         ]
 
-        self.cursor = pyglet.shapes.Rectangle(0, 0, 0, 0, color=(0, 0, 0, 100))
+        self.cursor = pyglet.shapes.Rectangle(
+            0, 0, 0, 0,
+            color=(0, 0, 0, 100),
+            **dict_prefix("cursor_", kwargs)
+        )
 
         self._refresh_size()
 
@@ -53,8 +61,8 @@ class GameGrid(BoxWidget):
     # refresh
 
     def _refresh_size(self):
-        self.background.x, self.background.y = self.x, self.y
-        self.background.width, self.background.height = self.width, self.height
+        self.background.x, self.background.y = self.xy
+        self.background.width, self.background.height = self.size
 
         for column, line in enumerate(self.lines[:self._columns-1], start=1):
             line.x = self.x + self.cell_width * column

@@ -30,7 +30,7 @@ class Image(BoxWidget):
     # refresh
 
     def _refresh_size(self):
-        self.image.width, self.image.height = self.width, self.height
+        self.image.width, self.image.height = self.size
 
     # event
 

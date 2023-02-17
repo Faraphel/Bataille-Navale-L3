@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import pyglet
 import requests
 
+from source import network
 from source.gui.scene.abc import Scene
 from source.gui.widget import Text, Button
 
@@ -17,7 +18,7 @@ class RoomCreate(Scene):
         r = requests.get('https://api.ipify.org')
         r.raise_for_status()
         ip_address: str = r.content.decode('utf8')
-        port: str = "6464"
+        port: int = 52321
 
         texture_button_normal = pyglet.image.load("./assets/image/button/normal.png")
         texture_button_hover = pyglet.image.load("./assets/image/button/hovering.png")
@@ -51,6 +52,9 @@ class RoomCreate(Scene):
             anchor_x="center", anchor_y="center",
             text="En attente d'un second joueur..."
         )
+
+        self.thread = network.Host(window=self.window, daemon=True)
+        self.thread.start()
 
     def on_draw(self):
         self.back.draw()

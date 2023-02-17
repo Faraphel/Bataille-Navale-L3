@@ -46,8 +46,8 @@ class Checkbox(BoxWidget):
         self.tick.image = self.tick_texture
 
     def _refresh_size(self):
-        self.tick.x, self.tick.y = self.x, self.y
-        self.tick.width, self.tick.height = self.width, self.height
+        self.tick.x, self.tick.y = self.xy
+        self.tick.width, self.tick.height = self.size
 
     # property
 

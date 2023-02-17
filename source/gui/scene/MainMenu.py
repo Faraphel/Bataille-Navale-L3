@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
-from source.gui.scene import RoomJoin, RoomCreate, Settings
+from source.gui.scene import RoomJoin, RoomCreate, Settings, Game
 from source.gui.scene.abc import Scene
 from source.gui.widget import Image, Text, Button
 from source.gui.widget.debug import FPSDisplay
@@ -76,7 +76,8 @@ class MainMenu(Scene):
             texture_click=texture_button_click
         )
 
-        self.settings.on_release = lambda *_: self.window.set_scene(Settings)
+        # self.settings.on_release = lambda *_: self.window.set_scene(Settings)
+        self.settings.on_release = lambda *_: self.window.set_scene(Game)
 
         self.fps_display = self.add_widget(FPSDisplay, color=(255, 255, 255, 180))
 
