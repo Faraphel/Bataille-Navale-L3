@@ -4,7 +4,7 @@ import pyglet
 
 from source import network
 from source.gui.scene.abc import Scene
-from source.gui.widget import Input, Button
+from source.gui import widget
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -23,7 +23,7 @@ class RoomJoin(Scene):
         texture_input_error = pyglet.image.load("./assets/image/input/error.png")
 
         self.back = self.add_widget(
-            Button,
+            widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
@@ -37,7 +37,7 @@ class RoomJoin(Scene):
         self.back.on_release = lambda *_: self.window.set_scene(MainMenu)
 
         self.entry_ip = self.add_widget(
-            Input,
+            widget.Input,
             x=0.4, y=0.5, width=0.13, height=0.1,
 
             regex=r"\d{1,3}(\.\d{1,3}){3}",
@@ -48,7 +48,7 @@ class RoomJoin(Scene):
         )
 
         self.entry_port = self.add_widget(
-            Input,
+            widget.Input,
             x=0.53, y=0.5, width=0.07, height=0.1,
 
             regex=r"\d{0,5}",
@@ -59,7 +59,7 @@ class RoomJoin(Scene):
         )
 
         self.connect = self.add_widget(
-            Button,
+            widget.Button,
             x=0.4, y=0.4, width=0.2, height=0.1,
 
             label_text="Se connecter",
@@ -72,7 +72,8 @@ class RoomJoin(Scene):
         self.connect.on_release = lambda *_: network.Client(
             window=self.window,
             ip_address=self.entry_ip.text,
-            daemon=True
+            daemon=True,
+            username="Client"
         ).start()
 
     def on_draw(self):

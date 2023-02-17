@@ -1,6 +1,6 @@
 import numpy as np
 
-from source.core.Boat import Boat
+from source.core import Boat
 from source.core.enums import Orientation, BombState
 from source.core.error import InvalidBoatPosition, PositionAlreadyShot, InvalidBombPosition
 from source.type import Point2D
@@ -8,27 +8,27 @@ from source.utils import copy_array_offset
 
 
 class Board:
-    __slots__ = ("_width", "_height", "_boats", "_bombs")
+    __slots__ = ("_columns", "_rows", "_boats", "_bombs")
 
     def __init__(
             self,
-            width: int,
-            height: int = None,
+            rows: int,
+            columns: int = None,
             boats: dict[Boat, Point2D] = None,
             bombs: np.array = None
     ) -> None:
 
-        self._width: int = width
-        self._height: int = width if height is None else height
+        self._rows: int = rows
+        self._columns: int = rows if columns is None else columns
 
         # associate the boats to their position
         self._boats: dict[Boat, Point2D] = {} if boats is None else boats
 
         # position that have been shot by a bomb
-        self._bombs: np.array = np.ones((self._width, self._height), dtype=np.bool_) if bombs is None else bombs
+        self._bombs: np.array = np.ones((self._columns, self._rows), dtype=np.bool_) if bombs is None else bombs
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} width={self._width}, height={self._height}>"
+        return f"<{self.__class__.__name__} width={self._columns}, height={self._rows}>"
 
     def __str__(self) -> str:
         return str(self.get_matrice())
@@ -78,7 +78,7 @@ class Board:
 
         # if the bomb is inside the board
         x, y = position
-        if x >= self._width or y >= self._height: raise InvalidBombPosition(position)
+        if x >= self._columns or y >= self._rows: raise InvalidBombPosition(position)
 
         # if this position have already been shot
         if not self._bombs[position]: raise PositionAlreadyShot(position)
@@ -113,7 +113,7 @@ class Board:
         """
         :return: the boat represented as a matrice
         """
-        board = np.zeros((self._width, self._height), dtype=np.ushort)
+        board = np.zeros((self._columns, self._rows), dtype=np.ushort)
 
         for index, (boat, position) in enumerate(self._boats.items(), start=1):
             # Paste the boat into the board at the correct position.
@@ -126,8 +126,8 @@ class Board:
 
     def to_json(self) -> dict:
         return {
-            "width": self._width,
-            "height": self._height,
+            "columns": self._columns,
+            "rows": self._rows,
             "boats": [[boat.to_json(), position] for boat, position in self._boats.items()],
             "bombs": self._bombs.tolist()
         }
@@ -135,8 +135,8 @@ class Board:
     @classmethod
     def from_json(cls, json_: dict) -> "Board":
         return Board(
-            width=json_["width"],
-            height=json_["height"],
+            rows=json_["columns"],
+            columns=json_["rows"],
             boats={Boat.from_json(boat_json): tuple(position) for boat_json, position in json_["boats"]},
             bombs=np.array(json_["bombs"], dtype=np.bool_)
         )

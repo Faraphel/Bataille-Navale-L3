@@ -2,9 +2,8 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
-from source.gui.scene import RoomJoin, RoomCreate, Settings, Game
 from source.gui.scene.abc import Scene
-from source.gui.widget import Image, Text, Button
+from source.gui import widget, scene
 from source.gui.widget.debug import FPSDisplay
 
 if TYPE_CHECKING:
@@ -21,20 +20,20 @@ class MainMenu(Scene):
         texture_button_click = pyglet.image.load("./assets/image/button/clicking.png")
 
         self.background = self.add_widget(
-            Image,
+            widget.Image,
             x=0.0, y=0.0, width=1.0, height=1.0,
             image=texture_background
         )
 
         self.title = self.add_widget(
-            Text,
+            widget.Text,
             x=50, y=0.85,
             text="Bataille Navale",
             font_size=50
         )
 
         self.game_create = self.add_widget(
-            Button,
+            widget.Button,
 
             x=50, y=0.45, width=0.3, height=0.1,
 
@@ -46,10 +45,10 @@ class MainMenu(Scene):
             texture_click=texture_button_click
         )
 
-        self.game_create.on_release = lambda *_: self.window.set_scene(RoomCreate)
+        self.game_create.on_release = lambda *_: self.window.set_scene(scene.RoomCreate)
 
         self.game_join = self.add_widget(
-            Button,
+            widget.Button,
 
             x=50, y=0.3, width=0.3, height=0.1,
 
@@ -61,10 +60,10 @@ class MainMenu(Scene):
             texture_click=texture_button_click
         )
 
-        self.game_join.on_release = lambda *_: self.window.set_scene(RoomJoin)
+        self.game_join.on_release = lambda *_: self.window.set_scene(scene.RoomJoin)
 
         self.settings = self.add_widget(
-            Button,
+            widget.Button,
 
             x=50, y=0.15, width=0.3, height=0.1,
 
@@ -76,8 +75,7 @@ class MainMenu(Scene):
             texture_click=texture_button_click
         )
 
-        # self.settings.on_release = lambda *_: self.window.set_scene(Settings)
-        self.settings.on_release = lambda *_: self.window.set_scene(Game)
+        self.settings.on_release = lambda *_: self.window.set_scene(scene.Settings)
 
         self.fps_display = self.add_widget(FPSDisplay, color=(255, 255, 255, 180))
 

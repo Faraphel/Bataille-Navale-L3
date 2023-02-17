@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pyglet
 
 from source.gui.scene.abc import Scene
-from source.gui.widget import Checkbox, Scroller, Button, GameGrid
+from source.gui import widget
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -26,7 +26,7 @@ class Settings(Scene):
         texture_grid_background = pyglet.image.load("./assets/image/grid/background.png")
 
         self.back = self.add_widget(
-            Button,
+            widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
@@ -40,7 +40,7 @@ class Settings(Scene):
         self.back.on_release = lambda *_: self.window.set_scene(MainMenu)
 
         self.checkbox = self.add_widget(
-            Checkbox,
+            widget.Checkbox,
 
             x=0.45, y=0.45, width=0.1, height=0.1,
 
@@ -49,7 +49,7 @@ class Settings(Scene):
         )
 
         self.scroller = self.add_widget(
-            Scroller,
+            widget.Scroller,
 
             x=0.3, y=0.2, width=0.3, height=0.1,
 
@@ -59,17 +59,7 @@ class Settings(Scene):
             text_transform=lambda value: round(value, 2),
         )
 
-        self.grid = self.add_widget(
-            GameGrid,
-
-            x=0.5, y=0.5, width=0.4, height=0.4,
-
-            rows=10, columns=5,
-            texture_background=texture_grid_background,
-        )
-
     def on_draw(self):
         self.checkbox.draw()
         self.scroller.draw()
         self.back.draw()
-        self.grid.draw()

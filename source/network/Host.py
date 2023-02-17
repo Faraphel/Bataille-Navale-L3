@@ -1,16 +1,22 @@
 import socket
 from threading import Thread
+from typing import TYPE_CHECKING
 
 import pyglet
 
-from source.gui.scene import Game
+from source.gui import scene
+
+
+if TYPE_CHECKING:
+    from source.gui.window import Window
 
 
 class Host(Thread):
-    def __init__(self, window: "Window", port: int = 52321, **kw):
+    def __init__(self, window: "Window", username: str, port: int = 52321, **kw):
         super().__init__(**kw)
 
         self.window = window
+        self.username = username
         self.port = port
 
     def run(self) -> None:
@@ -23,4 +29,6 @@ class Host(Thread):
 
             print(f"[Serveur] Connecté avec {address}")
 
-            pyglet.clock.schedule_once(lambda dt: self.window.set_scene(Game), 0)
+            pyglet.clock.schedule_once(lambda dt: self.window.set_scene(scene.Game), 0)
+
+
