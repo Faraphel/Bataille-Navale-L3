@@ -1,6 +1,8 @@
 import socket
 from threading import Thread
 
+import pyglet.clock
+
 from source.gui.scene import Game
 
 
@@ -20,4 +22,5 @@ class Client(Thread):
 
             print(f"[Client] Connecté avec {s}")
 
-            self.window.set_scene(Game)
+            pyglet.clock.schedule_once(lambda dt: self.window.set_scene(Game), 0)
+

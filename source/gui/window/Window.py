@@ -72,7 +72,7 @@ class Window(pyglet.window.Window):  # NOQA
     def _event_wrapper(self, item: str) -> Callable:
         """
         Un wrapper permettant d'appeler l'événement de toutes les scènes attachées.
-        :param name: nom de la fonction à appeler dans la scène.
+        :param item: nom de la fonction à appeler dans la scène.
         :return: une fonction appelant l'événement original ainsi que ceux des scènes.
         """
 
