@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
+from source.event import Listener
+
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
 
 
-class Widget(ABC):
+class Widget(Listener, ABC):
     """
     A Widget that can be attached to a scene.
 
@@ -13,6 +15,8 @@ class Widget(ABC):
     """
 
     def __init__(self, scene: "Scene", **kwargs):
+        super().__init__()
+
         self.scene = scene
 
     @abstractmethod

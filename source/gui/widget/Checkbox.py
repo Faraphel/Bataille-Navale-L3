@@ -34,6 +34,8 @@ class Checkbox(BoxWidget):
 
         self.state = state
 
+        self.add_listener("on_click_release", lambda *_: self.swap_state())
+
         self._refresh_size()
 
     # refreshing
@@ -60,14 +62,13 @@ class Checkbox(BoxWidget):
         self._state = state
         self._refresh_tick()
 
+    def swap_state(self):
+        self.state = not self.state  # inverse l'état
+
     # event
 
     def on_resize(self, width: int, height: int):
         self._refresh_size()
-
-    def on_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):
-        # lorsque le bouton est enclenché, inverse son état
-        self.state = not self.state
 
     def draw(self):
         self.tick.draw()

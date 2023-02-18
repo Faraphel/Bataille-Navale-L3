@@ -49,6 +49,11 @@ class GameGrid(BoxWidget):
             **dict_prefix("cursor_", kwargs)
         )
 
+        self.add_listener("on_hover_leave", lambda *_: self.hide_cursor())
+        self.add_listener("on_hover", self._refresh_cursor)
+        self.add_listener("on_click_release",
+                          lambda rel_x, rel_y, *_: print("click", self.get_cell_from_rel(rel_x, rel_y)))
+
         self._refresh_size()
 
     def get_cell_from_rel(self, rel_x: int, rel_y: int) -> tuple[int, int]:
@@ -68,13 +73,23 @@ class GameGrid(BoxWidget):
             line.x = self.x + self.cell_width * column
             line.x2 = line.x
             line.y = self.y
-            line.y2 = self.y + self.height
+            line.y2 = self.y2
 
         for row, line in enumerate(self.lines[-self._rows+1:], start=1):
             line.x = self.x
-            line.x2 = self.x + self.width
+            line.x2 = self.x2
             line.y = self.y + self.cell_height * row
             line.y2 = line.y
+
+    def _refresh_cursor(self, rel_x: int, rel_y: int):
+        cell_x, cell_y = self.get_cell_from_rel(rel_x, rel_y)
+
+        self.cursor.x = self.x + cell_x * self.width / self._columns
+        self.cursor.y = self.y + cell_y * self.height / self._rows
+        self.cursor.width, self.cursor.height = self.cell_size
+
+    def hide_cursor(self):
+        self.cursor.width, self.cursor.height = 0, 0
 
     # property
 
@@ -91,19 +106,6 @@ class GameGrid(BoxWidget):
         return self.cell_width, self.cell_height
 
     # event
-
-    def on_hover(self, rel_x: int, rel_y: int):
-        cell_x, cell_y = self.get_cell_from_rel(rel_x, rel_y)
-
-        self.cursor.x = self.x + cell_x * self.width / self._columns
-        self.cursor.y = self.y + cell_y * self.height / self._rows
-        self.cursor.width, self.cursor.height = self.cell_size
-
-    def on_hover_leave(self, rel_x: int, rel_y: int):
-        self.cursor.width, self.cursor.height = 0, 0
-
-    def on_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):
-        print("click", (rel_x, rel_y), self.get_cell_from_rel(rel_x, rel_y))
 
     def on_resize(self, width: int, height: int):
         self._refresh_size()

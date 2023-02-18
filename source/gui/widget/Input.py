@@ -47,6 +47,8 @@ class Input(BoxWidget):
             **dict_prefix("label_", kwargs)
         )
 
+        self.add_listener("on_activate_change", lambda *_: self._refresh_background())
+
         self._refresh_size()
 
     # background
@@ -76,13 +78,7 @@ class Input(BoxWidget):
         self.background.width, self.background.height = self.size
 
         # center the label
-        self.label.x = self.x + (self.width / 2)
-        self.label.y = self.y + (self.height / 2)
-
-    @BoxWidget.activated.setter
-    def activated(self, activated: bool) -> None:
-        BoxWidget.activated.fset(self, activated)
-        self._refresh_background()
+        self.label.x, self.label.y = self.center
 
     # property
 

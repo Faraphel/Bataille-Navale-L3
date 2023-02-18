@@ -37,7 +37,7 @@ class Settings(Scene):
         )
 
         from source.gui.scene import MainMenu
-        self.back.on_release = lambda *_: self.window.set_scene(MainMenu)
+        self.back.add_listener("on_click_release", lambda *_: self.window.set_scene(MainMenu))
 
         self.checkbox = self.add_widget(
             widget.Checkbox,

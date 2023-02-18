@@ -36,7 +36,7 @@ class RoomCreate(Scene):
         )
 
         from source.gui.scene import MainMenu
-        self.back.on_release = lambda *_: self.window.set_scene(MainMenu)
+        self.back.add_listener("on_click_release", lambda *_: self.window.set_scene(MainMenu))
 
         self.label_ip = self.add_widget(
             widget.Text,

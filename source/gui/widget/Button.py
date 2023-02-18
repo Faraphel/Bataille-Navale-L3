@@ -47,6 +47,9 @@ class Button(BoxWidget):
             **dict_prefix("label_", kwargs)
         )
 
+        self.add_listener("on_hover_change", lambda *_: self._refresh_background())
+        self.add_listener("on_click_change", lambda *_: self._refresh_background())
+
         self._refresh_size()  # refresh the size and position for the background and label
 
     # background
@@ -76,20 +79,7 @@ class Button(BoxWidget):
         self.background.width, self.background.height = self.size
 
         # center the label
-        self.label.x = self.x + (self.width / 2)
-        self.label.y = self.y + (self.height / 2)
-
-    @BoxWidget.hovering.setter
-    def hovering(self, hovering: bool):
-        # when the hover state is changed, update the background
-        BoxWidget.hovering.fset(self, hovering)
-        self._refresh_background()
-
-    @BoxWidget.clicking.setter
-    def clicking(self, clicking: bool):
-        # when the clicking state is changed, update the background
-        BoxWidget.clicking.fset(self, clicking)
-        self._refresh_background()
+        self.label.x, self.label.y = self.center
 
     # event
 

@@ -27,9 +27,9 @@ class BoxWidget(Widget, ABC):
         self.width = width
         self.height = height
 
-        self._hovering = False  # is the button currently hovered ?
-        self._clicking = False  # is the button currently clicked ?
-        self._activated = False  # is the button activated ? (the last click was inside this widget)
+        self.hovering = False  # is the button currently hovered ?
+        self.clicking = False  # is the button currently clicked ?
+        self.activated = False  # is the button activated ? (the last click was inside this widget)
 
     # property
 
@@ -65,6 +65,22 @@ class BoxWidget(Widget, ABC):
         self._y = y
 
     @property
+    def xy(self) -> tuple[int, int]:
+        return self.x, self.y
+
+    @property
+    def x2(self) -> int:
+        return self.x + self.width
+
+    @property
+    def y2(self) -> int:
+        return self.y + self.height
+
+    @property
+    def xy2(self) -> tuple[int, int]:
+        return self.x2, self.y2
+
+    @property
     def width(self) -> int:
         return self._getter_distance(self.scene.window.width, self._width)
 
@@ -81,46 +97,28 @@ class BoxWidget(Widget, ABC):
         self._height = height
 
     @property
-    def xy(self) -> tuple[int, int]:
-        return self.x, self.y
-
-    @property
     def size(self) -> tuple[int, int]:
         return self.width, self.height
 
     @property
     def bbox(self) -> tuple[int, int, int, int]:
-        return self.x, self.y, self.x + self.width, self.y + self.height
-
-    # property that can be used to add event when these value are modified in some specific widget.
+        return self.x, self.y, self.x2, self.y2
 
     @property
-    def hovering(self):
-        return self._hovering
-
-    @hovering.setter
-    def hovering(self, hovering: bool):
-        self._hovering = hovering
+    def center_x(self) -> float:
+        return self.x + (self.width / 2)
 
     @property
-    def clicking(self):
-        return self._clicking
-
-    @clicking.setter
-    def clicking(self, clicking: bool):
-        self._clicking = clicking
+    def center_y(self) -> float:
+        return self.y + (self.height / 2)
 
     @property
-    def activated(self):
-        return self._activated
-
-    @activated.setter
-    def activated(self, activated: bool):
-        self._activated = activated
+    def center(self) -> tuple[float, float]:
+        return self.center_x, self.center_y
 
     # event
 
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):  # NOQA
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         """
         When the mouse is moved, this event is triggered.
         Allow the implementation of the on_hover_enter and on_hover_leave events
@@ -130,60 +128,44 @@ class BoxWidget(Widget, ABC):
         :dy: the difference of the y mouse axis
         """
 
+        rel_x, rel_y = x - self.x, y - self.y
+
         old_hovering = self.hovering
         self.hovering = in_bbox((x, y), self.bbox)
 
-        rel_x, rel_y = x - self.x, y - self.y
-
         if old_hovering != self.hovering:  # if the hover changed
-            if self.hovering: self.on_hover_enter(rel_x, rel_y)  # call the hover enter event
-            else: self.on_hover_leave(rel_x, rel_y)  # call the hover leave event
+            # call the hover changed event
+            self.trigger_event("on_hover_change", rel_x, rel_y)
+            # call the hover enter / leave event
+            self.trigger_event("on_hover_enter" if self.hovering else "on_hover_leave", rel_x, rel_y)
 
         if self.hovering:  # if the mouse motion is inside the collision
-            self.on_hover(rel_x, rel_y)  # call the hover event
-
-    def on_hover(self, rel_x: int, rel_y: int):
-        """
-        This event is called when the mouse move in the bbox of the widget
-        """
-
-    def on_hover_enter(self, rel_x: int, rel_y: int):
-        """
-        This event is called when the mouse enter the bbox of the widget
-        """
-
-    def on_hover_leave(self, rel_x: int, rel_y: int):
-        """
-        This event is called when the mouse leave the bbox of the widget
-        """
+            self.trigger_event("on_hover", rel_x, rel_y)  # call the hover event
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        # if this button was the one hovered when the click was pressed
+        rel_x, rel_y = x - self.x, y - self.y
 
-        if not in_bbox((x, y), self.bbox):
-            self.activated = False  # if the click was not in the bbox, disable the activated state
-            return
+        self.activated = in_bbox((x, y), self.bbox)
+        self.trigger_event("on_activate_change", rel_x, rel_y, button, modifiers)
 
-        self.activated = True  # if the click is inside the bbox, enable the activated state
-        self.clicking = True  # the widget is now clicked
+        if self.activated:  # if the click was inside the widget
+            self.trigger_event("on_activate_enter", rel_x, rel_y, button, modifiers)
 
-        self.on_pressed(x - self.x, y - self.y, button, modifiers)
+            self.clicking = True  # the widget is also now clicked
+            self.trigger_event("on_click_change", rel_x, rel_y, button, modifiers)
+            self.trigger_event("on_click_press", rel_x, rel_y, button, modifiers)
+
+        else:
+            self.trigger_event("on_activate_leave", rel_x, rel_y, button, modifiers)
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
-        old_click: bool = self._clicking
+        rel_x, rel_y = x - self.x, y - self.y
+
+        old_click: bool = self.clicking
         self.clicking = False  # the widget is no longer clicked
 
-        if not in_bbox((x, y), self.bbox): return
+        if not in_bbox((x, y), self.bbox): return  # if the release was not in the collision, ignore
 
-        # if this button was the one hovered when the click was pressed
-        if old_click: self.on_release(x - self.x, y - self.y, button, modifiers)
-
-    def on_pressed(self, rel_x: int, rel_y: int, button: int, modifiers: int):
-        """
-        This event is called when the bbox is pressed
-        """
-
-    def on_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):
-        """
-        This event is called when the bbox is released
-        """
+        if old_click:  # if this button was the one hovered when the click was pressed
+            self.trigger_event("on_click_change", rel_x, rel_y, button, modifiers)
+            self.trigger_event("on_click_release", rel_x, rel_y, button, modifiers)

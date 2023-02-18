@@ -34,7 +34,7 @@ class RoomJoin(Scene):
         )
 
         from source.gui.scene import MainMenu
-        self.back.on_release = lambda *_: self.window.set_scene(MainMenu)
+        self.back.add_listener("on_click_release", lambda *_: self.window.set_scene(MainMenu))
 
         self.entry_ip = self.add_widget(
             widget.Input,
@@ -69,12 +69,12 @@ class RoomJoin(Scene):
             texture_click=texture_button_click
         )
 
-        self.connect.on_release = lambda *_: network.Client(
+        self.connect.add_listener("on_click_release", lambda *_: network.Client(
             window=self.window,
             ip_address=self.entry_ip.text,
             daemon=True,
             username="Client"
-        ).start()
+        ).start())
 
     def on_draw(self):
         self.back.draw()

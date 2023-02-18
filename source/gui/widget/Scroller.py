@@ -48,6 +48,8 @@ class Scroller(BoxWidget):
             **dict_prefix("label_", kwargs)
         )
 
+        self.add_listener("on_click_release", lambda rel_x, *_: self._refresh_cursor(rel_x))
+
         self._from = from_
         self._to = to
         self.value = value
@@ -73,14 +75,13 @@ class Scroller(BoxWidget):
         )
 
         # label
-        self.label.x = self.x + (self.width / 2)
-        self.label.y = self.y + (self.height / 2)
+        self.label.x, self.label.y = self.center
         self.label.text = str(self.text_transform(self.value))
 
-    # property
-
-    def on_pressed(self, rel_x: int, rel_y: int, button: int, modifiers: int):
+    def _refresh_cursor(self, rel_x: int):
         self.value = rel_x / self.width
+
+    # property
 
     @property
     def value(self):

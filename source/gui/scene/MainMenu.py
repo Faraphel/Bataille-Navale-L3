@@ -45,7 +45,7 @@ class MainMenu(Scene):
             texture_click=texture_button_click
         )
 
-        self.game_create.on_release = lambda *_: self.window.set_scene(scene.RoomCreate)
+        self.game_create.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.RoomCreate))
 
         self.game_join = self.add_widget(
             widget.Button,
@@ -60,7 +60,7 @@ class MainMenu(Scene):
             texture_click=texture_button_click
         )
 
-        self.game_join.on_release = lambda *_: self.window.set_scene(scene.RoomJoin)
+        self.game_join.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.RoomJoin))
 
         self.settings = self.add_widget(
             widget.Button,
@@ -75,7 +75,7 @@ class MainMenu(Scene):
             texture_click=texture_button_click
         )
 
-        self.settings.on_release = lambda *_: self.window.set_scene(scene.Settings)
+        self.settings.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.Settings))
 
         self.fps_display = self.add_widget(FPSDisplay, color=(255, 255, 255, 180))
 
