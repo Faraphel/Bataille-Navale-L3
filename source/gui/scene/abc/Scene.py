@@ -24,9 +24,9 @@ class Scene(ABC):
     def add_widget(self, widget_class: Type["Widget"], **widget_kwargs):
         """
         Add a widget to the scene.
-        :widget_class: the class of the widget to add.
-        :widget_args: args for the creation of the widget object.
-        :widget_kwargs: kwargs for the creation of the widget object.
+        :param widget_class: the class of the widget to add.
+        :param widget_args: args for the creation of the widget object.
+        :param widget_kwargs: kwargs for the creation of the widget object.
         :return: the new created widget.
         """
 
@@ -37,7 +37,7 @@ class Scene(ABC):
     def remove_widget(self, widget: "Widget") -> None:
         """
         Remove a widget from the scene.
-        :scene: the widget to remove.
+        :param scene: the widget to remove.
         """
 
         self._widgets.remove(widget)

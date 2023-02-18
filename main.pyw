@@ -1,11 +1,11 @@
 import pyglet
 
 from source.gui.scene import MainMenu
-from source.gui.window import Window
+from source.gui.window import GameWindow
 
 
 # Create a new window
-window = Window(resizable=True, vsync=True)
+window = GameWindow(resizable=True, vsync=True)
 window.add_scene(MainMenu)
 
 # Start the event loop

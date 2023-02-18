@@ -4,7 +4,6 @@ import pyglet
 
 from source.gui.scene.abc import Scene
 from source.gui import widget, scene
-from source.gui.widget.debug import FPSDisplay
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -77,13 +76,9 @@ class MainMenu(Scene):
 
         self.settings.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.Settings))
 
-        self.fps_display = self.add_widget(FPSDisplay, color=(255, 255, 255, 180))
-
     def on_draw(self):
         self.background.draw()
         self.title.draw()
         self.game_create.draw()
         self.game_join.draw()
         self.settings.draw()
-
-        self.fps_display.draw()
