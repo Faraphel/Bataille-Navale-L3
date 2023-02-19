@@ -6,7 +6,6 @@ import requests
 from source import network
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
-from source.utils.dict import dict_add_prefix
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -36,8 +35,7 @@ class RoomCreate(Scene):
             label_batch=self.batch_label
         )
 
-        from source.gui.scene import MainMenu
-        self.back.add_listener("on_click_release", lambda *_: self.window.set_scene(MainMenu))
+        self.back.add_listener("on_click_release", self.button_back_callback)
 
         self.label_ip = self.add_widget(
             widget.Text,
@@ -64,6 +62,11 @@ class RoomCreate(Scene):
 
         self.thread = network.Host(window=self.window, daemon=True, username="Host")
         self.thread.start()
+
+    def button_back_callback(self, *_):
+        self.thread.stop()
+        from source.gui.scene import MainMenu
+        self.window.set_scene(MainMenu)
 
     def on_draw(self):
         self.batch_button_background.draw()

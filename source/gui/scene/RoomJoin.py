@@ -30,8 +30,7 @@ class RoomJoin(Scene):
             label_batch=self.batch_label
         )
 
-        from source.gui.scene import MainMenu
-        self.back.add_listener("on_click_release", lambda *_: self.window.set_scene(MainMenu))
+        self.back.add_listener("on_click_release", self.button_back_callback)
 
         self.entry_ip = self.add_widget(
             widget.Input,
@@ -75,6 +74,10 @@ class RoomJoin(Scene):
             daemon=True,
             username="Client"
         ).start())
+
+    def button_back_callback(self, *_):
+        from source.gui.scene import MainMenu
+        self.window.set_scene(MainMenu)
 
     def on_draw(self):
         self.batch_button_background.draw()
