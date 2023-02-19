@@ -1,15 +1,14 @@
-from functools import lru_cache
-from typing import Type, Callable, TYPE_CHECKING, Any
+from typing import Type, TYPE_CHECKING
 
 import pyglet
 
-from source.event.signal import StopEventScene
+from source.gui.event import EventPropagationMixin
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
 
 
-class Window(pyglet.window.Window):  # NOQA
+class Window(pyglet.window.Window, EventPropagationMixin):  # NOQA
     """
     A window. Based on the pyglet window object.
     Scene can be added to the window
@@ -19,6 +18,12 @@ class Window(pyglet.window.Window):  # NOQA
         super().__init__(*args, **kwargs)
 
         self._scenes: list["Scene"] = list()
+
+    # Event Propagation
+
+    @property
+    def childs(self):
+        return self._scenes
 
     # Scene Managing
 
@@ -66,52 +71,3 @@ class Window(pyglet.window.Window):  # NOQA
 
     def on_draw(self):  # NOQA
         self.clear()
-
-    # Event Handling
-
-    @lru_cache
-    def _event_wrapper(self, item: str) -> Callable:
-        """
-        Un wrapper permettant d'appeler l'événement de toutes les scènes attachées.
-        :param item: nom de la fonction à appeler dans la scène.
-        :return: une fonction appelant l'événement original ainsi que ceux des scènes.
-        """
-
-        # if the event is the drawing of the objects, reverse the order of the scenes
-        # so that the last drawn are the one on top
-        scene_transform = (
-            (lambda scenes: reversed(scenes)) if item == "on_draw" else
-            (lambda scenes: scenes)
-        )
-
-        # try to get the original function
-        func = None
-        try: func = super().__getattribute__(item)
-        except AttributeError: pass
-
-        # try to get a function that would get executed after everything else
-        func_after = None
-        try: func_after = super().__getattribute__(item + "_after")
-        except AttributeError: pass
-
-        def _func(*args, **kwargs) -> None:
-            if func is not None: func(*args, **kwargs)
-
-            for scene in scene_transform(self._scenes):
-                try: getattr(scene, item)(*args, **kwargs)
-                # si l'erreur StopEventScene est détecté, les autres scènes ne recevront pas l'event
-                except StopEventScene: break
-
-            if func_after is not None: func_after(*args, **kwargs)
-
-        return _func
-
-    def __getattribute__(self, item: str) -> Any:
-        """
-        Fonction appelée dès que l'on essaye d'accéder à l'un des attributs de l'objet.
-        :param item: nom de l'attribut recherché
-        :return: l'attribut de l'objet correspondant.
-        """
-
-        # si l'attribut est un événement (commence par "on_"), alors renvoie le dans un wrapper
-        return self._event_wrapper(item) if item.startswith("on_") else super().__getattribute__(item)

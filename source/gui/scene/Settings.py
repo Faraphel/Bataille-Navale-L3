@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
-from source.event.signal import StopEventScene
+from source.gui.event import StopEvent
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 
@@ -69,7 +69,7 @@ class Settings(Scene):
         self.batch_label.draw()
 
     def on_mouse_press_after(self, x: int, y: int, button: int, modifiers: int):
-        raise StopEventScene()
+        raise StopEvent()
 
     def on_mouse_motion_after(self, x: int, y: int, button: int, modifiers: int):
-        raise StopEventScene()
+        raise StopEvent()

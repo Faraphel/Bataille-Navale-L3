@@ -1,0 +1,2 @@
+class StopEvent(Exception):
+    pass
