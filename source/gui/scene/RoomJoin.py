@@ -5,7 +5,6 @@ import pyglet
 from source import network
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
-from source.utils.dict import dict_add_prefix
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -15,13 +14,20 @@ class RoomJoin(Scene):
     def __init__(self, window: "Window", *args, **kwargs):
         super().__init__(window, *args, **kwargs)
 
+        self.batch_button_background = pyglet.graphics.Batch()
+        self.batch_input_background = pyglet.graphics.Batch()
+        self.batch_label = pyglet.graphics.Batch()
+
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            style=texture.Button.Style1
+            style=texture.Button.Style1,
+
+            background_batch=self.batch_button_background,
+            label_batch=self.batch_label
         )
 
         from source.gui.scene import MainMenu
@@ -33,7 +39,10 @@ class RoomJoin(Scene):
 
             regex=r"\d{1,3}(\.\d{1,3}){3}",
 
-            style=texture.Input.Style1
+            style=texture.Input.Style1,
+
+            background_batch=self.batch_input_background,
+            label_batch=self.batch_label
         )
 
         self.entry_port = self.add_widget(
@@ -42,7 +51,10 @@ class RoomJoin(Scene):
 
             regex=r"\d{0,5}",
 
-            style=texture.Input.Style1
+            style=texture.Input.Style1,
+
+            background_batch=self.batch_input_background,
+            label_batch=self.batch_label
         )
 
         self.connect = self.add_widget(
@@ -51,7 +63,10 @@ class RoomJoin(Scene):
 
             label_text="Se connecter",
 
-            style=texture.Button.Style1
+            style=texture.Button.Style1,
+
+            background_batch=self.batch_button_background,
+            label_batch=self.batch_label
         )
 
         self.connect.add_listener("on_click_release", lambda *_: network.Client(
@@ -62,7 +77,6 @@ class RoomJoin(Scene):
         ).start())
 
     def on_draw(self):
-        self.back.draw()
-        self.entry_ip.draw()
-        self.entry_port.draw()
-        self.connect.draw()
+        self.batch_button_background.draw()
+        self.batch_input_background.draw()
+        self.batch_label.draw()

@@ -21,13 +21,19 @@ class RoomCreate(Scene):
         ip_address: str = r.content.decode('utf8')
         port: int = 52321
 
+        self.batch_button_background = pyglet.graphics.Batch()
+        self.batch_label = pyglet.graphics.Batch()
+
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            style=texture.Button.Style1
+            style=texture.Button.Style1,
+
+            background_batch=self.batch_button_background,
+            label_batch=self.batch_label
         )
 
         from source.gui.scene import MainMenu
@@ -35,23 +41,30 @@ class RoomCreate(Scene):
 
         self.label_ip = self.add_widget(
             widget.Text,
+
             x=0.5, y=0.55,
+
             anchor_x="center", anchor_y="center",
             text=f"Votre IP - {ip_address}:{port}",
-            font_size=20
+            font_size=20,
+
+            batch=self.batch_label
         )
 
         self.description = self.add_widget(
             widget.Text,
+
             x=0.5, y=0.45,
+
             anchor_x="center", anchor_y="center",
-            text="En attente d'un second joueur..."
+            text="En attente d'un second joueur...",
+
+            batch=self.batch_label
         )
 
         self.thread = network.Host(window=self.window, daemon=True, username="Host")
         self.thread.start()
 
     def on_draw(self):
-        self.back.draw()
-        self.label_ip.draw()
-        self.description.draw()
+        self.batch_button_background.draw()
+        self.batch_label.draw()

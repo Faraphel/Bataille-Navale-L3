@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING
 
+import pyglet
+
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
-from source.utils.dict import dict_add_prefix
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -12,13 +13,22 @@ class Settings(Scene):
     def __init__(self, window: "Window", *args, **kwargs):
         super().__init__(window, *args, **kwargs)
 
+        self.batch_button_background = pyglet.graphics.Batch()
+        self.batch_scroller_background = pyglet.graphics.Batch()
+        self.batch_scroller_cursor = pyglet.graphics.Batch()
+        self.batch_checkbox = pyglet.graphics.Batch()
+        self.batch_label = pyglet.graphics.Batch()
+
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            style=texture.Button.Style1
+            style=texture.Button.Style1,
+
+            background_batch=self.batch_button_background,
+            label_batch=self.batch_label
         )
 
         from source.gui.scene import MainMenu
@@ -29,7 +39,9 @@ class Settings(Scene):
 
             x=0.45, y=0.45, width=0.1, height=0.1,
 
-            style=texture.Checkbox.Style1
+            style=texture.Checkbox.Style1,
+
+            batch=self.batch_checkbox
         )
 
         self.scroller = self.add_widget(
@@ -40,9 +52,18 @@ class Settings(Scene):
             style=texture.Scroller.Style1,
 
             text_transform=lambda value: round(value, 2),
+
+            background_batch=self.batch_scroller_background,
+            cursor_batch=self.batch_scroller_cursor,
+            label_batch=self.batch_label
         )
 
     def on_draw(self):
-        self.checkbox.draw()
-        self.scroller.draw()
-        self.back.draw()
+        self.batch_button_background.draw()
+
+        self.batch_scroller_background.draw()
+        self.batch_scroller_cursor.draw()
+
+        self.batch_checkbox.draw()
+
+        self.batch_label.draw()

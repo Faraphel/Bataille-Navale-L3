@@ -1,6 +1,5 @@
 A faire :  
 - Faire une scène incluant par défaut les boutons "Retour"
-- Utiliser des batchs
 - Ajouter un moyen d'annuler les évenements de se propager aux widgets en dessous
 - Police d'écriture
 

@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+import pyglet
+
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 from source import core
@@ -12,6 +14,13 @@ if TYPE_CHECKING:
 class Game(Scene):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
+
+        self.batch_label = pyglet.graphics.Batch()
+        self.batch_button_background = pyglet.graphics.Batch()
+        self.batch_input_background = pyglet.graphics.Batch()
+        self.batch_grid_background = pyglet.graphics.Batch()
+        self.batch_grid_line = pyglet.graphics.Batch()
+        self.batch_grid_cursor = pyglet.graphics.Batch()
 
         self.background = self.add_widget(
             widget.Image,
@@ -28,6 +37,10 @@ class Game(Scene):
 
             style=texture.Grid.Style1,
             rows=8, columns=8,
+
+            background_batch=self.batch_grid_background,
+            line_batch=self.batch_grid_line,
+            cursor_batch=self.batch_grid_cursor,
         )
 
         self.grid_enemy = self.add_widget(
@@ -37,6 +50,10 @@ class Game(Scene):
 
             style=texture.Grid.Style1,
             rows=8, columns=8,
+
+            background_batch=self.batch_grid_background,
+            line_batch=self.batch_grid_line,
+            cursor_batch=self.batch_grid_cursor,
         )
 
         self.name_ally = self.add_widget(
@@ -47,6 +64,8 @@ class Game(Scene):
             text="Raphael",
             font_size=20,
             anchor_x="center", anchor_y="center",
+
+            batch=self.batch_label,
         )
 
         self.name_enemy = self.add_widget(
@@ -57,6 +76,8 @@ class Game(Scene):
             text="Leo",
             font_size=20,
             anchor_x="center", anchor_y="center",
+
+            batch=self.batch_label,
         )
 
         self.score_ally = self.add_widget(
@@ -66,7 +87,9 @@ class Game(Scene):
 
             text="7",
             font_size=25,
-            anchor_x="center", anchor_y="center"
+            anchor_x="center", anchor_y="center",
+
+            batch=self.batch_label,
         )
 
         self.score_enemy = self.add_widget(
@@ -76,7 +99,9 @@ class Game(Scene):
 
             text="5",
             font_size=25,
-            anchor_x="center", anchor_y="center"
+            anchor_x="center", anchor_y="center",
+
+            batch=self.batch_label,
         )
 
         self.chat_log = self.add_widget(
@@ -86,7 +111,9 @@ class Game(Scene):
 
             text="FARAPHEL - HELLO BILLY\nLEO - HELLO BOLLO",
             anchor_x="left", anchor_y="baseline",
-            multiline=True
+            multiline=True,
+
+            batch=self.batch_label,
         )
 
         self.chat_input = self.add_widget(
@@ -94,7 +121,10 @@ class Game(Scene):
 
             x=10, y=10, width=0.5, height=50,
 
-            style=texture.Button.Style1
+            style=texture.Button.Style1,
+
+            background_batch=self.batch_input_background,
+            label_batch=self.batch_label,
         )
         
         self.button_save = self.add_widget(
@@ -104,7 +134,10 @@ class Game(Scene):
 
             label_text="Sauvegarder",
 
-            style=texture.Button.Style1
+            style=texture.Button.Style1,
+
+            background_batch=self.batch_button_background,
+            label_batch=self.batch_label,
         )
 
         self.button_quit = self.add_widget(
@@ -114,7 +147,10 @@ class Game(Scene):
             
             label_text="Quitter",
 
-            style=texture.Button.Style1
+            style=texture.Button.Style1,
+
+            background_batch=self.batch_button_background,
+            label_batch=self.batch_label,
         )
 
         self.board_ally = core.Board(rows=8, columns=8)
@@ -123,17 +159,10 @@ class Game(Scene):
     def on_draw(self):
         self.background.draw()
 
-        self.grid_ally.draw()
-        self.grid_enemy.draw()
+        self.batch_button_background.draw()
+        self.batch_input_background.draw()
+        self.batch_grid_background.draw()
+        self.batch_grid_line.draw()
+        self.batch_grid_cursor.draw()
 
-        self.name_ally.draw()
-        self.name_enemy.draw()
-
-        self.score_ally.draw()
-        self.score_enemy.draw()
-
-        self.chat_log.draw()
-        self.chat_input.draw()
-
-        self.button_save.draw()
-        self.button_quit.draw()
+        self.batch_label.draw()
