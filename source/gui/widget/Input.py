@@ -62,7 +62,7 @@ class Input(BoxWidget):
 
         return (
             texture if self.activated and (texture := self.style.get("active")) is not None else  # NOQA
-            texture if self.invalid and (texture := self.style.get("error")) is not None else
+            texture if self.invalid and (texture := self.style.get("signal")) is not None else
             self.style.get("normal")
         )
 

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
+from source.event.signal import StopEventScene
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 
@@ -31,8 +32,7 @@ class Settings(Scene):
             label_batch=self.batch_label
         )
 
-        from source.gui.scene import MainMenu
-        self.back.add_listener("on_click_release", lambda *_: self.window.set_scene(MainMenu))
+        self.back.add_listener("on_click_release", lambda *_: self.window.remove_scene(self))
 
         self.checkbox = self.add_widget(
             widget.Checkbox,
@@ -67,3 +67,9 @@ class Settings(Scene):
         self.batch_checkbox.draw()
 
         self.batch_label.draw()
+
+    def on_mouse_press_after(self, x: int, y: int, button: int, modifiers: int):
+        raise StopEventScene()
+
+    def on_mouse_motion_after(self, x: int, y: int, button: int, modifiers: int):
+        raise StopEventScene()

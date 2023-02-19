@@ -80,7 +80,7 @@ class MainMenu(Scene):
             label_batch=self.batch_label
         )
 
-        self.settings.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.Settings))
+        self.settings.add_listener("on_click_release", lambda *_: self.window.add_scene(scene.Settings))
 
     def on_draw(self):
         self.background.draw()

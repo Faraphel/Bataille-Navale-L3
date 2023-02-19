@@ -1,0 +1,2 @@
+class StopEventWidget(Exception):
+    pass

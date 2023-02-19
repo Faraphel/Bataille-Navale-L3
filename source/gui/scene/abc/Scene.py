@@ -2,6 +2,8 @@ from abc import ABC
 from functools import lru_cache
 from typing import TYPE_CHECKING, Callable, Type, Any
 
+from source.event.signal import StopEventWidget
+
 if TYPE_CHECKING:
     from source.gui.window import Window
     from source.gui.widget.abc import Widget
@@ -17,7 +19,7 @@ class Scene(ABC):
 
     def __init__(self, window: "Window", *args, **kwargs):
         self.window = window
-        self._widgets: set["Widget"] = set()
+        self._widgets: list["Widget"] = list()
 
     # Widget Managing
 
@@ -31,13 +33,13 @@ class Scene(ABC):
         """
 
         widget: "Widget" = widget_class(self, **widget_kwargs)
-        self._widgets.add(widget)
+        self._widgets.append(widget)
         return widget
 
     def remove_widget(self, widget: "Widget") -> None:
         """
         Remove a widget from the scene.
-        :param scene: the widget to remove.
+        :param widget: the widget to remove.
         """
 
         self._widgets.remove(widget)
@@ -59,15 +61,25 @@ class Scene(ABC):
         :return: une fonction appelant l'événement original ainsi que ceux des scènes.
         """
 
-        # Récupère la fonction originale. S'il n'y en a pas, renvoie une fonction sans effet.*
+        # Récupère la fonction originale. S'il n'y en a pas, renvoie une fonction sans effet.
         func = None
         try: func = super().__getattribute__(item)
         except AttributeError: pass
 
+        # Récupère une fonction qui devra s'exécuter après tout le reste
+        func_after = None
+        try: func_after = super().__getattribute__(item + "_after")
+        except AttributeError: pass
+
         def _func(*args, **kwargs) -> None:
             if func is not None: func(*args, **kwargs)
+
             for widget in self._widgets:
-                getattr(widget, item, lambda *_, **__: "pass")(*args, **kwargs)
+                try: getattr(widget, item, lambda *_, **__: "pass")(*args, **kwargs)
+                # si l'erreur StopEventWidget est détecté, les autres scènes ne recevront pas l'event
+                except StopEventWidget: break
+
+            if func_after is not None: func_after(*args, **kwargs)
 
         return _func
 

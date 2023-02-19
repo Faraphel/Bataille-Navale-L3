@@ -5,7 +5,6 @@ import pyglet
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 from source import core
-from source.utils.dict import dict_add_prefix
 
 if TYPE_CHECKING:
     from source.gui.window import Window

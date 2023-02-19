@@ -3,6 +3,7 @@ from typing import Type, Callable, TYPE_CHECKING, Any
 
 import pyglet
 
+from source.event.signal import StopEventScene
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
@@ -17,7 +18,7 @@ class Window(pyglet.window.Window):  # NOQA
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._scenes: set["Scene"] = set()
+        self._scenes: list["Scene"] = list()
 
     # Scene Managing
 
@@ -33,7 +34,7 @@ class Window(pyglet.window.Window):  # NOQA
         self.clear_scene()
         return self.add_scene(scene_class, *scene_args, **scene_kwargs)
 
-    def add_scene(self, scene_class: Type["Scene"], *scene_args, **scene_kwargs) -> "Scene":
+    def add_scene(self, scene_class: Type["Scene"], priority: int = 0, *scene_args, **scene_kwargs) -> "Scene":
         """
         Add a scene of the window.
         :scene_class: the class of the scene to add.
@@ -43,7 +44,7 @@ class Window(pyglet.window.Window):  # NOQA
         """
 
         scene: "Scene" = scene_class(window=self, *scene_args, **scene_kwargs)
-        self._scenes.add(scene)
+        self._scenes.insert(priority, scene)
         return scene
 
     def remove_scene(self, scene: "Scene") -> None:
@@ -76,6 +77,13 @@ class Window(pyglet.window.Window):  # NOQA
         :return: une fonction appelant l'événement original ainsi que ceux des scènes.
         """
 
+        # if the event is the drawing of the objects, reverse the order of the scenes
+        # so that the last drawn are the one on top
+        scene_transform = (
+            (lambda scenes: reversed(scenes)) if item == "on_draw" else
+            (lambda scenes: scenes)
+        )
+
         # try to get the original function
         func = None
         try: func = super().__getattribute__(item)
@@ -89,8 +97,10 @@ class Window(pyglet.window.Window):  # NOQA
         def _func(*args, **kwargs) -> None:
             if func is not None: func(*args, **kwargs)
 
-            for scene in self._scenes:
-                getattr(scene, item)(*args, **kwargs)
+            for scene in scene_transform(self._scenes):
+                try: getattr(scene, item)(*args, **kwargs)
+                # si l'erreur StopEventScene est détecté, les autres scènes ne recevront pas l'event
+                except StopEventScene: break
 
             if func_after is not None: func_after(*args, **kwargs)
 
