@@ -4,7 +4,8 @@ import pyglet
 
 from source import network
 from source.gui.scene.abc import Scene
-from source.gui import widget
+from source.gui import widget, texture
+from source.utils.dict import dict_add_prefix
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -14,23 +15,13 @@ class RoomJoin(Scene):
     def __init__(self, window: "Window", *args, **kwargs):
         super().__init__(window, *args, **kwargs)
 
-        texture_button_normal = pyglet.image.load("./assets/image/button/normal.png")
-        texture_button_hover = pyglet.image.load("./assets/image/button/hovering.png")
-        texture_button_click = pyglet.image.load("./assets/image/button/clicking.png")
-
-        texture_input_normal = pyglet.image.load("assets/image/input/normal.png")
-        texture_input_active = pyglet.image.load("./assets/image/input/active.png")
-        texture_input_error = pyglet.image.load("./assets/image/input/error.png")
-
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            texture_normal=texture_button_normal,
-            texture_hover=texture_button_hover,
-            texture_click=texture_button_click
+            style=texture.Button.Style1
         )
 
         from source.gui.scene import MainMenu
@@ -42,9 +33,7 @@ class RoomJoin(Scene):
 
             regex=r"\d{1,3}(\.\d{1,3}){3}",
 
-            texture_normal=texture_input_normal,
-            texture_active=texture_input_active,
-            texture_error=texture_input_error
+            style=texture.Input.Style1
         )
 
         self.entry_port = self.add_widget(
@@ -53,9 +42,7 @@ class RoomJoin(Scene):
 
             regex=r"\d{0,5}",
 
-            texture_normal=texture_input_normal,
-            texture_active=texture_input_active,
-            texture_error=texture_input_error
+            style=texture.Input.Style1
         )
 
         self.connect = self.add_widget(
@@ -64,9 +51,7 @@ class RoomJoin(Scene):
 
             label_text="Se connecter",
 
-            texture_normal=texture_button_normal,
-            texture_hover=texture_button_hover,
-            texture_click=texture_button_click
+            style=texture.Button.Style1
         )
 
         self.connect.add_listener("on_click_release", lambda *_: network.Client(

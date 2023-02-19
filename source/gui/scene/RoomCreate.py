@@ -5,7 +5,8 @@ import requests
 
 from source import network
 from source.gui.scene.abc import Scene
-from source.gui import widget
+from source.gui import widget, texture
+from source.utils.dict import dict_add_prefix
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -20,19 +21,13 @@ class RoomCreate(Scene):
         ip_address: str = r.content.decode('utf8')
         port: int = 52321
 
-        texture_button_normal = pyglet.image.load("./assets/image/button/normal.png")
-        texture_button_hover = pyglet.image.load("./assets/image/button/hovering.png")
-        texture_button_click = pyglet.image.load("./assets/image/button/clicking.png")
-
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            texture_normal=texture_button_normal,
-            texture_hover=texture_button_hover,
-            texture_click=texture_button_click
+            style=texture.Button.Style1
         )
 
         from source.gui.scene import MainMenu

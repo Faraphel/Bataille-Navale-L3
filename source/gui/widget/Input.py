@@ -1,12 +1,13 @@
 import re
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Type
 
 import pyglet.image
 
 from source.gui.sprite import Sprite
+from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
-from source.utils import dict_prefix
+from source.utils import dict_filter_prefix
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
@@ -15,9 +16,7 @@ if TYPE_CHECKING:
 class Input(BoxWidget):
     def __init__(self, scene: "Scene",
 
-                 texture_normal: pyglet.image.AbstractImage,
-                 texture_active: pyglet.image.AbstractImage = None,
-                 texture_error: pyglet.image.AbstractImage = None,
+                 style: Type[Style],
 
                  regex: Optional[str | re.Pattern] = None,
 
@@ -29,22 +28,21 @@ class Input(BoxWidget):
                  **kwargs):
         super().__init__(scene, x, y, width, height)
 
-        self._texture_normal: pyglet.image.AbstractImage = texture_normal
-        self._texture_active: Optional[pyglet.image.AbstractImage] = texture_active
-        self._texture_error: Optional[pyglet.image.AbstractImage] = texture_error
+        self.style = style
 
         self._invalid = False
 
         self.regex = re.compile(regex) if isinstance(regex, str) else regex
 
         self.background = Sprite(
-            img=self._texture_normal,
-            **dict_prefix("background_", kwargs)
+            img=self.style.get("normal"),
+            **dict_filter_prefix("background_", kwargs)
         )
+
         self.label = pyglet.text.Label(
             width=None, height=None,
             anchor_x="center", anchor_y="center",
-            **dict_prefix("label_", kwargs)
+            **dict_filter_prefix("label_", kwargs)
         )
 
         self.add_listener("on_activate_change", lambda *_: self._refresh_background())
@@ -63,9 +61,9 @@ class Input(BoxWidget):
         """
 
         return (
-            self._texture_active if self.activated and self._texture_active is not None else
-            self._texture_error if self.invalid and self._texture_error is not None else
-            self._texture_normal
+            texture if self.activated and (texture := self.style.get("active")) is not None else  # NOQA
+            texture if self.invalid and (texture := self.style.get("error")) is not None else
+            self.style.get("normal")
         )
 
     # refresh

@@ -1,8 +1,9 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 import pyglet.image
 
 from source.gui.sprite import Sprite
+from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
 
@@ -14,8 +15,7 @@ if TYPE_CHECKING:
 class Checkbox(BoxWidget):
     def __init__(self, scene: "Scene",
 
-                 texture_disabled: pyglet.image.AbstractImage,
-                 texture_enabled: pyglet.image.AbstractImage,
+                 style: Type[Style],
 
                  x: Distance = 0,
                  y: Distance = 0,
@@ -27,10 +27,9 @@ class Checkbox(BoxWidget):
                  **kwargs):
         super().__init__(scene, x, y, width, height)
 
-        self._texture_disabled = texture_disabled
-        self._texture_enabled = texture_enabled
+        self.style = style
 
-        self.tick = Sprite(img=self._texture_disabled, **kwargs)
+        self.tick = Sprite(img=self.style.get("disabled"), **kwargs)
 
         self.state = state
 
@@ -42,7 +41,7 @@ class Checkbox(BoxWidget):
 
     @property
     def tick_texture(self):
-        return self._texture_enabled if self.state else self._texture_disabled
+        return self.style.get("enabled" if self.state else "disabled")
 
     def _refresh_tick(self):
         self.tick.image = self.tick_texture

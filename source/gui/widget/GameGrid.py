@@ -1,11 +1,12 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 import pyglet.shapes
 
 from source.gui.sprite import Sprite
+from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
-from source.utils import dict_prefix
+from source.utils import dict_filter_prefix
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
@@ -17,7 +18,7 @@ class GameGrid(BoxWidget):
                  rows: int,
                  columns: int,
 
-                 texture_background: pyglet.image.AbstractImage,
+                 style: Type[Style],
 
                  x: Distance = 0,
                  y: Distance = 0,
@@ -30,15 +31,17 @@ class GameGrid(BoxWidget):
         self._rows = rows
         self._columns = columns
 
+        self.style = style
+
         self.background = Sprite(
-            img=texture_background,
-            **dict_prefix("background_", kwargs)
+            img=style.get("background"),
+            **dict_filter_prefix("background_", kwargs)
         )
 
         self.lines: list[pyglet.shapes.Line] = [
             pyglet.shapes.Line(
                 0, 0, 0, 0,
-                **dict_prefix("line_", kwargs)
+                **dict_filter_prefix("line_", kwargs)
             )
             for _ in range((self._columns - 1) + (self._rows - 1))
         ]
@@ -46,7 +49,7 @@ class GameGrid(BoxWidget):
         self.cursor = pyglet.shapes.Rectangle(
             0, 0, 0, 0,
             color=(0, 0, 0, 100),
-            **dict_prefix("cursor_", kwargs)
+            **dict_filter_prefix("cursor_", kwargs)
         )
 
         self.add_listener("on_hover_leave", lambda *_: self.hide_cursor())

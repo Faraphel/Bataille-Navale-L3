@@ -1,11 +1,12 @@
-from typing import TYPE_CHECKING, Callable, Any
+from typing import TYPE_CHECKING, Callable, Any, Type
 
 import pyglet.image
 
 from source.gui.sprite import Sprite
+from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
-from source.utils import dict_prefix
+from source.utils import dict_filter_prefix
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
@@ -14,8 +15,7 @@ if TYPE_CHECKING:
 class Scroller(BoxWidget):
     def __init__(self, scene: "Scene",
 
-                 texture_background: pyglet.image.AbstractImage,
-                 texture_cursor: pyglet.image.AbstractImage,
+                 style: Type[Style],
 
                  x: Distance = 0,
                  y: Distance = 0,
@@ -32,20 +32,24 @@ class Scroller(BoxWidget):
                  **kwargs):
         super().__init__(scene, x, y, width, height)
 
+        self.style = style
+
         self.cursor_width = cursor_width
         self.text_transform = text_transform
 
         self.background = Sprite(
-            img=texture_background,
-            **dict_prefix("background_", kwargs)
+            img=self.style.get("background"),
+            **dict_filter_prefix("background_", kwargs)
         )
+
         self.cursor = Sprite(
-            img=texture_cursor,
-            **dict_prefix("cursor_", kwargs)
+            img=self.style.get("cursor"),
+            **dict_filter_prefix("cursor_", kwargs)
         )
+
         self.label = pyglet.text.Label(
             anchor_x="center", anchor_y="center",
-            **dict_prefix("label_", kwargs)
+            **dict_filter_prefix("label_", kwargs)
         )
 
         self.add_listener("on_click_release", lambda rel_x, *_: self._refresh_cursor(rel_x))

@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING
 
-import pyglet
-
 from source.gui.scene.abc import Scene
-from source.gui import widget
+from source.gui import widget, texture
 from source import core
+from source.utils.dict import dict_add_prefix
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -14,24 +13,12 @@ class Game(Scene):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
 
-        texture_input_normal = pyglet.image.load("assets/image/input/normal.png")
-        texture_input_active = pyglet.image.load("./assets/image/input/active.png")
-        texture_input_error = pyglet.image.load("./assets/image/input/error.png")
-
-        texture_button_normal = pyglet.image.load("./assets/image/button/normal.png")
-        texture_button_hover = pyglet.image.load("./assets/image/button/hovering.png")
-        texture_button_click = pyglet.image.load("./assets/image/button/clicking.png")
-
-        texture_game_background = pyglet.image.load("./assets/image/background/game.png")
-
-        texture_grid_background = pyglet.image.load("./assets/image/grid/background.png")
-
         self.background = self.add_widget(
             widget.Image,
 
             x=0, y=0, width=1.0, height=1.0,
 
-            image=texture_game_background,
+            image=texture.Background.game,
         )
 
         self.grid_ally = self.add_widget(
@@ -39,7 +26,7 @@ class Game(Scene):
 
             x=75, y=0.25, width=0.35, height=0.5,
 
-            texture_background=texture_grid_background,
+            style=texture.Grid.Style1,
             rows=8, columns=8,
         )
 
@@ -48,7 +35,7 @@ class Game(Scene):
 
             x=lambda widget: widget.scene.window.width - 75 - widget.width, y=0.25, width=0.35, height=0.5,
 
-            texture_background=texture_grid_background,
+            style=texture.Grid.Style1,
             rows=8, columns=8,
         )
 
@@ -107,9 +94,7 @@ class Game(Scene):
 
             x=10, y=10, width=0.5, height=50,
 
-            texture_normal=texture_input_normal,
-            texture_active=texture_input_active,
-            texture_error=texture_input_error,
+            style=texture.Button.Style1
         )
         
         self.button_save = self.add_widget(
@@ -119,9 +104,7 @@ class Game(Scene):
 
             label_text="Sauvegarder",
 
-            texture_normal=texture_button_normal,
-            texture_hover=texture_button_hover,
-            texture_click=texture_button_click
+            style=texture.Button.Style1
         )
 
         self.button_quit = self.add_widget(
@@ -131,9 +114,7 @@ class Game(Scene):
             
             label_text="Quitter",
 
-            texture_normal=texture_button_normal,
-            texture_hover=texture_button_hover,
-            texture_click=texture_button_click
+            style=texture.Button.Style1
         )
 
         self.board_ally = core.Board(rows=8, columns=8)

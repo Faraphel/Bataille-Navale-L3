@@ -1,11 +1,12 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Type
 
 import pyglet
 
 from source.gui.sprite import Sprite
+from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
-from source.utils import dict_prefix
+from source.utils import dict_filter_prefix
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
@@ -19,32 +20,27 @@ class Button(BoxWidget):
 
     def __init__(self, scene: "Scene",
 
-                 texture_normal: pyglet.image.AbstractImage,
+                 style: Type[Style],
 
                  x: Distance = 0,
                  y: Distance = 0,
                  width: Distance = None,
                  height: Distance = None,
 
-                 texture_hover: pyglet.image.AbstractImage = None,
-                 texture_click: pyglet.image.AbstractImage = None,
-
                  **kwargs):
         super().__init__(scene, x, y, width, height)
 
-        self._texture_normal: pyglet.image.AbstractImage = texture_normal
-        self._texture_hover: Optional[pyglet.image.AbstractImage] = texture_hover
-        self._texture_click: Optional[pyglet.image.AbstractImage] = texture_click
+        self.style = style
 
         self.background = Sprite(
-            img=self._texture_normal,
-            **dict_prefix("background_", kwargs)
+            img=self.style.get("normal"),
+            **dict_filter_prefix("background_", kwargs)
         )
 
         self.label = pyglet.text.Label(
             width=None, height=None,
             anchor_x="center", anchor_y="center",
-            **dict_prefix("label_", kwargs)
+            **dict_filter_prefix("label_", kwargs)
         )
 
         self.add_listener("on_hover_change", lambda *_: self._refresh_background())
@@ -64,9 +60,9 @@ class Button(BoxWidget):
         """
 
         return (
-            self._texture_click if self.clicking and self._texture_click is not None else
-            self._texture_hover if self.hovering and self._texture_hover is not None else
-            self._texture_normal
+            texture if self.clicking and (texture := self.style.get("click")) is not None else  # NOQA
+            texture if self.hovering and (texture := self.style.get("hover")) is not None else
+            self.style.get("normal")
         )
 
     # refresh

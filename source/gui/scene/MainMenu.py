@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING
 
-import pyglet
-
 from source.gui.scene.abc import Scene
-from source.gui import widget, scene
+from source.gui import widget, scene, texture
+from source.utils.dict import dict_add_prefix
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -13,15 +12,10 @@ class MainMenu(Scene):
     def __init__(self, window: "Window", *args, **kwargs):
         super().__init__(window, *args, **kwargs)
 
-        texture_background = pyglet.image.load("./assets/image/background/main.jpeg")
-        texture_button_normal = pyglet.image.load("./assets/image/button/normal.png")
-        texture_button_hover = pyglet.image.load("./assets/image/button/hovering.png")
-        texture_button_click = pyglet.image.load("./assets/image/button/clicking.png")
-
         self.background = self.add_widget(
             widget.Image,
             x=0.0, y=0.0, width=1.0, height=1.0,
-            image=texture_background
+            image=texture.Background.main
         )
 
         self.title = self.add_widget(
@@ -39,9 +33,7 @@ class MainMenu(Scene):
             label_text="Créer une salle",
             label_font_size=20,
 
-            texture_normal=texture_button_normal,
-            texture_hover=texture_button_hover,
-            texture_click=texture_button_click
+            style=texture.Button.Style1
         )
 
         self.game_create.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.RoomCreate))
@@ -54,9 +46,7 @@ class MainMenu(Scene):
             label_text="Rejoindre une salle",
             label_font_size=20,
 
-            texture_normal=texture_button_normal,
-            texture_hover=texture_button_hover,
-            texture_click=texture_button_click
+            style=texture.Button.Style1
         )
 
         self.game_join.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.RoomJoin))
@@ -69,9 +59,7 @@ class MainMenu(Scene):
             label_text="Paramètres",
             label_font_size=20,
 
-            texture_normal=texture_button_normal,
-            texture_hover=texture_button_hover,
-            texture_click=texture_button_click
+            style=texture.Button.Style1
         )
 
         self.settings.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.Settings))
