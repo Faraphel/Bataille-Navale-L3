@@ -40,6 +40,8 @@ class RoomJoin(Scene):
 
             style=texture.Input.Style1,
 
+            label_text="127.0.0.1",
+
             background_batch=self.batch_input_background,
             label_batch=self.batch_label
         )
