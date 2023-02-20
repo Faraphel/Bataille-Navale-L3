@@ -35,7 +35,7 @@ class Game(Scene):
 
             x=75, y=0.25, width=0.35, height=0.5,
 
-            boats_length=(5, 5, 4, 3, 2),
+            boats_length=[5, 5, 4, 3, 2],
 
             style=texture.Grid.Style1,
             rows=8, columns=8,

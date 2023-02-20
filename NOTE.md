@@ -11,3 +11,11 @@ Bug :
 
 Autre :
 - Tester sur Linux
+
+
+
+
+
+
+Bonus ultime : 
+- Envoyer la texture de la grille à l'adversaire

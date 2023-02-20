@@ -14,3 +14,4 @@ class Grid:
             body = _image_boat_path + "body.png"
             edge = _image_boat_path + "edge.png"
             broken = _image_boat_path + "broken.png"
+            solo = _image_boat_path + "solo.png"
