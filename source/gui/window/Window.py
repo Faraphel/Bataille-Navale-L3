@@ -39,16 +39,15 @@ class Window(pyglet.window.Window, EventPropagationMixin):  # NOQA
         self.clear_scene()
         return self.add_scene(scene_class, *scene_args, **scene_kwargs)
 
-    def add_scene(self, scene_class: Type["Scene"], priority: int = 0, *scene_args, **scene_kwargs) -> "Scene":
+    def add_scene(self, scene_class: Type["Scene"], priority: int = 0, **scene_kwargs) -> "Scene":
         """
         Add a scene of the window.
         :scene_class: the class of the scene to add.
-        :scene_args: args for the creation of the scene object.
         :scene_kwargs: kwargs for the creation of the scene object.
         :return: the new created scene.
         """
 
-        scene: "Scene" = scene_class(window=self, *scene_args, **scene_kwargs)
+        scene: "Scene" = scene_class(window=self, **scene_kwargs)
         self._scenes.insert(priority, scene)
         return scene
 

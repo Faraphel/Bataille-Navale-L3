@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 
 
 class MainMenu(Scene):
-    def __init__(self, window: "Window", *args, **kwargs):
-        super().__init__(window, *args, **kwargs)
+    def __init__(self, window: "Window", **kwargs):
+        super().__init__(window, **kwargs)
 
         self.batch_button_background = pyglet.graphics.Batch()
         self.batch_label = pyglet.graphics.Batch()

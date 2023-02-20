@@ -8,3 +8,6 @@ A faire :
 
 Bug : 
 - /
+
+Autre :
+- Tester sur Linux

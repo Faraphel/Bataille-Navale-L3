@@ -30,7 +30,7 @@ class Host(Thread):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind(("", self.port))  # connecte le socket au port indiqué
 
-            s.settimeout(5)  # defini le timeout à 5 secondes
+            s.settimeout(5)  # défini le timeout à 5 secondes
             s.listen()  # écoute de nouvelle connexion
 
             while True:

@@ -16,7 +16,7 @@ class Scene(ABC, EventPropagationMixin):
     It can react to any "on_" event from the window.
     """
 
-    def __init__(self, window: "Window", *args, **kwargs):
+    def __init__(self, window: "Window", **kwargs):
         self.window = window
         self._widgets: list["Widget"] = list()
 
@@ -28,17 +28,17 @@ class Scene(ABC, EventPropagationMixin):
 
     # Widget Managing
 
-    def add_widget(self, widget_class: Type["Widget"], **widget_kwargs):
+    def add_widget(self, widget_class: Type["Widget"], priority: int = 0, **widget_kwargs):
         """
         Add a widget to the scene.
         :param widget_class: the class of the widget to add.
-        :param widget_args: args for the creation of the widget object.
+        :param priority: the priority of the widget.
         :param widget_kwargs: kwargs for the creation of the widget object.
         :return: the new created widget.
         """
 
         widget: "Widget" = widget_class(self, **widget_kwargs)
-        self._widgets.append(widget)
+        self._widgets.insert(priority, widget)
         return widget
 
     def remove_widget(self, widget: "Widget") -> None:

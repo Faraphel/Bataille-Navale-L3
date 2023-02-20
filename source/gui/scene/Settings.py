@@ -44,6 +44,9 @@ class Settings(Scene):
             batch=self.batch_checkbox
         )
 
+        self.checkbox.add_listener("on_click_release",
+                                   lambda *_: self.window.set_fullscreen(self.checkbox.state))
+
         self.scroller = self.add_widget(
             widget.Scroller,
 

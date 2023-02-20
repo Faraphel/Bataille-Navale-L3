@@ -28,8 +28,8 @@ class GameGrid(BoxWidget):
                  **kwargs):
         super().__init__(scene, x, y, width, height)
 
-        self._rows = rows
-        self._columns = columns
+        self.rows = rows
+        self.columns = columns
 
         self.style = style
 
@@ -43,7 +43,7 @@ class GameGrid(BoxWidget):
                 0, 0, 0, 0,
                 **dict_filter_prefix("line_", kwargs)
             )
-            for _ in range((self._columns - 1) + (self._rows - 1))
+            for _ in range((self.columns - 1) + (self.rows - 1))
         ]
 
         self.cursor = pyglet.shapes.Rectangle(
@@ -54,8 +54,8 @@ class GameGrid(BoxWidget):
 
         self.add_listener("on_hover_leave", lambda *_: self.hide_cursor())
         self.add_listener("on_hover", self._refresh_cursor)
-        self.add_listener("on_click_release",
-                          lambda rel_x, rel_y, *_: print("click", self.get_cell_from_rel(rel_x, rel_y)))
+
+        self.add_listener("on_click_release", lambda rel_x, rel_y, *_: print("click", self.get_cell_from_rel(rel_x, rel_y)))
 
         self._refresh_size()
 
@@ -72,13 +72,13 @@ class GameGrid(BoxWidget):
         self.background.x, self.background.y = self.xy
         self.background.width, self.background.height = self.size
 
-        for column, line in enumerate(self.lines[:self._columns-1], start=1):
+        for column, line in enumerate(self.lines[:self.columns - 1], start=1):
             line.x = self.x + self.cell_width * column
             line.x2 = line.x
             line.y = self.y
             line.y2 = self.y2
 
-        for row, line in enumerate(self.lines[-self._rows+1:], start=1):
+        for row, line in enumerate(self.lines[-self.rows + 1:], start=1):
             line.x = self.x
             line.x2 = self.x2
             line.y = self.y + self.cell_height * row
@@ -87,8 +87,8 @@ class GameGrid(BoxWidget):
     def _refresh_cursor(self, rel_x: int, rel_y: int):
         cell_x, cell_y = self.get_cell_from_rel(rel_x, rel_y)
 
-        self.cursor.x = self.x + cell_x * self.width / self._columns
-        self.cursor.y = self.y + cell_y * self.height / self._rows
+        self.cursor.x = self.x + cell_x * self.width / self.columns
+        self.cursor.y = self.y + cell_y * self.height / self.rows
         self.cursor.width, self.cursor.height = self.cell_size
 
     def hide_cursor(self):
@@ -98,11 +98,11 @@ class GameGrid(BoxWidget):
 
     @property
     def cell_width(self) -> float:
-        return self.width / self._columns
+        return self.width / self.columns
 
     @property
     def cell_height(self) -> float:
-        return self.height / self._rows
+        return self.height / self.rows
 
     @property
     def cell_size(self) -> tuple[float, float]:

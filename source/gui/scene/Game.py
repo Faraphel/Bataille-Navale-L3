@@ -4,6 +4,7 @@ import pyglet
 
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
+from source.gui.widget.grid import GameGridAlly, GameGridEnemy
 from source import core
 
 if TYPE_CHECKING:
@@ -30,9 +31,11 @@ class Game(Scene):
         )
 
         self.grid_ally = self.add_widget(
-            widget.GameGrid,
+            GameGridAlly,
 
             x=75, y=0.25, width=0.35, height=0.5,
+
+            boats_length=(5, 5, 4, 3, 2),
 
             style=texture.Grid.Style1,
             rows=8, columns=8,
@@ -43,7 +46,7 @@ class Game(Scene):
         )
 
         self.grid_enemy = self.add_widget(
-            widget.GameGrid,
+            GameGridEnemy,
 
             x=lambda widget: widget.scene.window.width - 75 - widget.width, y=0.25, width=0.35, height=0.5,
 
@@ -160,8 +163,11 @@ class Game(Scene):
 
         self.batch_button_background.draw()
         self.batch_input_background.draw()
-        self.batch_grid_background.draw()
-        self.batch_grid_line.draw()
-        self.batch_grid_cursor.draw()
+        # self.batch_grid_background.draw()
+        # self.batch_grid_line.draw()
+        # self.batch_grid_cursor.draw()
 
         self.batch_label.draw()
+
+        self.grid_ally.draw()  # DEBUG
+        self.grid_enemy.draw()  # DEBUG
