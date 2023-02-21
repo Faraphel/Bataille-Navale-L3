@@ -1,11 +1,11 @@
-from . import _image_path
+from . import path
 from .abc import Style
 
-_image_path = _image_path + "button/"
+path = path / "button"
 
 
 class Button:
     class Style1(Style):
-        normal = _image_path + "normal.png"
-        click = _image_path + "clicking.png"
-        hover = _image_path + "hovering.png"
+        normal = path / "normal.png"
+        click = path / "clicking.png"
+        hover = path / "hovering.png"

@@ -1,4 +1,5 @@
 from abc import ABC
+from pathlib import Path
 from typing import Optional, Any
 
 import pyglet
@@ -8,9 +9,23 @@ class Style(ABC):
     def __init_subclass__(cls, **kwargs):
         atlas = pyglet.image.atlas.TextureAtlas()
 
-        for name, path in cls.__dict__.items():
+        for name, args in cls.__dict__.items():
             if name.startswith("_"): continue
-            setattr(cls, name, atlas.add(pyglet.image.load(path)))
+
+            if isinstance(args, Path):  # if this is a normal path for a normal image
+                path = args
+                texture = atlas.add(pyglet.image.load(path))
+
+            elif isinstance(args, tuple):  # if this is a tuple for an animation
+                paths, duration, loop = args
+
+                textures = map(lambda path: atlas.add(pyglet.image.load(path)), paths)
+                texture = pyglet.image.Animation.from_image_sequence(textures, duration, loop)
+
+            else:
+                raise ValueError(f"Invalid type : {type(args)}")
+
+            setattr(cls, name, texture)
 
         setattr(cls, "_atlas", atlas)
 

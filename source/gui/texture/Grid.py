@@ -1,17 +1,28 @@
-from . import _image_path
+from . import path
 from .abc import Style
 
-_image_path = _image_path + "grid/"
-_image_boat_path = _image_path + "boat/"
+path = path / "grid"
+path_boat = path / "boat"
+path_bomb = path / "bomb"
 
 
 class Grid:
     class Style1(Style):
-        background = _image_path + "background.png"
+        background = path / "background.png"
 
     class Boat:
         class Style1(Style):
-            body = _image_boat_path + "body.png"
-            edge = _image_boat_path + "edge.png"
-            broken = _image_boat_path + "broken.png"
-            solo = _image_boat_path + "solo.png"
+            body = path_boat / "body.png"
+            edge = path_boat / "edge.png"
+            broken = path_boat / "broken.png"
+            solo = path_boat / "solo.png"
+
+    class Bomb:
+        class Style1(Style):
+            _animation = sorted(
+                    (path_bomb / "animation").iterdir(),
+                    key=lambda path: int(path.stem)
+            )
+
+            missed = [*_animation, path_bomb / "missed.png"], 0.03, False
+            touched = [*_animation, path_bomb / "touched.png"], 0.03, False

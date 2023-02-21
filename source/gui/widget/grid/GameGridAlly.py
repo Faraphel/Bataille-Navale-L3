@@ -1,5 +1,5 @@
 from copy import copy
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 import pyglet
 import numpy as np
@@ -8,6 +8,7 @@ from source.core.enums import Orientation
 from source.core.error import InvalidBoatPosition
 from source.gui import texture
 from source.gui.sprite import Sprite
+from source.gui.texture.abc import Style
 from source.gui.widget.grid.abc import GameGrid
 from source.core import Board, Boat
 from source.type import Point2D, ColorRGB
@@ -20,13 +21,18 @@ if TYPE_CHECKING:
 class GameGridAlly(GameGrid):
     def __init__(self, scene: "Scene",
 
+                 rows: int,
+                 columns: int,
+
+                 style: Type[Style],
+
                  boats_length: list[int],
                  preview_color: ColorRGB = (150, 255, 150),
 
                  **kwargs):
         self.cell_sprites: dict[Point2D, "Sprite"] = {}
 
-        super().__init__(scene, **kwargs)
+        super().__init__(scene, rows, columns, style, **kwargs)
 
         self.boats_length = boats_length  # the list of the size of the boats to place
         self.preview_color = preview_color

@@ -1,10 +1,10 @@
-from . import _image_path
+from . import path
 from .abc import Style
 
-_image_path = _image_path + "scroller/"
+path = path / "scroller"
 
 
 class Scroller:
     class Style1(Style):
-        background = _image_path + "background.png"
-        cursor = _image_path + "cursor.png"
+        background = path / "background.png"
+        cursor = path / "cursor.png"

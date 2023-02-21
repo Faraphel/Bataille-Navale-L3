@@ -1,9 +1,10 @@
-_image_path: str = "./assets/image/"
+from pathlib import Path
 
+path: Path = Path("./assets/image")
 
-from .Background import Background  # NOQA: E402
-from .Button import Button  # NOQA: E402
-from .Checkbox import Checkbox  # NOQA: E402
-from .Grid import Grid  # NOQA: E402
-from .Input import Input  # NOQA: E402
-from .Scroller import Scroller  # NOQA: E402
+from .Background import Background
+from .Button import Button
+from .Checkbox import Checkbox
+from .Grid import Grid
+from .Input import Input
+from .Scroller import Scroller
