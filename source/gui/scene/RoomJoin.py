@@ -70,12 +70,15 @@ class RoomJoin(Scene):
             label_batch=self.batch_label
         )
 
-        self.connect.add_listener("on_click_release", lambda *_: network.Client(
+        self.connect.add_listener("on_click_release", self.button_connect)
+
+    def button_connect(self, *_):
+        network.Client(
             window=self.window,
             ip_address=self.entry_ip.text,
             daemon=True,
             username="Client"
-        ).start())
+        ).start()
 
     def button_back_callback(self, *_):
         from source.gui.scene import MainMenu

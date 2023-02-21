@@ -105,6 +105,9 @@ class Input(BoxWidget):
         if symbol == pyglet.window.key.BACKSPACE:  # si la touche "supprimé" est enfoncé
             self.text = self.text[0:-1]  # retire le dernier caractère du texte
 
+        if symbol == pyglet.window.key.ENTER:
+            self.trigger_event("on_enter")
+
     def on_text(self, char: str):
         if not self.activated: return  # ignore si ce widget est désactivé / non sélectionné
         self.text += char  # ajoute le caractère au label

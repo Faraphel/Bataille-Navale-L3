@@ -12,13 +12,16 @@ if TYPE_CHECKING:
 
 
 class RoomCreate(Scene):
-    def __init__(self, window: "Window", *args, **kwargs):
-        super().__init__(window, *args, **kwargs)
+    def __init__(self, window: "Window", **kwargs):
+        super().__init__(window, **kwargs)
 
-        r = requests.get('https://api.ipify.org')
+        """r = requests.get('https://api.ipify.org')
         r.raise_for_status()
         ip_address: str = r.content.decode('utf8')
-        port: int = 52321
+        port: int = 52321"""
+
+        ip_address = "127.0.0.1"
+        port = 52321
 
         self.batch_button_background = pyglet.graphics.Batch()
         self.batch_label = pyglet.graphics.Batch()

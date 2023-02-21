@@ -1,5 +1,4 @@
 A faire :
-- Prévisualisation des bateaux sur la grille avant de placer
 - Ecran de configuration de la partie
 - Nom dans les options
 

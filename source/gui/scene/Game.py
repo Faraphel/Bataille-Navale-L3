@@ -1,3 +1,4 @@
+import socket
 from typing import TYPE_CHECKING
 
 import pyglet
@@ -6,14 +7,17 @@ from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 from source.gui.widget.grid import GameGridAlly, GameGridEnemy
 from source import core
+from source.network.SocketType import SocketType
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
 class Game(Scene):
-    def __init__(self, window: "Window", **kwargs):
+    def __init__(self, window: "Window", connection: socket.socket, **kwargs):
         super().__init__(window, **kwargs)
+
+        self.connection = connection
 
         self.batch_label = pyglet.graphics.Batch()
         self.batch_button_background = pyglet.graphics.Batch()
@@ -134,6 +138,12 @@ class Game(Scene):
             background_batch=self.batch_input_background,
             label_batch=self.batch_label,
         )
+
+        def send_chat():
+            connection.send(SocketType["CHAT"].value.to_bytes(1, "big"))
+            connection.send(self.chat_input.text.encode())
+
+        self.chat_input.add_listener("on_enter", send_chat)
         
         self.button_save = self.add_widget(
             widget.Button,

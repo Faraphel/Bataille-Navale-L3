@@ -2,7 +2,6 @@ from typing import Type, TYPE_CHECKING
 
 import pyglet
 
-from source.gui import texture
 from source.gui.texture.abc import Style
 from source.gui.widget.grid.abc import GameGrid
 from source.gui.sprite import Sprite
