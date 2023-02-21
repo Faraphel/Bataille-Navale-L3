@@ -141,6 +141,14 @@ class Board:
             bombs=np.array(json_["bombs"], dtype=np.bool_)
         )
 
+    def __copy__(self):
+        return self.__class__(
+            rows=self._rows,
+            columns=self._columns,
+            boats=self._boats.copy(),
+            bombs=self._bombs.copy(),
+        )
+
 
 if __name__ == "__main__":
     board = Board(5)

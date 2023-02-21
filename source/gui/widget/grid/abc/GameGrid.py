@@ -64,7 +64,10 @@ class GameGrid(BoxWidget):
         Return the cell of the grid from a point relative position
         """
 
-        return int(rel_x / self.cell_width), int(rel_y / self.cell_height)
+        return (
+            int((rel_x-1) / self.cell_width),
+            int((rel_y-1) / self.cell_height)
+        )
 
     # refresh
 

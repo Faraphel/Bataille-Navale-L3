@@ -1,3 +1,4 @@
+from copy import copy
 from typing import TYPE_CHECKING
 
 import pyglet
@@ -9,7 +10,7 @@ from source.gui import texture
 from source.gui.sprite import Sprite
 from source.gui.widget.grid.abc import GameGrid
 from source.core import Board, Boat
-from source.type import Point2D
+from source.type import Point2D, ColorRGB
 from source.utils import dict_filter_prefix
 
 if TYPE_CHECKING:
@@ -17,14 +18,21 @@ if TYPE_CHECKING:
 
 
 class GameGridAlly(GameGrid):
-    def __init__(self, scene: "Scene", boats_length: list[int], **kwargs):
+    def __init__(self, scene: "Scene",
+
+                 boats_length: list[int],
+                 preview_color: ColorRGB = (150, 255, 150),
+
+                 **kwargs):
         self.cell_sprites: dict[Point2D, "Sprite"] = {}
 
         super().__init__(scene, **kwargs)
 
-        self.orientation: Orientation = Orientation.HORIZONTAL
         self.boats_length = boats_length  # the list of the size of the boats to place
+        self.preview_color = preview_color
+
         self.board = Board(rows=self.rows, columns=self.columns)
+        self.orientation: Orientation = Orientation.HORIZONTAL
 
         self._cell_kwargs = dict_filter_prefix("cell_", kwargs)
 
@@ -49,10 +57,11 @@ class GameGridAlly(GameGrid):
             sprite.width = width
             sprite.height = height
 
-    def _refresh_board(self):
+    def display_board(self, board: Board, preview: bool = False):
         self.cell_sprites: dict[Point2D, "Sprite"] = {}
 
-        matrice = self.board.get_matrice()
+        matrice = board.get_matrice()
+        max_boat: int = matrice.max()
 
         for (y, x), value in np.ndenumerate(matrice):
             if value == 0: continue
@@ -80,6 +89,9 @@ class GameGridAlly(GameGrid):
             )
             sprite.rotation = rotation * 90
 
+            if preview and value == max_boat:  # if in preview and it is the latest boat
+                sprite.color = self.preview_color   # make the image more greenish
+
             self.cell_sprites[(x, y)] = sprite
 
         self._refresh_size()
@@ -90,31 +102,58 @@ class GameGridAlly(GameGrid):
             Orientation.VERTICAL
         )
 
-    def place_boat(self, x, y):
-        rel_x, rel_y = x - self.x, y - self.y
-        cell_x, cell_y = self.get_cell_from_rel(rel_x, rel_y)
+    def place_boat(self, cell: Point2D):
+        if len(self.boats_length) == 0: return
 
         try:
             self.board.add_boat(
                 Boat(self.boats_length[0], orientation=self.orientation),
-                (cell_x, cell_y)
+                cell
+            )
+        except InvalidBoatPosition: pass  # if the boat can't be placed, ignore
+
+        else:  # if the boat have been placed
+            self.boats_length.pop(0)  # remove the boat from the list of boat to place
+
+        self.display_board(self.board)
+
+    def preview_boat(self, cell: Point2D):
+        if len(self.boats_length) == 0: return
+
+        try:
+            preview_board = copy(self.board)
+            preview_board.add_boat(
+                Boat(self.boats_length[0], orientation=self.orientation),
+                cell
             )
 
-        except InvalidBoatPosition:
-            return
-
-        else:
-            self.boats_length.pop(0)
-
-        self._refresh_board()
+        except InvalidBoatPosition: self.display_board(self.board)  # if the boat can't be placed, ignore
+        else: self.display_board(preview_board, preview=True)
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         super().on_mouse_release(x, y, button, modifiers)
 
-        if button == pyglet.window.mouse.RIGHT: self.swap_orientation()
-        if button == pyglet.window.mouse.LEFT: self.place_boat(x, y)
+        rel_x, rel_y = x - self.x, y - self.y
+        cell = self.get_cell_from_rel(rel_x, rel_y)
+
+        match button:
+            case pyglet.window.mouse.RIGHT:
+                self.swap_orientation()
+                self.preview_boat(cell)
+
+            case pyglet.window.mouse.LEFT:
+                self.place_boat(cell)
+
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+        super().on_mouse_motion(x, y, dx, dy)
+
+        rel_x, rel_y = x - self.x, y - self.y
+        cell = self.get_cell_from_rel(rel_x, rel_y)
+
+        self.preview_boat(cell)
 
     def draw(self):
-        super().draw()
-        for sprite in self.cell_sprites.values():
-            sprite.draw()
+        self.background.draw()
+        for sprite in self.cell_sprites.values(): sprite.draw()
+        self.cursor.draw()
+        for line in self.lines: line.draw()

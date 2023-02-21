@@ -1,7 +1,7 @@
 import pyglet.window
 
 from source.gui.window import Window
-from source.type import Color
+from source.type import ColorRGBA
 
 
 class GameWindow(Window):  # NOQA
@@ -11,7 +11,7 @@ class GameWindow(Window):  # NOQA
 
     def __init__(self,
 
-                 fps_color: Color = (255, 255, 255, 200),
+                 fps_color: ColorRGBA = (255, 255, 255, 200),
                  fps_enable: bool = True,
 
                  *args, **kwargs):
