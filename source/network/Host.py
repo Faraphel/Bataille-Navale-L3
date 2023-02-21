@@ -1,28 +1,23 @@
 import socket
-from threading import Thread
 from typing import TYPE_CHECKING
 
 import pyglet
 
 from source.gui import scene
 from source.network.SocketType import SocketType
+from source.utils import StoppableThread
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class Host(Thread):
+class Host(StoppableThread):
     def __init__(self, window: "Window", username: str, port: int = 52321, **kw):
         super().__init__(**kw)
-
-        self._stop = False
 
         self.window = window
         self.username = username
         self.port = port
-
-    def stop(self) -> None:
-        self._stop = True
 
     def run(self) -> None:
         print("[Serveur] Thread démarré")
