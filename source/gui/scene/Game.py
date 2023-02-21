@@ -22,6 +22,7 @@ class Game(Scene):
         self.batch_grid_line = pyglet.graphics.Batch()
         self.batch_grid_cursor = pyglet.graphics.Batch()
         self.batch_grid_boat = pyglet.graphics.Batch()
+        self.batch_grid_bomb = pyglet.graphics.Batch()
 
         self.background = self.add_widget(
             widget.Image,
@@ -38,7 +39,8 @@ class Game(Scene):
 
             boats_length=[5, 5, 4, 3, 2],
 
-            style=texture.Grid.Style1,
+            grid_style=texture.Grid.Style1,
+            boat_style=texture.Grid.Boat.Style1,
             rows=8, columns=8,
 
             background_batch=self.batch_grid_background,
@@ -52,12 +54,14 @@ class Game(Scene):
 
             x=lambda widget: widget.scene.window.width - 75 - widget.width, y=0.25, width=0.35, height=0.5,
 
-            style=texture.Grid.Style1,
+            grid_style=texture.Grid.Style1,
+            bomb_style=texture.Grid.Bomb.Style1,
             rows=8, columns=8,
 
             background_batch=self.batch_grid_background,
             line_batch=self.batch_grid_line,
             cursor_batch=self.batch_grid_cursor,
+            bomb_batch=self.batch_grid_bomb
         )
 
         self.name_ally = self.add_widget(
@@ -167,6 +171,7 @@ class Game(Scene):
         self.batch_input_background.draw()
         self.batch_grid_background.draw()
         self.batch_grid_boat.draw()
+        self.batch_grid_bomb.draw()
         self.batch_grid_line.draw()
         self.batch_grid_cursor.draw()
 

@@ -24,7 +24,8 @@ class GameGridAlly(GameGrid):
                  rows: int,
                  columns: int,
 
-                 style: Type[Style],
+                 grid_style: Type[Style],
+                 boat_style: Type[Style],
 
                  boats_length: list[int],
                  preview_color: ColorRGB = (150, 255, 150),
@@ -32,7 +33,7 @@ class GameGridAlly(GameGrid):
                  **kwargs):
         self.cell_sprites: dict[Point2D, "Sprite"] = {}
 
-        super().__init__(scene, rows, columns, style, **kwargs)
+        super().__init__(scene, rows, columns, grid_style, **kwargs)
 
         self.boats_length = boats_length  # the list of the size of the boats to place
         self.preview_color = preview_color
@@ -41,6 +42,7 @@ class GameGridAlly(GameGrid):
         self.orientation: Orientation = Orientation.HORIZONTAL
 
         self._boat_kwargs = dict_filter_prefix("boat_", kwargs)
+        self.boat_style = boat_style
 
         self.add_listener("on_click_release", self.on_click_release)
         self.add_listener("on_hover", lambda rel_x, rel_y: self.preview_boat(self.get_cell_from_rel(rel_x, rel_y)))
@@ -94,7 +96,7 @@ class GameGridAlly(GameGrid):
             )
 
             sprite = Sprite(
-                img=texture.Grid.Boat.Style1.get(form),
+                img=self.boat_style.get(form),
                 **self._boat_kwargs
             )
             sprite.rotation = rotation * 90

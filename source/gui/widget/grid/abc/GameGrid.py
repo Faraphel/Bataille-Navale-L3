@@ -55,8 +55,6 @@ class GameGrid(BoxWidget):
         self.add_listener("on_hover_leave", lambda *_: self.hide_cursor())
         self.add_listener("on_hover", self._refresh_cursor)
 
-        self.add_listener("on_click_release", lambda rel_x, rel_y, *_: print("click", self.get_cell_from_rel(rel_x, rel_y)))
-
         self._refresh_size()
 
     def get_cell_from_rel(self, rel_x: int, rel_y: int) -> tuple[int, int]:
