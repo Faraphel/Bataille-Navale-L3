@@ -21,6 +21,7 @@ class Game(Scene):
         self.batch_grid_background = pyglet.graphics.Batch()
         self.batch_grid_line = pyglet.graphics.Batch()
         self.batch_grid_cursor = pyglet.graphics.Batch()
+        self.batch_grid_boat = pyglet.graphics.Batch()
 
         self.background = self.add_widget(
             widget.Image,
@@ -43,6 +44,7 @@ class Game(Scene):
             background_batch=self.batch_grid_background,
             line_batch=self.batch_grid_line,
             cursor_batch=self.batch_grid_cursor,
+            boat_batch=self.batch_grid_boat,
         )
 
         self.grid_enemy = self.add_widget(
@@ -163,11 +165,11 @@ class Game(Scene):
 
         self.batch_button_background.draw()
         self.batch_input_background.draw()
-        # self.batch_grid_background.draw()
-        # self.batch_grid_line.draw()
-        # self.batch_grid_cursor.draw()
+        self.batch_grid_background.draw()
+        self.batch_grid_boat.draw()
+        self.batch_grid_line.draw()
+        self.batch_grid_cursor.draw()
 
         self.batch_label.draw()
 
-        self.grid_ally.draw()  # DEBUG
         self.grid_enemy.draw()  # DEBUG

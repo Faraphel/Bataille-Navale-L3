@@ -40,9 +40,13 @@ class GameGridAlly(GameGrid):
         self.board = Board(rows=self.rows, columns=self.columns)
         self.orientation: Orientation = Orientation.HORIZONTAL
 
-        self._cell_kwargs = dict_filter_prefix("cell_", kwargs)
+        self._boat_kwargs = dict_filter_prefix("boat_", kwargs)
+
+        self.add_listener("on_click_release", self.on_click_release)
+        self.add_listener("on_hover", lambda rel_x, rel_y: self.preview_boat(self.get_cell_from_rel(rel_x, rel_y)))
 
     # refresh
+
     def _refresh_size(self):
         super()._refresh_size()
 
@@ -91,7 +95,7 @@ class GameGridAlly(GameGrid):
 
             sprite = Sprite(
                 img=texture.Grid.Boat.Style1.get(form),
-                **self._cell_kwargs
+                **self._boat_kwargs
             )
             sprite.rotation = rotation * 90
 
@@ -136,10 +140,7 @@ class GameGridAlly(GameGrid):
         except InvalidBoatPosition: self.display_board(self.board)  # if the boat can't be placed, ignore
         else: self.display_board(preview_board, preview=True)
 
-    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
-        super().on_mouse_release(x, y, button, modifiers)
-
-        rel_x, rel_y = x - self.x, y - self.y
+    def on_click_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):
         cell = self.get_cell_from_rel(rel_x, rel_y)
 
         match button:
@@ -149,14 +150,6 @@ class GameGridAlly(GameGrid):
 
             case pyglet.window.mouse.LEFT:
                 self.place_boat(cell)
-
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
-        super().on_mouse_motion(x, y, dx, dy)
-
-        rel_x, rel_y = x - self.x, y - self.y
-        cell = self.get_cell_from_rel(rel_x, rel_y)
-
-        self.preview_boat(cell)
 
     def draw(self):
         self.background.draw()

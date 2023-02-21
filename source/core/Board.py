@@ -25,7 +25,7 @@ class Board:
         self._boats: dict[Boat, Point2D] = {} if boats is None else boats
 
         # position that have been shot by a bomb
-        self._bombs: np.array = np.ones((self._columns, self._rows), dtype=np.bool_) if bombs is None else bombs
+        self._bombs: np.array = np.ones((self._rows, self._columns), dtype=np.bool_) if bombs is None else bombs
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} width={self._columns}, height={self._rows}>"
@@ -113,7 +113,7 @@ class Board:
         """
         :return: the boat represented as a matrice
         """
-        board = np.zeros((self._columns, self._rows), dtype=np.ushort)
+        board = np.zeros((self._rows, self._columns), dtype=np.ushort)
 
         for index, (boat, position) in enumerate(self._boats.items(), start=1):
             # Paste the boat into the board at the correct position.
