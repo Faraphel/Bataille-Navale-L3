@@ -1,4 +1,8 @@
+from queue import Queue
 from threading import Thread
+from typing import Any, Callable
+
+import pyglet
 
 
 class StoppableThread(Thread):
@@ -9,7 +13,13 @@ class StoppableThread(Thread):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._stop = False
+        self.stopped = False
 
     def stop(self) -> None:
-        self._stop = True
+        self.stopped = True
+
+
+def in_pyglet_context(func: Callable, *args, **kwargs) -> Any:
+    queue = Queue()
+    pyglet.clock.schedule_once(lambda dt: queue.put(func(*args, **kwargs)), 0)
+    return queue.get()

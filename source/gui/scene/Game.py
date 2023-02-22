@@ -7,8 +7,7 @@ from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 from source.gui.widget.grid import GameGridAlly, GameGridEnemy
 from source import core
-from source.network.SocketType import SocketType
-from source.network.packet.Bomb import Bomb
+from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced
 from source.type import Point2D
 
 if TYPE_CHECKING:
@@ -56,7 +55,7 @@ class Game(Scene):
         )
 
         def board_ally_ready():
-            connection.send(SocketType.BOAT_PLACED.value.to_bytes(1, "big"))
+            PacketBoatPlaced().send_connection(connection)
 
         self.grid_ally.add_listener("on_all_boats_placed", board_ally_ready)
 
@@ -76,8 +75,7 @@ class Game(Scene):
         )
 
         def board_enemy_bomb(cell: Point2D):
-            connection.send(SocketType.BOMB.value.to_bytes(1, "big"))
-            connection.send(Bomb(x=cell[0], y=cell[1]).to_bytes())
+            PacketBombPlaced(position=cell).send_connection(connection)
 
         self.grid_enemy.add_listener("on_request_place_bomb", board_enemy_bomb)
 
@@ -159,8 +157,7 @@ class Game(Scene):
             self.chat_log.text += "\n" + text
             self.chat_log.label.y = self.chat_log.y + self.chat_log.label.content_height
 
-            connection.send(SocketType["CHAT"].value.to_bytes(1, "big"))
-            connection.send(text.encode())
+            PacketChat(message=text).send_connection(connection)
 
         self.chat_input.add_listener("on_enter", send_chat)
         
@@ -205,5 +202,3 @@ class Game(Scene):
         self.batch_grid_cursor.draw()
 
         self.batch_label.draw()
-
-        self.grid_enemy.draw()  # DEBUG
