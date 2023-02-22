@@ -6,6 +6,11 @@ from source.gui.event import StopEvent
 
 
 class EventPropagationMixin:
+    """
+    This class can be subclassed to allow the subclass to propagate all the call to the method that start by
+    "on_" to the object in the "childs" property.
+    """
+
     @property
     @abstractmethod
     def childs(self):

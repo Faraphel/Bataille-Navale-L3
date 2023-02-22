@@ -2,16 +2,13 @@ from enum import Enum
 
 
 class BombState(Enum):
-    NOTHING = 0
-    TOUCHED = 1
-    SUNKEN = 2
-    WON = 3
+    """
+    This class represent the state of a bomb after being place on the board.
+    """
 
-    ERROR = 10
+    NOTHING = 0  # the bomb missed
+    TOUCHED = 1  # the bomb touched a boat
+    SUNKEN = 2  # the bomb touched the last part of a boat
+    WON = 3  # the bomb sunk the last boat
 
-    def to_bytes(self) -> bytes:
-        return self.value.to_bytes(1, "big")
-
-    @classmethod
-    def from_bytes(cls, data: bytes):
-        return cls(int.from_bytes(data, "big"))
+    ERROR = 10  # the bomb could not be placed

@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 
 
 class GameGridEnemy(GameGrid):
+    """
+    A game grid that represent the enemy grid.
+    """
+
     def __init__(self, scene: "Scene",
 
                  rows: int,

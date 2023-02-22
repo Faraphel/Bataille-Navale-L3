@@ -18,6 +18,10 @@ if TYPE_CHECKING:
 
 
 class GameGridAlly(GameGrid):
+    """
+    A game grid that represent the ally grid.
+    """
+
     def __init__(self, scene: "Scene",
 
                  rows: int,

@@ -14,6 +14,10 @@ if TYPE_CHECKING:
 
 
 class Input(BoxWidget):
+    """
+    An input widget with a background texture and a label. A regex pattern can be added to validate the input.
+    """
+
     def __init__(self, scene: "Scene",
 
                  style: Type[Style],

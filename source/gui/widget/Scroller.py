@@ -13,6 +13,11 @@ if TYPE_CHECKING:
 
 
 class Scroller(BoxWidget):
+    """
+    A scroller widget with a background texture, a scroller and a label.
+    The cursor can be moved between the "from" and the "to" value
+    """
+
     def __init__(self, scene: "Scene",
 
                  style: Type[Style],

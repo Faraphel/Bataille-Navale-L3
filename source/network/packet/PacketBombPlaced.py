@@ -1,4 +1,3 @@
-import socket
 from dataclasses import dataclass, field
 
 from source.network.packet.abc import Packet
@@ -7,6 +6,10 @@ from source.type import Point2D
 
 @dataclass
 class PacketBombPlaced(Packet):
+    """
+    A packet that signal that a bomb have been placed on the board
+    """
+
     position: Point2D = field()
 
     packet_size: int = 2

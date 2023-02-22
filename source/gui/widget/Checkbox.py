@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 
 
 class Checkbox(BoxWidget):
+    """
+    A checkbox widget with a background texture that change depending on if it is checked or unchecked.
+    """
+
     def __init__(self, scene: "Scene",
 
                  style: Type[Style],

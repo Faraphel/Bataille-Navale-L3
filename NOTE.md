@@ -6,6 +6,7 @@ A faire :
 - Police d'écriture
 
 - Voir si les event listener intégré à pyglet sont plus pratique que l'event propagation
+- Documenter
 
 Bug : 
 - /
@@ -14,8 +15,9 @@ Autre :
 - Tester sur Linux
 
 
-
-
+A expliquer : 
+- in_pyglet_context
+- Packet
 
 
 Bonus ultime : 

@@ -6,6 +6,14 @@ import pyglet
 
 
 class Style(ABC):
+    """
+    This class represent a style that can be attached to a widget.
+    All property of the class will be loaded into a pyglet image.
+
+    If the property is associated to only a Path, a simple image will be loaded.
+    If the property is associated to a list of Path, an animation will be loaded.
+    """
+
     def __init_subclass__(cls, **kwargs):
         atlas = pyglet.image.atlas.TextureAtlas()
 

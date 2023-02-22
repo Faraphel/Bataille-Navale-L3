@@ -9,6 +9,10 @@ if TYPE_CHECKING:
 
 
 class Client(StoppableThread):
+    """
+    The thread executed on the person who join a room.
+    """
+
     def __init__(self, window: "Window", username: str, ip_address: str, port: int = 52321, **kw):
         super().__init__(**kw)
 

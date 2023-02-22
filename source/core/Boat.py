@@ -4,6 +4,11 @@ from source.core.enums import Orientation
 
 
 class Boat:
+    """
+    Represent a boat.
+    It can be added to a board.
+    """
+
     __slots__ = ("orientation", "length")
 
     def __init__(self, length: int, orientation: Orientation):

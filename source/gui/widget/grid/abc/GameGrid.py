@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 
 
 class GameGrid(BoxWidget):
+    """
+    A widget that represent a game grid.
+    """
+
     def __init__(self, scene: "Scene",
 
                  rows: int,

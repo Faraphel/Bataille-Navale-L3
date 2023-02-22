@@ -1,4 +1,3 @@
-import socket
 from dataclasses import dataclass, field
 
 from source.network.packet.abc import Packet
@@ -6,6 +5,10 @@ from source.network.packet.abc import Packet
 
 @dataclass
 class PacketChat(Packet):
+    """
+    A packet that represent a message from the chat
+    """
+
     message: str = field()
 
     packet_size: int = 256

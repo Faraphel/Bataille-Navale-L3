@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class BoxWidget(Widget, ABC):
     """
-    Same as a basic widget, but represent a box
+    Same as a basic widget, but inside a box
     """
 
     def __init__(self, scene: "Scene",

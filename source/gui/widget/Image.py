@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class Image(BoxWidget):
+    """
+    An image widget with a texture.
+    """
+
     def __init__(self, scene: "Scene",
 
                  image: pyglet.image.AbstractImage,

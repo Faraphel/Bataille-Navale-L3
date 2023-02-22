@@ -2,6 +2,10 @@ from enum import Enum
 
 
 class Orientation(Enum):
+    """
+    Represent the orientation of a boat.
+    """
+
     HORIZONTAL = "H"
     VERTICAL = "V"
 

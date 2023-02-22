@@ -13,6 +13,13 @@ from source.utils.thread import in_pyglet_context
 
 
 def game_network(thread: "StoppableThread", window: "Window", connection: socket.socket):
+    """
+    Run the networking to make the game work and react with the other player
+    :param thread: the thread where this function is called.
+    :param window: the window of the game
+    :param connection: the connection with the other player
+    """
+
     game_scene = in_pyglet_context(window.set_scene, scene.Game, connection=connection)
 
     while True:

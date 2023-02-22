@@ -1,11 +1,14 @@
 from dataclasses import dataclass
-import socket
 
 from source.network.packet.abc import Packet
 
 
 @dataclass
 class PacketBoatPlaced(Packet):
+    """
+    A packet that signal that all the boat of the player have been placed
+    """
+
     packet_size: int = 0
 
     def to_bytes(self):

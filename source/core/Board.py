@@ -8,6 +8,11 @@ from source.utils import copy_array_offset
 
 
 class Board:
+    """
+    Represent a board for the game.
+    Boat can be added and bomb can be placed.
+    """
+
     __slots__ = ("_columns", "_rows", "_boats", "_bombs")
 
     def __init__(

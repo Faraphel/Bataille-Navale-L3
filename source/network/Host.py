@@ -9,6 +9,10 @@ if TYPE_CHECKING:
 
 
 class Host(StoppableThread):
+    """
+    The thread executed on the person who create a room.
+    """
+
     def __init__(self, window: "Window", username: str, port: int = 52321, **kw):
         super().__init__(**kw)
 
