@@ -6,7 +6,6 @@ import numpy as np
 
 from source.core.enums import Orientation
 from source.core.error import InvalidBoatPosition
-from source.gui import texture
 from source.gui.sprite import Sprite
 from source.gui.texture.abc import Style
 from source.gui.widget.grid.abc import GameGrid
@@ -126,6 +125,8 @@ class GameGridAlly(GameGrid):
 
         else:  # if the boat have been placed
             self.boats_length.pop(0)  # remove the boat from the list of boat to place
+            if len(self.boats_length) == 0:
+                self.trigger_event("on_all_boats_placed")
 
         self.display_board(self.board)
 

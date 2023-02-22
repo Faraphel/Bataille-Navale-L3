@@ -32,6 +32,14 @@ class Text(BoxWidget):
 
         self._refresh_size()
 
+    @property
+    def text(self):
+        return self.label.text
+
+    @text.setter
+    def text(self, text: str):
+        self.label.text = text
+
     def _refresh_size(self):
         self.label.x, self.label.y = self.xy
         self.label.width, self.label.height = self.size

@@ -81,13 +81,13 @@ class Board:
         if x >= self._columns or y >= self._rows: raise InvalidBombPosition(position)
 
         # if this position have already been shot
-        if not self._bombs[position]: raise PositionAlreadyShot(position)
+        if not self._bombs[y, x]: raise PositionAlreadyShot(position)
 
         # get the old board matrice
         board_mat_old_sum = self.get_matrice().sum()
 
         # place the bomb (setting the position to False cause the matrice multiplication to remove the boat if any)
-        self._bombs[position] = False
+        self._bombs[y, x] = False
 
         # get the new board matrice
         board_mat_new = self.get_matrice()

@@ -8,3 +8,10 @@ class BombState(Enum):
     WON = 3
 
     ERROR = 10
+
+    def to_bytes(self) -> bytes:
+        return self.value.to_bytes(1, "big")
+
+    @classmethod
+    def from_bytes(cls, data: bytes):
+        return cls(int.from_bytes(data, "big"))

@@ -8,6 +8,8 @@ from source.gui import widget, texture
 from source.gui.widget.grid import GameGridAlly, GameGridEnemy
 from source import core
 from source.network.SocketType import SocketType
+from source.network.packet.Bomb import Bomb
+from source.type import Point2D
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -53,6 +55,11 @@ class Game(Scene):
             boat_batch=self.batch_grid_boat,
         )
 
+        def board_ally_ready():
+            connection.send(SocketType.BOAT_PLACED.value.to_bytes(1, "big"))
+
+        self.grid_ally.add_listener("on_all_boats_placed", board_ally_ready)
+
         self.grid_enemy = self.add_widget(
             GameGridEnemy,
 
@@ -67,6 +74,12 @@ class Game(Scene):
             cursor_batch=self.batch_grid_cursor,
             bomb_batch=self.batch_grid_bomb
         )
+
+        def board_enemy_bomb(cell: Point2D):
+            connection.send(SocketType.BOMB.value.to_bytes(1, "big"))
+            connection.send(Bomb(x=cell[0], y=cell[1]).to_bytes())
+
+        self.grid_enemy.add_listener("on_request_place_bomb", board_enemy_bomb)
 
         self.name_ally = self.add_widget(
             widget.Text,
@@ -119,10 +132,10 @@ class Game(Scene):
         self.chat_log = self.add_widget(
             widget.Text,
 
-            x=10, y=70, width=0.5,
+            x=10, y=35, width=0.5,
 
-            text="FARAPHEL - HELLO BILLY\nLEO - HELLO BOLLO",
-            anchor_x="left", anchor_y="baseline",
+            text="",
+            anchor_x="left",
             multiline=True,
 
             batch=self.batch_label,
@@ -131,7 +144,7 @@ class Game(Scene):
         self.chat_input = self.add_widget(
             widget.Input,
 
-            x=10, y=10, width=0.5, height=50,
+            x=10, y=10, width=0.5, height=30,
 
             style=texture.Button.Style1,
 
@@ -140,8 +153,14 @@ class Game(Scene):
         )
 
         def send_chat():
+            text = self.chat_input.text
+            self.chat_input.text = ""
+
+            self.chat_log.text += "\n" + text
+            self.chat_log.label.y = self.chat_log.y + self.chat_log.label.content_height
+
             connection.send(SocketType["CHAT"].value.to_bytes(1, "big"))
-            connection.send(self.chat_input.text.encode())
+            connection.send(text.encode())
 
         self.chat_input.add_listener("on_enter", send_chat)
         

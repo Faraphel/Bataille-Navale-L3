@@ -5,6 +5,8 @@ A faire :
 - Faire une scène incluant par défaut les boutons "Retour" (?)
 - Police d'écriture
 
+- Voir si les event listener intégré à pyglet sont plus pratique que l'event propagation
+
 Bug : 
 - /
 
@@ -17,4 +19,4 @@ Autre :
 
 
 Bonus ultime : 
-- Envoyer la texture de la grille à l'adversaire
+- Envoyer la texture de la grille à l'adversaire (???)

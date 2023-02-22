@@ -40,11 +40,9 @@ class GameGridEnemy(GameGrid):
             sprite.width = self.cell_width
             sprite.height = self.cell_height
 
-    def place_bomb(self, cell: Point2D):
-        from random import randint
-
+    def place_bomb(self, cell: Point2D, touched: bool):
         self.cell_sprites[cell] = Sprite(
-            img=self.bomb_style.get("touched" if randint(0, 1) else "missed"),
+            img=self.bomb_style.get("touched" if touched else "missed"),
             **self._bomb_kwargs
         )
 
@@ -54,7 +52,7 @@ class GameGridEnemy(GameGrid):
         cell = self.get_cell_from_rel(rel_x, rel_y)
 
         if button == pyglet.window.mouse.LEFT:
-            self.place_bomb(cell)
+            self.trigger_event("on_request_place_bomb", cell)
 
     def draw(self):
         self.background.draw()

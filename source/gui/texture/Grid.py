@@ -20,8 +20,8 @@ class Grid:
     class Bomb:
         class Style1(Style):
             _animation = sorted(
-                    (path_bomb / "animation").iterdir(),
-                    key=lambda path: int(path.stem)
+                (path_bomb / "animation").iterdir(),
+                key=lambda path: int(path.stem)
             )
 
             missed = [*_animation, path_bomb / "missed.png"], 0.03, False
