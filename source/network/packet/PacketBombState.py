@@ -11,6 +11,8 @@ class PacketBombState(Packet):
     position: Point2D = field()
     bomb_state: BombState = field()
 
+    packet_size: int = 3
+
     def to_bytes(self):
         x, y = self.position
 
@@ -29,7 +31,3 @@ class PacketBombState(Packet):
             ),
             bomb_state=BombState.from_bytes(data[2:3])
         )
-
-    @classmethod
-    def from_connection(cls, connection: socket.socket) -> "PacketBombState":
-        return cls.from_bytes(connection.recv(3))
