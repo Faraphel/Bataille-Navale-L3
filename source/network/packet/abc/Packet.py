@@ -47,8 +47,7 @@ class Packet(ABC):
         Send the packet directly into a socket.
         :param connection: the socket where to send the packet to.
         """
-        connection.send(self.packet_header)
-        connection.send(self.to_bytes())
+        connection.send(self.packet_header + self.to_bytes())
 
     @classmethod
     def cls_from_connection(cls, connection: socket.socket) -> Optional[Type["Packet"]]:
