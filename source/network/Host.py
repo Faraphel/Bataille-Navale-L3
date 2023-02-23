@@ -39,4 +39,4 @@ class Host(StoppableThread):
 
             print(f"[Serveur] Connecté avec {address}")
 
-            game_network(self, self.window, connection)
+            game_network(self, self.window, connection, True)

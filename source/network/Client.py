@@ -30,4 +30,4 @@ class Client(StoppableThread):
 
             print(f"[Client] Connecté avec {connection}")
 
-            game_network(self, self.window, connection)
+            game_network(self, self.window, connection, False)

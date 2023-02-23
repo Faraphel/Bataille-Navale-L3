@@ -8,16 +8,17 @@ A faire :
 - Voir si les event listener intégré à pyglet sont plus pratique que l'event propagation
 - Documenter
 
+- Ecran de victoire
+- Affichage des coups de l'opposant
+- Faire marcher le score
+- Faire marcher le tchat
+- Sauvegarde / Quitter
+
 Bug : 
 - /
 
 Autre :
 - Tester sur Linux
-
-
-A expliquer : 
-- in_pyglet_context
-- Packet
 
 
 Bonus ultime : 

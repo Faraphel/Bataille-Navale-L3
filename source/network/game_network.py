@@ -12,7 +12,7 @@ from source.utils import StoppableThread
 from source.utils.thread import in_pyglet_context
 
 
-def game_network(thread: "StoppableThread", window: "Window", connection: socket.socket):
+def game_network(thread: "StoppableThread", window: "Window", connection: socket.socket, host: bool):
     """
     Run the networking to make the game work and react with the other player
     :param thread: the thread where this function is called.
@@ -21,6 +21,7 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
     """
 
     game_scene = in_pyglet_context(window.set_scene, scene.Game, connection=connection)
+    game_scene.my_turn = host
 
     while True:
         data: Any = Packet.from_connection(connection)
@@ -34,6 +35,7 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
                 print(data.message)
 
             case packet.PacketBoatPlaced:
+                game_scene.boat_ready_enemy = True
                 print("adversaire à posé ses bateaux")
 
             case packet.PacketBombPlaced:
@@ -44,9 +46,16 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
 
                 packet.PacketBombState(position=data.position, bomb_state=bomb_state).send_connection(connection)
 
+                touched = bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON, BombState.ERROR]
+                game_scene.my_turn = not touched
+
             case packet.PacketBombState:
-                if data.bomb_state is BombState.ERROR: continue
+                print(data.bomb_state)
+                if data.bomb_state is BombState.ERROR:
+                    game_scene.my_turn = True
+                    continue
 
                 touched = data.bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON]
+                game_scene.my_turn = touched
 
                 in_pyglet_context(game_scene.grid_enemy.place_bomb, data.position, touched)

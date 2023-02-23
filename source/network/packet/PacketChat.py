@@ -13,7 +13,7 @@ class PacketChat(Packet):
 
     packet_size: int = 256
 
-    def to_bytes(self):
+    def to_bytes(self) -> bytes:
         return self.message.encode("utf-8")
 
     @classmethod

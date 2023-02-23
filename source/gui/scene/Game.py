@@ -18,6 +18,10 @@ class Game(Scene):
     def __init__(self, window: "Window", connection: socket.socket, **kwargs):
         super().__init__(window, **kwargs)
 
+        self.my_turn = False
+        self.boat_ready_ally = False
+        self.boat_ready_enemy = False
+
         self.connection = connection
 
         self.batch_label = pyglet.graphics.Batch()
@@ -55,6 +59,7 @@ class Game(Scene):
         )
 
         def board_ally_ready():
+            self.boat_ready_ally = True
             PacketBoatPlaced().send_connection(connection)
 
         self.grid_ally.add_listener("on_all_boats_placed", board_ally_ready)
@@ -75,7 +80,10 @@ class Game(Scene):
         )
 
         def board_enemy_bomb(cell: Point2D):
+            if not (self.boat_ready_ally and self.boat_ready_enemy): return
+            if not self.my_turn: return
             PacketBombPlaced(position=cell).send_connection(connection)
+            self.my_turn = False
 
         self.grid_enemy.add_listener("on_request_place_bomb", board_enemy_bomb)
 

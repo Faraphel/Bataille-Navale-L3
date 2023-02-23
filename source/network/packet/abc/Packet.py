@@ -83,4 +83,3 @@ class Packet(ABC):
         """
         subcls = cls.cls_from_connection(connection)
         return None if subcls is None else subcls.instance_from_connection(connection)
-
