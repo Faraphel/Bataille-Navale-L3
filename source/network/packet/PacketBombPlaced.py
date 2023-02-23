@@ -1,3 +1,5 @@
+import struct
+
 from dataclasses import dataclass, field
 
 from source.network.packet.abc import Packet
@@ -13,14 +15,13 @@ class PacketBombPlaced(Packet):
     position: Point2D = field()
 
     packet_size: int = 2
+    packet_format: str = ">BB"
 
     def to_bytes(self):
         x, y = self.position
-        return x.to_bytes(1, "big") + y.to_bytes(1, "big")
+        return struct.pack(self.packet_format, x, y)
 
     @classmethod
     def from_bytes(cls, data: bytes):
-        return cls(position=(
-            int.from_bytes(data[0:1], "big"),
-            int.from_bytes(data[1:2], "big"),
-        ))
+        x, y = struct.unpack(cls.packet_format, data)
+        return cls(position=(x, y))

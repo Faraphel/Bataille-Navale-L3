@@ -51,17 +51,36 @@ class Packet(ABC):
         connection.send(self.to_bytes())
 
     @classmethod
-    def from_connection(cls, connection: socket.socket) -> Optional["Packet"]:
+    def cls_from_connection(cls, connection: socket.socket) -> Optional[Type["Packet"]]:
+        """
+        Receive a packet type from a socket.
+        :param connection: the socket where to get the header from
+        :return: the packet class, or None if there was nothing in the socket to receive.
+        """
+        packet_header: Optional[bytes] = None
+        try:
+            packet_header = connection.recv(1)
+        except socket.timeout:
+            pass
+
+        return cls.cls_from_header(packet_header) if packet_header else None  # ignore si le header est invalide
+
+    @classmethod
+    def instance_from_connection(cls, connection: socket.socket) -> Optional["Packet"]:
+        """
+        Receive a packet instance data from a socket.
+        :param connection: the socket where to get the data from
+        :return: the packet, or None if there was nothing in the socket to receive.
+        """
+        return cls.from_bytes(connection.recv(cls.packet_size))
+
+    @classmethod
+    def from_connection(cls, connection: socket.socket) -> Optional[Type["Packet"]]:
         """
         Receive a packet from a socket.
         :param connection: the socket where to get the data from
         :return: the packet, or None if there was nothing in the socket to receive.
         """
-        packet_header: Optional[bytes] = None
-        try: packet_header = connection.recv(1)
-        except socket.timeout: pass
+        subcls = cls.cls_from_connection(connection)
+        return None if subcls is None else subcls.instance_from_connection(connection)
 
-        if not packet_header: return None  # si le header du packet est invalide, ignore
-        subcls = cls.cls_from_header(packet_header)
-
-        return subcls.from_bytes(connection.recv(subcls.packet_size))
