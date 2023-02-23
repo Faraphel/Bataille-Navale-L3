@@ -7,9 +7,9 @@ A faire :
 
 - Voir si les event listener intégré à pyglet sont plus pratique que l'event propagation
 - Documenter
+- Ajouter plus d'event sur les widgets
 
 - Ecran de victoire
-- Affichage des coups de l'opposant
 - Faire marcher le tchat
 - Sauvegarde / Quitter
 

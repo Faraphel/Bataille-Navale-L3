@@ -5,7 +5,6 @@ import pyglet
 
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
-from source.gui.widget.grid import GameGridAlly, GameGridEnemy
 from source import core
 from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced
 from source.type import Point2D
@@ -38,7 +37,7 @@ class Game(Scene):
         )
 
         self.grid_ally = self.add_widget(
-            GameGridAlly,
+            widget.GameGrid,
 
             x=75, y=0.25, width=0.35, height=0.5,
 
@@ -63,17 +62,19 @@ class Game(Scene):
         self.grid_ally.add_listener("on_all_boats_placed", board_ally_ready)
 
         self.grid_enemy = self.add_widget(
-            GameGridEnemy,
+            widget.GameGrid,
 
             x=lambda widget: widget.scene.window.width - 75 - widget.width, y=0.25, width=0.35, height=0.5,
 
             grid_style=texture.Grid.Style1,
+            boat_style=texture.Grid.Boat.Style1,
             bomb_style=texture.Grid.Bomb.Style1,
             rows=8, columns=8,
 
             background_batch=self.batch_grid_background,
             line_batch=self.batch_grid_line,
             cursor_batch=self.batch_grid_cursor,
+            boat_batch=self.batch_grid_boat,
             bomb_batch=self.batch_grid_bomb
         )
 

@@ -4,3 +4,4 @@ from .Input import Input
 from .Image import Image
 from .Checkbox import Checkbox
 from .Scroller import Scroller
+from .GameGrid import GameGrid
