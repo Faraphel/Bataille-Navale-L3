@@ -48,6 +48,8 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
 
                 touched = bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON]
 
+                in_pyglet_context(game_scene.grid_ally.place_bomb, data.position, touched)
+
                 if touched:
                     in_pyglet_context(game_scene.boat_broken_enemy)
 

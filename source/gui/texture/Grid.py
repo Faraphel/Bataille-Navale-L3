@@ -14,7 +14,6 @@ class Grid:
         class Style1(Style):
             body = path_boat / "body.png"
             edge = path_boat / "edge.png"
-            broken = path_boat / "broken.png"
             solo = path_boat / "solo.png"
 
     class Bomb:

@@ -10,7 +10,6 @@ A faire :
 
 - Ecran de victoire
 - Affichage des coups de l'opposant
-- Faire marcher le score
 - Faire marcher le tchat
 - Sauvegarde / Quitter
 

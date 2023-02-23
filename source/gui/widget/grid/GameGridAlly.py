@@ -29,6 +29,7 @@ class GameGridAlly(GameGrid):
 
                  grid_style: Type[Style],
                  boat_style: Type[Style],
+                 bomb_style: Type[Style],
 
                  boats_length: list[int],
                  preview_color: ColorRGB = (150, 255, 150),
@@ -45,7 +46,9 @@ class GameGridAlly(GameGrid):
         self.orientation: Orientation = Orientation.HORIZONTAL
 
         self._boat_kwargs = dict_filter_prefix("boat_", kwargs)
+        self._bomb_kwargs = dict_filter_prefix("bomb_", kwargs)
         self.boat_style = boat_style
+        self.bomb_style = bomb_style
 
         self.add_listener("on_click_release", self.on_click_release)
         self.add_listener("on_hover", lambda rel_x, rel_y: self.preview_boat(self.get_cell_from_rel(rel_x, rel_y)))
@@ -146,6 +149,15 @@ class GameGridAlly(GameGrid):
 
         except InvalidBoatPosition: self.display_board(self.board)  # if the boat can't be placed, ignore
         else: self.display_board(preview_board, preview=True)
+
+    def place_bomb(self, cell: Point2D, touched: bool):
+
+        self.cell_sprites[cell] = Sprite(
+            img=self.bomb_style.get("touched" if touched else "missed"),
+            **self._bomb_kwargs
+        )
+
+        self._refresh_size()
 
     def on_click_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):
         cell = self.get_cell_from_rel(rel_x, rel_y)

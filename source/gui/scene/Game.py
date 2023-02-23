@@ -46,12 +46,14 @@ class Game(Scene):
 
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
+            bomb_style=texture.Grid.Bomb.Style1,
             rows=8, columns=8,
 
             background_batch=self.batch_grid_background,
             line_batch=self.batch_grid_line,
             cursor_batch=self.batch_grid_cursor,
             boat_batch=self.batch_grid_boat,
+            bomb_batch=self.batch_grid_bomb
         )
 
         def board_ally_ready():
