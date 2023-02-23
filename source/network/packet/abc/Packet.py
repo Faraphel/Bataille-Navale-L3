@@ -50,35 +50,23 @@ class Packet(ABC):
         connection.send(self.packet_header + self.to_bytes())
 
     @classmethod
-    def cls_from_connection(cls, connection: socket.socket) -> Optional[Type["Packet"]]:
+    def from_connection(cls, connection: socket.socket) -> Optional["Packet"]:
         """
-        Receive a packet type from a socket.
-        :param connection: the socket where to get the header from
-        :return: the packet class, or None if there was nothing in the socket to receive.
+        Receive a packet from a socket.
+        :param connection: the socket where to get the data from
+        :return: the packet, or None if there was nothing in the socket to receive.
         """
+
+        # get the packet type
+
         packet_header: Optional[bytes] = None
         try:
             packet_header = connection.recv(1)
         except socket.timeout:
             pass
 
-        return cls.cls_from_header(packet_header) if packet_header else None  # ignore si le header est invalide
+        if not packet_header: return None  # ignore si le header est invalide
+        packet_type = cls.cls_from_header(packet_header)
 
-    @classmethod
-    def instance_from_connection(cls, connection: socket.socket) -> Optional["Packet"]:
-        """
-        Receive a packet instance data from a socket.
-        :param connection: the socket where to get the data from
-        :return: the packet, or None if there was nothing in the socket to receive.
-        """
-        return cls.from_bytes(connection.recv(cls.packet_size))
-
-    @classmethod
-    def from_connection(cls, connection: socket.socket) -> Optional[Type["Packet"]]:
-        """
-        Receive a packet from a socket.
-        :param connection: the socket where to get the data from
-        :return: the packet, or None if there was nothing in the socket to receive.
-        """
-        subcls = cls.cls_from_connection(connection)
-        return None if subcls is None else subcls.instance_from_connection(connection)
+        # renvoie les données instanciées
+        return packet_type.from_bytes(connection.recv(packet_type.packet_size))
