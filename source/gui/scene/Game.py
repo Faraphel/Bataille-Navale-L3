@@ -18,10 +18,6 @@ class Game(Scene):
     def __init__(self, window: "Window", connection: socket.socket, **kwargs):
         super().__init__(window, **kwargs)
 
-        self.my_turn = False
-        self.boat_ready_ally = False
-        self.boat_ready_enemy = False
-
         self.connection = connection
 
         self.batch_label = pyglet.graphics.Batch()
@@ -116,7 +112,7 @@ class Game(Scene):
 
             x=0.44, y=0.995,
 
-            text="7",
+            text="0",
             font_size=25,
             anchor_x="center", anchor_y="center",
 
@@ -128,7 +124,7 @@ class Game(Scene):
 
             x=0.56, y=0.995,
 
-            text="5",
+            text="0",
             font_size=25,
             anchor_x="center", anchor_y="center",
 
@@ -197,6 +193,20 @@ class Game(Scene):
 
         self.board_ally = core.Board(rows=8, columns=8)
         self.board_enemy = core.Board(rows=8, columns=8)
+
+        self.my_turn: bool = False  # is it the player turn ?
+        self.boat_ready_ally: bool = False  # does the player finished placing his boat ?
+        self.boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
+        self._boat_broken_ally: int = 0
+        self._boat_broken_enemy: int = 0
+
+    def boat_broken_ally(self):
+        self._boat_broken_ally += 1
+        self.score_ally.text = str(self._boat_broken_ally)
+
+    def boat_broken_enemy(self):
+        self._boat_broken_enemy += 1
+        self.score_enemy.text = str(self._boat_broken_enemy)
 
     def on_draw(self):
         self.background.draw()

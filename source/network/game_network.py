@@ -46,8 +46,12 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
 
                 packet.PacketBombState(position=data.position, bomb_state=bomb_state).send_connection(connection)
 
-                touched = bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON, BombState.ERROR]
-                game_scene.my_turn = not touched
+                touched = bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON]
+
+                if touched:
+                    in_pyglet_context(game_scene.boat_broken_enemy)
+
+                game_scene.my_turn = not (touched or (bomb_state is BombState.ERROR))
 
             case packet.PacketBombState:
                 print(data.bomb_state)
@@ -57,5 +61,8 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
 
                 touched = data.bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON]
                 game_scene.my_turn = touched
+
+                if touched:
+                    in_pyglet_context(game_scene.boat_broken_ally)
 
                 in_pyglet_context(game_scene.grid_enemy.place_bomb, data.position, touched)
