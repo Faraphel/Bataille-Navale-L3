@@ -55,7 +55,7 @@ class Game(Scene):
             bomb_batch=self.batch_grid_bomb
         )
 
-        def board_ally_ready():
+        def board_ally_ready(widget):
             self.boat_ready_ally = True
             PacketBoatPlaced().send_connection(connection)
 
@@ -78,7 +78,7 @@ class Game(Scene):
             bomb_batch=self.batch_grid_bomb
         )
 
-        def board_enemy_bomb(cell: Point2D):
+        def board_enemy_bomb(widget, cell: Point2D):
             if not (self.boat_ready_ally and self.boat_ready_enemy): return
             if not self.my_turn: return
             PacketBombPlaced(position=cell).send_connection(connection)
@@ -157,9 +157,9 @@ class Game(Scene):
             label_batch=self.batch_label,
         )
 
-        def send_chat():
-            text = self.chat_input.text
-            self.chat_input.text = ""
+        def send_chat(widget):
+            text = widget.text
+            widget.text = ""
 
             self.chat_log.text += "\n" + text
             self.chat_log.label.y = self.chat_log.y + self.chat_log.label.content_height

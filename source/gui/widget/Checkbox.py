@@ -63,6 +63,8 @@ class Checkbox(BoxWidget):
     @state.setter
     def state(self, state: bool):
         self._state = state
+        self.trigger_event("on_state_change")
+        self.trigger_event("on_checked" if state else "on_unchecked")
         self._refresh_tick()
 
     def swap_state(self):

@@ -78,10 +78,9 @@ class GameGrid(BoxWidget):
             **dict_filter_prefix("cursor_", kwargs)
         )
 
-        self.add_listener("on_click_release", self.on_click_release)
+        self.add_listener("on_click_release", lambda _, *args: self.on_click_release(*args))
         self.add_listener("on_hover_leave", lambda *_: self.hide_cursor())
-        self.add_listener("on_hover", self._refresh_cursor)
-
+        self.add_listener("on_hover", lambda _, *args: self._refresh_cursor(*args))
 
         self._refresh_size()
 

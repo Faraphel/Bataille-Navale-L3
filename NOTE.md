@@ -1,13 +1,13 @@
 A faire :
 - Ecran de configuration de la partie
 - Nom dans les options
+- Etat de la partie (en attente de l'autre joueur, ...)
 
 - Faire une scène incluant par défaut les boutons "Retour" (?)
 - Police d'écriture
 
 - Voir si les event listener intégré à pyglet sont plus pratique que l'event propagation
 - Documenter
-- Ajouter plus d'event sur les widgets
 
 - Ecran de victoire
 - Faire marcher le tchat

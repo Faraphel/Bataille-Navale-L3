@@ -34,4 +34,4 @@ class Listener:
         :param kwargs: the kwargs of the callbacks
         """
         for listener in self._events_listener.get(name, set()):
-            listener(*args, **kwargs)
+            listener(self, *args, **kwargs)

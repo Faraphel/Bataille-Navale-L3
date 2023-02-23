@@ -114,6 +114,8 @@ class Input(BoxWidget):
 
     def on_text(self, char: str):
         if not self.activated: return  # ignore si ce widget est désactivé / non sélectionné
+        if not self.label.multiline and char in "\r\n": return  # si le texte est sur une ligne, ignore les retours
+
         self.text += char  # ajoute le caractère au label
 
         if self.regex is not None:  # si il y a un regex de validation, applique le pour vérifier le texte

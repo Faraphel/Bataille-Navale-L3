@@ -72,7 +72,7 @@ class RoomJoin(Scene):
 
         self.connect.add_listener("on_click_release", self.button_connect)
 
-    def button_connect(self, *_):
+    def button_connect(self, widget, *_):
         network.Client(
             window=self.window,
             ip_address=self.entry_ip.text,
@@ -80,7 +80,7 @@ class RoomJoin(Scene):
             username="Client"
         ).start()
 
-    def button_back_callback(self, *_):
+    def button_back_callback(self, widget, *_):
         from source.gui.scene import MainMenu
         self.window.set_scene(MainMenu)
 

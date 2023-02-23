@@ -57,7 +57,7 @@ class Scroller(BoxWidget):
             **dict_filter_prefix("label_", kwargs)
         )
 
-        self.add_listener("on_click_release", lambda rel_x, *_: self._refresh_cursor(rel_x))
+        self.add_listener("on_click_release", lambda _, rel_x, *__: self._refresh_cursor(rel_x))
 
         self._from = from_
         self._to = to
@@ -100,6 +100,7 @@ class Scroller(BoxWidget):
     def value(self, value: float):
         if not self.from_ <= value <= self.to: raise ValueError(f"The value is not in range")
         self._value = value
+        self.trigger_event("on_value_change")
         self._refresh()
 
     @property
