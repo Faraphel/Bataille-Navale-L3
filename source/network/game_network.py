@@ -36,7 +36,8 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
 
             case packet.PacketBoatPlaced:
                 game_scene.boat_ready_enemy = True
-                print("adversaire à posé ses bateaux")
+                if game_scene.boat_ready_ally:
+                    in_pyglet_context(game_scene.refresh_turn_text)
 
             case packet.PacketBombPlaced:
                 try:
@@ -55,6 +56,7 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
                     in_pyglet_context(game_scene.boat_broken_enemy)
 
                 game_scene.my_turn = not (touched or (bomb_state is BombState.ERROR))
+                in_pyglet_context(game_scene.refresh_turn_text)
 
                 if bomb_state is BombState.WON:
                     in_pyglet_context(game_scene.game_end, won=False)
@@ -68,6 +70,7 @@ def game_network(thread: "StoppableThread", window: "Window", connection: socket
 
                 touched = data.bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON]
                 game_scene.my_turn = touched
+                in_pyglet_context(game_scene.refresh_turn_text)
 
                 if touched:
                     in_pyglet_context(game_scene.boat_broken_ally)

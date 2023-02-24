@@ -58,6 +58,10 @@ class Game(Scene):
 
         def board_ally_ready(widget):
             self.boat_ready_ally = True
+
+            self.me_ready()
+            if self.boat_ready_enemy: self.refresh_turn_text()
+
             PacketBoatPlaced().send_connection(connection)
 
         self.grid_ally.add_listener("on_all_boats_placed", board_ally_ready)
@@ -195,6 +199,19 @@ class Game(Scene):
             label_batch=self.batch_label,
         )
 
+        self.label_state = self.add_widget(
+            widget.Text,
+
+            x=0.5, y=0.15,
+
+            anchor_x="center",
+
+            text="Placer vos bateaux",
+            font_size=20,
+
+            batch=self.batch_label
+        )
+
         self.board_ally = core.Board(rows=8, columns=8)
         self.board_enemy = core.Board(rows=8, columns=8)
 
@@ -211,6 +228,12 @@ class Game(Scene):
     def boat_broken_enemy(self):
         self._boat_broken_enemy += 1
         self.score_enemy.text = str(self._boat_broken_enemy)
+
+    def me_ready(self):
+        self.label_state.text = "L'adversaire place ses bateaux"
+
+    def refresh_turn_text(self):
+        self.label_state.text = "Placer vos bombes" if self.my_turn else "L'adversaire place ses bombes"
 
     def game_end(self, won: bool):
         self.window.add_scene(Result, won=won)

@@ -1,6 +1,4 @@
 A faire :
-- Ecran de victoire
-- Etat de la partie (en attente de l'autre joueur, ...)
 - Ecran de configuration de la partie
 - Nom dans les options
 - Faire marcher le tchat

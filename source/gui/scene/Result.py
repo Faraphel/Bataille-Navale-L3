@@ -20,6 +20,9 @@ class Result(Scene):
             image=texture.Result.Style1.victory if won else texture.Result.Style1.defeat
         )
 
+        # TODO: rendre l'image transparente
+        # TODO: empecher les intéractions
+
         from source.gui.scene import MainMenu
         pyglet.clock.schedule_once(lambda dt: self.window.set_scene(MainMenu), 5.0)
 
