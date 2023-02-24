@@ -121,6 +121,9 @@ class Input(BoxWidget):
         if self.regex is not None:  # si il y a un regex de validation, applique le pour vérifier le texte
             self.invalid = self.regex.fullmatch(self.text) is None
 
+        if not self.invalid:
+            self.trigger_event("on_valid_text")
+
     def on_resize(self, width: int, height: int):
         self._refresh_size()
 

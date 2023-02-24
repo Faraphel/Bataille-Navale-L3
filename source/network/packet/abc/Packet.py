@@ -2,6 +2,8 @@ import socket
 from abc import abstractmethod, ABC
 from typing import Type, Optional
 
+# TODO: struct.calcsize() au lieu de packet_size
+
 
 class Packet(ABC):
     packed_header: bytes

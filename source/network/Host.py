@@ -1,11 +1,15 @@
 import socket
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+from source.gui import scene
 from source.network import game_network
+from source.network.packet.abc import Packet
 from source.utils import StoppableThread
+from source.utils.thread import in_pyglet_context
 
 if TYPE_CHECKING:
     from source.gui.window import Window
+    from source.network.packet import PacketSettings
 
 
 class Host(StoppableThread):
@@ -13,11 +17,11 @@ class Host(StoppableThread):
     The thread executed on the person who create a room.
     """
 
-    def __init__(self, window: "Window", username: str, port: int = 52321, **kw):
+    def __init__(self, window: "Window", settings: "PacketSettings", port: int = 52321, **kw):
         super().__init__(**kw)
 
         self.window = window
-        self.username = username
+        self.settings = settings
         self.port = port
 
     def run(self) -> None:
@@ -39,4 +43,25 @@ class Host(StoppableThread):
 
             print(f"[Serveur] Connecté avec {address}")
 
-            game_network(self, self.window, connection, True)
+            self.settings.send_connection(connection)
+            packet_username: Any = Packet.from_connection(connection)
+
+            game_scene = in_pyglet_context(
+                self.window.set_scene,
+                scene.Game,
+
+                connection=connection,
+
+                boat_sizes=self.settings.boat_size,
+                name_ally=self.settings.username,
+                name_enemy=packet_username.username,
+                grid_width=self.settings.grid_width,
+                grid_height=self.settings.grid_height,
+                my_turn=self.settings.host_start
+            )
+
+            game_network(
+                thread=self,
+                connection=connection,
+                game_scene=game_scene
+            )

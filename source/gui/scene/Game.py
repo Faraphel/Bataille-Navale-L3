@@ -15,10 +15,26 @@ if TYPE_CHECKING:
 
 
 class Game(Scene):
-    def __init__(self, window: "Window", connection: socket.socket, **kwargs):
+    def __init__(self, window: "Window",
+                 connection: socket.socket,
+
+                 boat_sizes: list,
+                 name_ally: str,
+                 name_enemy: str,
+                 grid_width: int,
+                 grid_height: int,
+                 my_turn: bool,
+
+                 **kwargs):
         super().__init__(window, **kwargs)
 
         self.connection = connection
+        self.boat_sizes = boat_sizes
+        self.name_ally = name_ally
+        self.name_enemy = name_enemy
+        self.grid_width = grid_width
+        self.grid_height = grid_height
+        self.my_turn = my_turn  # is it the player turn ?
 
         self.batch_label = pyglet.graphics.Batch()
         self.batch_button_background = pyglet.graphics.Batch()
@@ -42,12 +58,12 @@ class Game(Scene):
 
             x=75, y=0.25, width=0.35, height=0.5,
 
-            boats_length=[5, 5, 4, 3, 2],
+            boats_length=self.boat_sizes,
 
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
             bomb_style=texture.Grid.Bomb.Style1,
-            rows=8, columns=8,
+            rows=self.grid_height, columns=self.grid_width,
 
             background_batch=self.batch_grid_background,
             line_batch=self.batch_grid_line,
@@ -74,7 +90,7 @@ class Game(Scene):
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
             bomb_style=texture.Grid.Bomb.Style1,
-            rows=8, columns=8,
+            rows=self.grid_height, columns=self.grid_width,
 
             background_batch=self.batch_grid_background,
             line_batch=self.batch_grid_line,
@@ -91,24 +107,24 @@ class Game(Scene):
 
         self.grid_enemy.add_listener("on_request_place_bomb", board_enemy_bomb)
 
-        self.name_ally = self.add_widget(
+        self.add_widget(
             widget.Text,
 
             x=0.27, y=0.995,
 
-            text="Raphael",
+            text=self.name_ally,
             font_size=20,
             anchor_x="center", anchor_y="center",
 
             batch=self.batch_label,
         )
 
-        self.name_enemy = self.add_widget(
+        self.add_widget(
             widget.Text,
 
             x=0.73, y=0.995,
 
-            text="Leo",
+            text=self.name_enemy,
             font_size=20,
             anchor_x="center", anchor_y="center",
 
@@ -212,10 +228,9 @@ class Game(Scene):
             batch=self.batch_label
         )
 
-        self.board_ally = core.Board(rows=8, columns=8)
-        self.board_enemy = core.Board(rows=8, columns=8)
+        self.board_ally = core.Board(rows=self.grid_height, columns=self.grid_width)
+        self.board_enemy = core.Board(rows=self.grid_height, columns=self.grid_width)
 
-        self.my_turn: bool = False  # is it the player turn ?
         self.boat_ready_ally: bool = False  # does the player finished placing his boat ?
         self.boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
         self._boat_broken_ally: int = 0

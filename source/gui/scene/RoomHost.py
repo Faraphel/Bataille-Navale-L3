@@ -9,10 +9,11 @@ from source.gui import widget, texture
 
 if TYPE_CHECKING:
     from source.gui.window import Window
+    from source.network.packet import PacketSettings
 
 
 class RoomHost(Scene):
-    def __init__(self, window: "Window", **kwargs):
+    def __init__(self, window: "Window", settings: "PacketSettings", **kwargs):
         super().__init__(window, **kwargs)
 
         """r = requests.get('https://api.ipify.org')
@@ -63,7 +64,7 @@ class RoomHost(Scene):
             batch=self.batch_label
         )
 
-        self.thread = network.Host(window=self.window, daemon=True, username="Host")
+        self.thread = network.Host(window=self.window, daemon=True, settings=settings)
         self.thread.start()
 
     def button_back_callback(self, *_):

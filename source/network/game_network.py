@@ -3,25 +3,25 @@ from typing import Any
 
 from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
-from source.gui import scene
+from source.gui.scene import Game
 from source.network.packet.abc import Packet
 from source.network import packet
 
-from source.gui.window import Window
 from source.utils import StoppableThread
 from source.utils.thread import in_pyglet_context
 
 
-def game_network(thread: "StoppableThread", window: "Window", connection: socket.socket, host: bool):
+def game_network(
+        thread: "StoppableThread",
+        connection: socket.socket,
+        game_scene: Game,
+):
     """
     Run the networking to make the game work and react with the other player
+    :param game_scene: the scene of the game
     :param thread: the thread where this function is called.
-    :param window: the window of the game
     :param connection: the connection with the other player
     """
-
-    game_scene = in_pyglet_context(window.set_scene, scene.Game, connection=connection)
-    game_scene.my_turn = host
 
     while True:
         data: Any = Packet.from_connection(connection)

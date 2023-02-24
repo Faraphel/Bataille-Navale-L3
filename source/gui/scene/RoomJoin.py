@@ -32,9 +32,25 @@ class RoomJoin(Scene):
 
         self.back.add_listener("on_click_release", self.button_back_callback)
 
+        # Pseudo
+
+        self.entry_username = self.add_widget(
+            widget.Input,
+            x=0.4, y=0.55, width=0.2, height=0.1,
+
+            style=texture.Input.Style1,
+
+            label_text="Client",
+
+            background_batch=self.batch_input_background,
+            label_batch=self.batch_label
+        )
+
+        # IP / Port
+
         self.entry_ip = self.add_widget(
             widget.Input,
-            x=0.4, y=0.5, width=0.13, height=0.1,
+            x=0.4, y=0.45, width=0.13, height=0.1,
 
             regex=r"\d{1,3}(\.\d{1,3}){3}",
 
@@ -48,7 +64,7 @@ class RoomJoin(Scene):
 
         self.entry_port = self.add_widget(
             widget.Input,
-            x=0.53, y=0.5, width=0.07, height=0.1,
+            x=0.53, y=0.45, width=0.07, height=0.1,
 
             regex=r"\d{0,5}",
 
@@ -60,7 +76,7 @@ class RoomJoin(Scene):
 
         self.connect = self.add_widget(
             widget.Button,
-            x=0.4, y=0.4, width=0.2, height=0.1,
+            x=0.4, y=0.35, width=0.2, height=0.1,
 
             label_text="Se connecter",
 
@@ -77,7 +93,7 @@ class RoomJoin(Scene):
             window=self.window,
             ip_address=self.entry_ip.text,
             daemon=True,
-            username="Client"
+            username=self.entry_username.text
         ).start()
 
     def button_back_callback(self, widget, *_):

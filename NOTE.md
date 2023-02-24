@@ -1,5 +1,6 @@
 A faire :
-- Ecran de configuration de la partie
+- Limite des bateaux, taille des pseudo, ...
+
 - Nom dans les options
 - Faire marcher le tchat
 - Sauvegarde / Quitter
