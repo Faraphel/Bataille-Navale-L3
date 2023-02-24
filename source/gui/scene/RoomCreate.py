@@ -150,7 +150,7 @@ class RoomCreate(Scene):
             self.input_boat_amount.text = str(self.boat_size_amount.get(self.boat_size, 0))
 
             self.label_boat_recap.text = ""
-            for size, amount in self.boat_size_amount.items():
+            for size, amount in sorted(self.boat_size_amount.items(), key=lambda v: v[0]):
                 self.label_boat_recap.text += f"Taille: {size}, Quantité: {amount}\n"
 
         self.button_boat_size_previous = self.add_widget(
@@ -199,7 +199,6 @@ class RoomCreate(Scene):
         )
 
         def next_boat_size():
-            if self.boat_size >= min(int(self.input_width.text), int(self.input_height.text)): return
             self.boat_size += 1
             update_boat_size_text()
 
@@ -269,7 +268,7 @@ class RoomCreate(Scene):
             grid_width=int(self.input_width.text),
             grid_height=int(self.input_height.text),
             host_start=self.checkbox_host_start.state,
-            boat_size=[size for size, quantity in self.boat_size_amount.items() for _ in range(quantity)]
+            boats_length=[size for size, quantity in self.boat_size_amount.items() for _ in range(quantity)]
         )
 
         self.window.set_scene(RoomHost, settings=settings)

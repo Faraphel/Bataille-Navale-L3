@@ -12,3 +12,10 @@ class BombState(Enum):
     WON = 3  # the bomb sunk the last boat
 
     ERROR = -1  # the bomb could not be placed
+
+    @property
+    def success(self):
+        """
+        :return: Vrai si la valeur correspond à une case qui a été touché
+        """
+        return self in [self.TOUCHED, self.SUNKEN, self.WON]

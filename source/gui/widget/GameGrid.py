@@ -47,7 +47,8 @@ class GameGrid(BoxWidget):
         self.rows = rows
         self.columns = columns
 
-        self.boats_length = [] if boats_length is None else boats_length  # the list of the size of the boats to place
+        # the list of the size of the boats to place
+        self.boats_length = [] if boats_length is None else sorted(boats_length, reverse=True)
         self.preview_color = preview_color
 
         self.board = Board(rows=self.rows, columns=self.columns)

@@ -43,7 +43,7 @@ class Client(StoppableThread):
 
                 connection=connection,
 
-                boat_sizes=settings.boat_size,
+                boats_length=settings.boats_length,
                 name_ally=self.username,
                 name_enemy=settings.username,
                 grid_width=settings.grid_width,

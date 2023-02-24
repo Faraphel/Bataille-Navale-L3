@@ -1,8 +1,6 @@
 import socket
 from typing import Any
 
-from source.core.enums import BombState
-from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import Game
 from source.network.packet.abc import Packet
 from source.network import packet
@@ -23,6 +21,13 @@ def game_network(
     :param connection: the connection with the other player
     """
 
+    game_methods = {
+        packet.PacketChat: game_scene.network_on_chat,
+        packet.PacketBoatPlaced: game_scene.network_on_boat_placed,
+        packet.PacketBombPlaced: game_scene.network_on_bomb_placed,
+        packet.PacketBombState: game_scene.network_on_bomb_state,
+    }
+
     while True:
         data: Any = Packet.from_connection(connection)
 
@@ -30,53 +35,7 @@ def game_network(
             if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
             continue
 
-        match type(data):
-            case packet.PacketChat:
-                print(data.message)
-
-            case packet.PacketBoatPlaced:
-                game_scene.boat_ready_enemy = True
-                if game_scene.boat_ready_ally:
-                    in_pyglet_context(game_scene.refresh_turn_text)
-
-            case packet.PacketBombPlaced:
-                try:
-                    bomb_state = game_scene.grid_ally.board.bomb(data.position)
-                except (InvalidBombPosition, PositionAlreadyShot):
-                    bomb_state = BombState.ERROR
-
-                packet.PacketBombState(position=data.position, bomb_state=bomb_state).send_connection(connection)
-
-                touched = bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON]
-
-                if bomb_state is not BombState.ERROR:
-                    in_pyglet_context(game_scene.grid_ally.place_bomb, data.position, touched)
-
-                if touched:
-                    in_pyglet_context(game_scene.boat_broken_enemy)
-
-                game_scene.my_turn = not (touched or (bomb_state is BombState.ERROR))
-                in_pyglet_context(game_scene.refresh_turn_text)
-
-                if bomb_state is BombState.WON:
-                    in_pyglet_context(game_scene.game_end, won=False)
-                    return  # coupe la connexion
-
-            case packet.PacketBombState:
-                print(data.bomb_state)
-                if data.bomb_state is BombState.ERROR:
-                    game_scene.my_turn = True
-                    continue
-
-                touched = data.bomb_state in [BombState.TOUCHED, BombState.SUNKEN, BombState.WON]
-                game_scene.my_turn = touched
-                in_pyglet_context(game_scene.refresh_turn_text)
-
-                if touched:
-                    in_pyglet_context(game_scene.boat_broken_ally)
-
-                in_pyglet_context(game_scene.grid_enemy.place_bomb, data.position, touched)
-
-                if data.bomb_state is BombState.WON:
-                    in_pyglet_context(game_scene.game_end, won=True)
-                    return  # coupe la connexion
+        if in_pyglet_context(
+            game_methods[type(data)],  # récupère la methode relié ce type de donnée
+            connection, data
+        ): return  # Appelle la méthode. Si elle renvoie True, arrête le thread

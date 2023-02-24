@@ -3,11 +3,13 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
+from source.core.enums import BombState
+from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import Result
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 from source import core
-from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced
+from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced, PacketBombState
 from source.type import Point2D
 
 if TYPE_CHECKING:
@@ -18,7 +20,7 @@ class Game(Scene):
     def __init__(self, window: "Window",
                  connection: socket.socket,
 
-                 boat_sizes: list,
+                 boats_length: list,
                  name_ally: str,
                  name_enemy: str,
                  grid_width: int,
@@ -29,12 +31,11 @@ class Game(Scene):
         super().__init__(window, **kwargs)
 
         self.connection = connection
-        self.boat_sizes = boat_sizes
+        self.boats_length = boats_length
         self.name_ally = name_ally
         self.name_enemy = name_enemy
         self.grid_width = grid_width
         self.grid_height = grid_height
-        self.my_turn = my_turn  # is it the player turn ?
 
         self.batch_label = pyglet.graphics.Batch()
         self.batch_button_background = pyglet.graphics.Batch()
@@ -58,7 +59,7 @@ class Game(Scene):
 
             x=75, y=0.25, width=0.35, height=0.5,
 
-            boats_length=self.boat_sizes,
+            boats_length=self.boats_length,
 
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
@@ -74,10 +75,6 @@ class Game(Scene):
 
         def board_ally_ready(widget):
             self.boat_ready_ally = True
-
-            self.me_ready()
-            if self.boat_ready_enemy: self.refresh_turn_text()
-
             PacketBoatPlaced().send_connection(connection)
 
         self.grid_ally.add_listener("on_all_boats_placed", board_ally_ready)
@@ -102,6 +99,7 @@ class Game(Scene):
         def board_enemy_bomb(widget, cell: Point2D):
             if not (self.boat_ready_ally and self.boat_ready_enemy): return
             if not self.my_turn: return
+
             PacketBombPlaced(position=cell).send_connection(connection)
             self.my_turn = False
 
@@ -222,7 +220,6 @@ class Game(Scene):
 
             anchor_x="center",
 
-            text="Placer vos bateaux",
             font_size=20,
 
             batch=self.batch_label
@@ -231,27 +228,131 @@ class Game(Scene):
         self.board_ally = core.Board(rows=self.grid_height, columns=self.grid_width)
         self.board_enemy = core.Board(rows=self.grid_height, columns=self.grid_width)
 
-        self.boat_ready_ally: bool = False  # does the player finished placing his boat ?
-        self.boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
+        self._my_turn = my_turn  # is it the player turn ?
+        self._boat_ready_ally: bool = False  # does the player finished placing his boat ?
+        self._boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
         self._boat_broken_ally: int = 0
         self._boat_broken_enemy: int = 0
 
-    def boat_broken_ally(self):
-        self._boat_broken_ally += 1
-        self.score_ally.text = str(self._boat_broken_ally)
+        self._refresh_turn_text()
 
-    def boat_broken_enemy(self):
-        self._boat_broken_enemy += 1
-        self.score_enemy.text = str(self._boat_broken_enemy)
+    # function
 
-    def me_ready(self):
-        self.label_state.text = "L'adversaire place ses bateaux"
-
-    def refresh_turn_text(self):
-        self.label_state.text = "Placer vos bombes" if self.my_turn else "L'adversaire place ses bombes"
+    def _refresh_turn_text(self):
+        self.label_state.text = (
+            "Placer vos bateaux" if not self.boat_ready_ally else
+            "L'adversaire place ses bateaux..." if not self.boat_ready_enemy else
+            "Placer vos bombes" if self.my_turn else
+            "L'adversaire place ses bombes..."
+        )
 
     def game_end(self, won: bool):
         self.window.add_scene(Result, won=won)
+
+    # property
+
+    @property
+    def boat_broken_ally(self):
+        return self._boat_broken_ally
+
+    @boat_broken_ally.setter
+    def boat_broken_ally(self, boat_broken_ally: int):
+        self._boat_broken_ally = boat_broken_ally
+        self.score_ally.text = str(self._boat_broken_ally)
+
+    @property
+    def boat_broken_enemy(self):
+        return self._boat_broken_enemy
+
+    @boat_broken_enemy.setter
+    def boat_broken_enemy(self, boat_broken_enemy: int):
+        self._boat_broken_enemy = boat_broken_enemy
+        self.score_enemy.text = str(self._boat_broken_enemy)
+
+    @property
+    def my_turn(self):
+        return self._my_turn
+
+    @my_turn.setter
+    def my_turn(self, my_turn: bool):
+        self._my_turn = my_turn
+        self._refresh_turn_text()
+
+    @property
+    def boat_ready_ally(self):
+        return self._boat_ready_ally
+
+    @boat_ready_ally.setter
+    def boat_ready_ally(self, boat_ready_ally: bool):
+        self._boat_ready_ally = boat_ready_ally
+        self._refresh_turn_text()
+
+    @property
+    def boat_ready_enemy(self):
+        return self._boat_ready_enemy
+
+    @boat_ready_enemy.setter
+    def boat_ready_enemy(self, boat_ready_enemy: bool):
+        self._boat_ready_enemy = boat_ready_enemy
+        self._refresh_turn_text()
+
+    # network
+
+    def network_on_chat(self, connection: socket.socket, packet: PacketChat):
+        print(packet.message)
+
+    def network_on_boat_placed(self, connection: socket.socket, packet: PacketBoatPlaced):
+        self.boat_ready_enemy = True
+
+    def network_on_bomb_placed(self, connection: socket.socket, packet: PacketBombPlaced):
+        try:
+            # essaye de poser la bombe sur la grille alliée
+            bomb_state = self.grid_ally.board.bomb(packet.position)
+        except (InvalidBombPosition, PositionAlreadyShot):
+            # si une erreur se produit, signale l'erreur
+            bomb_state = BombState.ERROR
+            # l'opposant va rejouer, ce n'est donc pas notre tour
+            self.my_turn = False
+        else:
+            # si la bombe a bien été placé, affiche la sur la grille visuel allié
+            self.grid_ally.place_bomb(packet.position, bomb_state.success)
+            # c'est à notre tour si l'opposant à loupé sa bombe
+            self.my_turn = not bomb_state.success
+
+        # envoie le résultat à l'autre joueur
+        PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(connection)
+
+        if bomb_state.success:
+            # si la bombe a touché un bateau, incrémente le score
+            self.boat_broken_enemy += 1
+
+        if bomb_state is BombState.WON:
+            # si l'ennemie à gagner, alors l'on a perdu
+            self.game_end(won=False)
+            return True  # coupe la connexion
+
+    def network_on_bomb_state(self, connection: socket.socket, packet: PacketBombState):
+        if packet.bomb_state is BombState.ERROR:
+            # si une erreur est survenue, on rejoue
+            self.my_turn = True
+            return
+
+        # on rejoue uniquement si la bombe à toucher
+        self.my_turn = packet.bomb_state.success
+
+        if packet.bomb_state.success:
+            # si la bombe à toucher, incrémente le score
+            self.boat_broken_ally += 1
+
+        # place la bombe sur la grille ennemie visuelle
+        self.grid_enemy.place_bomb(packet.position, packet.bomb_state.success)
+
+        if packet.bomb_state is BombState.WON:
+            # si cette bombe a touché le dernier bateau, alors l'on a gagné
+            self.game_end(won=True)
+            return True  # coupe la connexion
+
+    # event
 
     def on_draw(self):
         self.background.draw()

@@ -52,7 +52,7 @@ class Host(StoppableThread):
 
                 connection=connection,
 
-                boat_sizes=self.settings.boat_size,
+                boats_length=self.settings.boats_length,
                 name_ally=self.settings.username,
                 name_enemy=packet_username.username,
                 grid_width=self.settings.grid_width,
