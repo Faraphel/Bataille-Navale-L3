@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
+from source.gui.scene import Result
 from source.gui.scene.abc import Scene
 from source.gui import widget, scene, texture
 

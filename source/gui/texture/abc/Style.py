@@ -15,7 +15,7 @@ class Style(ABC):
     """
 
     def __init_subclass__(cls, **kwargs):
-        atlas = pyglet.image.atlas.TextureAtlas()
+        atlas = pyglet.image.atlas.TextureAtlas(10000, 10000)  # TODO: calculer la taille
 
         for name, args in cls.__dict__.items():
             if name.startswith("_"): continue

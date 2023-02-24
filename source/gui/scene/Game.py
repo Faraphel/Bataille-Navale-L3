@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
+from source.gui.scene import Result
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 from source import core
@@ -210,6 +211,9 @@ class Game(Scene):
     def boat_broken_enemy(self):
         self._boat_broken_enemy += 1
         self.score_enemy.text = str(self._boat_broken_enemy)
+
+    def game_end(self, won: bool):
+        self.window.add_scene(Result, won=won)
 
     def on_draw(self):
         self.background.draw()
