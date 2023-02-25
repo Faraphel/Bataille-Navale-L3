@@ -1,6 +1,6 @@
 import pyglet
 
-from source.gui.scene import MainMenu, Result
+from source.gui.scene import MainMenu
 from source.gui.window import GameWindow
 
 

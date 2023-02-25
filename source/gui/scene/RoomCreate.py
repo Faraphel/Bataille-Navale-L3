@@ -231,6 +231,7 @@ class RoomCreate(Scene):
             update_boat_size_text()
 
         self.input_boat_amount.add_listener("on_valid_text", lambda *_: change_boat_amount())
+        self.input_boat_amount.add_listener("on_enter", lambda *_: change_boat_amount())
 
         self.label_boat_recap = self.add_widget(
             widget.Text,
