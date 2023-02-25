@@ -15,27 +15,22 @@ class Style(ABC):
     """
 
     def __init_subclass__(cls, **kwargs):
-        atlas = pyglet.image.atlas.TextureAtlas(10000, 10000)  # TODO: calculer la taille
-
         for name, args in cls.__dict__.items():
             if name.startswith("_"): continue
 
             if isinstance(args, Path):  # if this is a normal path for a normal image
                 path = args
-                texture = atlas.add(pyglet.image.load(path))
+                texture = pyglet.image.load(path)
 
-            elif isinstance(args, tuple):  # if this is a tuple for an animation
+            elif isinstance(args, tuple) and len(args) == 3:  # if this is a tuple for an animation
                 paths, duration, loop = args
-
-                textures = map(lambda path: atlas.add(pyglet.image.load(path)), paths)
+                textures = map(pyglet.image.load, paths)
                 texture = pyglet.image.Animation.from_image_sequence(textures, duration, loop)
 
             else:
                 raise ValueError(f"Invalid type : {type(args)}")
 
             setattr(cls, name, texture)
-
-        setattr(cls, "_atlas", atlas)
 
     @classmethod
     def get(cls, item: str, default: Any = None) -> Optional[pyglet.image.AbstractImage]:
