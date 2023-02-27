@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING, Type
 
-import pyglet.image
-
 from source.gui.sprite import Sprite
 from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
@@ -33,7 +31,7 @@ class Checkbox(BoxWidget):
 
         self.style = style
 
-        self.tick = Sprite(img=self.style.get("disabled"), **kwargs)
+        self.tick = Sprite(img=self.style.disabled, **kwargs)
 
         self.state = state
 

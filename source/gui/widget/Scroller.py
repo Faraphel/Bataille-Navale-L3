@@ -43,12 +43,12 @@ class Scroller(BoxWidget):
         self.text_transform = text_transform
 
         self.background = Sprite(
-            img=self.style.get("background"),
+            img=self.style.background,
             **dict_filter_prefix("background_", kwargs)
         )
 
         self.cursor = Sprite(
-            img=self.style.get("cursor"),
+            img=self.style.cursor,
             **dict_filter_prefix("cursor_", kwargs)
         )
 

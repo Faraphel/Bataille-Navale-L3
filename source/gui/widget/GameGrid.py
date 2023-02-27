@@ -61,7 +61,7 @@ class GameGrid(BoxWidget):
         self.bomb_style = bomb_style
 
         self.background = Sprite(
-            img=grid_style.get("background"),
+            img=grid_style.background,
             **dict_filter_prefix("background_", kwargs)
         )
 
@@ -224,7 +224,7 @@ class GameGrid(BoxWidget):
 
     def place_bomb(self, cell: Point2D, touched: bool):
         self.cell_sprites[cell] = Sprite(
-            img=self.bomb_style.get("touched" if touched else "missed"),
+            img=self.bomb_style.touched if touched else self.bomb_style.missed,
             **self._bomb_kwargs
         )
 

@@ -39,7 +39,7 @@ class Input(BoxWidget):
         self.regex = re.compile(regex) if isinstance(regex, str) else regex
 
         self.background = Sprite(
-            img=self.style.get("normal"),
+            img=self.style.normal,
             **dict_filter_prefix("background_", kwargs)
         )
 
@@ -65,9 +65,9 @@ class Input(BoxWidget):
         """
 
         return (
-            texture if self.activated and (texture := self.style.get("active")) is not None else  # NOQA
-            texture if self.invalid and (texture := self.style.get("signal")) is not None else
-            self.style.get("normal")
+            texture if self.activated and (texture := self.style.active) is not None else  # NOQA
+            texture if self.invalid and (texture := self.style.signal) is not None else
+            self.style.normal
         )
 
     # refresh
