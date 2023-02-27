@@ -14,11 +14,11 @@ if TYPE_CHECKING:
 
 
 class RoomHost(Scene):
-    def __init__(self, window: "Window", settings: "PacketSettings", **kwargs):
+    def __init__(self, window: "Window", port: int, settings: "PacketSettings", **kwargs):
         super().__init__(window, **kwargs)
 
         self.ip_address: str = "127.0.0.1"
-        self.port: int = 52321
+        self.port: int = port
 
         self.batch_button_background = pyglet.graphics.Batch()
         self.batch_label = pyglet.graphics.Batch()
@@ -59,7 +59,7 @@ class RoomHost(Scene):
             batch=self.batch_label
         )
 
-        self.thread_network = network.Host(window=self.window, daemon=True, settings=settings)
+        self.thread_network = network.Host(window=self.window, daemon=True, port=self.port, settings=settings)
         self.thread_network.start()
 
         self._refresh_ip_text()

@@ -66,7 +66,9 @@ class RoomJoin(Scene):
             widget.Input,
             x=0.53, y=0.45, width=0.07, height=0.1,
 
-            regex=r"\d{0,5}",
+            regex=r"\d{1,5}",
+
+            label_text="52321",
 
             style=texture.Input.Style1,
 
@@ -92,6 +94,7 @@ class RoomJoin(Scene):
         network.Client(
             window=self.window,
             ip_address=self.entry_ip.text,
+            port=int(self.entry_port.text),
             daemon=True,
             username=self.entry_username.text
         ).start()

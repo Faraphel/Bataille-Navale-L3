@@ -35,6 +35,35 @@ class RoomCreate(Scene):
         from source.gui.scene import MainMenu
         self.back.add_listener("on_click_release", lambda *_: self.window.set_scene(MainMenu))
 
+        # Port
+
+        self.add_widget(
+            widget.Text,
+
+            x=0.1, y=0.65,
+
+            anchor_x="center", anchor_y="center",
+
+            text="Port",
+
+            batch=self.batch_label
+        )
+
+        self.input_port = self.add_widget(
+            widget.Input,
+
+            x=0.2, y=0.60, width=0.15, height=0.1,
+
+            style=texture.Input.Style1,
+
+            regex=r"\d{1,5}",
+
+            label_text="52321",
+
+            background_batch=self.batch_input_background,
+            label_batch=self.batch_label
+        )
+
         # Username
 
         self.add_widget(
@@ -264,6 +293,8 @@ class RoomCreate(Scene):
         self.start.add_listener("on_click_release", lambda *_: self.confirm())
 
     def confirm(self):
+        port = int(self.input_port.text)
+
         settings = PacketSettings(
             username=self.input_username.text,
             grid_width=int(self.input_width.text),
@@ -272,7 +303,7 @@ class RoomCreate(Scene):
             boats_length=[size for size, quantity in self.boat_size_amount.items() for _ in range(quantity)]
         )
 
-        self.window.set_scene(RoomHost, settings=settings)
+        self.window.set_scene(RoomHost, port=port, settings=settings)
 
     def on_draw(self):
         self.batch_input_background.draw()

@@ -17,7 +17,7 @@ class Host(StoppableThread):
     The thread executed on the person who create a room.
     """
 
-    def __init__(self, window: "Window", settings: "PacketSettings", port: int = 52321, **kw):
+    def __init__(self, window: "Window", port: int, settings: "PacketSettings", **kw):
         super().__init__(**kw)
 
         self.window = window
