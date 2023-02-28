@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any
 from source.gui import scene
 from source.network import game_network
 from source.network.packet import PacketUsername, PacketSettings
-from source.network.packet.abc import Packet
 from source.utils import StoppableThread
 from source.utils.thread import in_pyglet_context
 
@@ -35,7 +34,7 @@ class Client(StoppableThread):
             print(f"[Client] Connecté avec {connection}")
 
             settings: Any = PacketSettings.from_connection(connection)
-            PacketUsername(username=self.username).instance_send_connection(connection)
+            PacketUsername(username=self.username).send_data_connection(connection)
             packet_username = PacketUsername.from_connection(connection)
 
             game_scene = in_pyglet_context(

@@ -44,9 +44,9 @@ class Host(StoppableThread):
 
             print(f"[Serveur] Connecté avec {address}")
 
-            self.settings.instance_send_connection(connection)
+            self.settings.send_data_connection(connection)
             packet_username = PacketUsername.from_connection(connection)
-            PacketUsername(username=self.username).instance_send_connection(connection)
+            PacketUsername(username=self.username).send_data_connection(connection)
 
             game_scene = in_pyglet_context(
                 self.window.set_scene,

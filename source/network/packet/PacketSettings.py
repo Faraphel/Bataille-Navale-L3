@@ -14,7 +14,7 @@ class PacketSettings(Packet):
 
     packet_format: str = ">BB?I"
 
-    def to_bytes(self):
+    def to_bytes(self) -> bytes:
         boats_len: int = len(self.boats_length)
 
         return struct.pack(
@@ -30,7 +30,7 @@ class PacketSettings(Packet):
         )
 
     @classmethod
-    def from_connection(cls, connection: socket.socket) -> "Packet":
+    def from_connection(cls, connection: socket.socket) -> "PacketSettings":
         grid_width, grid_height, host_start, boats_len = struct.unpack(
             cls.packet_format,
             connection.recv(struct.calcsize(cls.packet_format))

@@ -2,12 +2,12 @@ import struct
 from dataclasses import dataclass, field
 
 from source.core.enums import BombState
-from source.network.packet.abc import Packet
+from source.network.packet.abc import SimplePacket
 from source.type import Point2D
 
 
 @dataclass
-class PacketBombState(Packet):
+class PacketBombState(SimplePacket):
     """
     A packet that signal how a bomb exploded on the board
     """
@@ -17,11 +17,11 @@ class PacketBombState(Packet):
 
     packet_format: str = ">BBb"
 
-    def to_bytes(self):
+    def to_bytes(self) -> bytes:
         x, y = self.position
         return struct.pack(self.packet_format, x, y, self.bomb_state.value)
 
     @classmethod
-    def from_bytes(cls, data: bytes):
+    def from_bytes(cls, data: bytes) -> "PacketBombState":
         x, y, bomb_state = struct.unpack(cls.packet_format, data)
         return cls(position=(x, y), bomb_state=BombState(bomb_state))
