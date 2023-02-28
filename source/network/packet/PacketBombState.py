@@ -15,7 +15,6 @@ class PacketBombState(Packet):
     position: Point2D = field()
     bomb_state: BombState = field()
 
-    packet_size: int = 3
     packet_format: str = ">BBb"
 
     def to_bytes(self):

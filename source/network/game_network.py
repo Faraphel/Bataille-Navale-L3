@@ -1,5 +1,5 @@
 import socket
-from typing import Any
+from typing import Type, Callable
 
 from source.gui.scene import Game
 from source.network.packet.abc import Packet
@@ -21,7 +21,7 @@ def game_network(
     :param connection: the connection with the other player
     """
 
-    game_methods = {
+    game_methods: dict[Type["Packet"], Callable] = {
         packet.PacketChat: game_scene.network_on_chat,
         packet.PacketBoatPlaced: game_scene.network_on_boat_placed,
         packet.PacketBombPlaced: game_scene.network_on_bomb_placed,
@@ -29,13 +29,15 @@ def game_network(
     }
 
     while True:
-        data: Any = Packet.from_connection(connection)
+        data_type: Type["Packet"] = Packet.type_from_connection(connection)
 
-        if data is None:
+        if data_type is None:
             if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
             continue
 
+        data = data_type.from_connection(connection)
+
         if in_pyglet_context(
-            game_methods[type(data)],  # récupère la methode relié ce type de donnée
+            game_methods[data_type],  # récupère la methode relié ce type de donnée
             connection, data
         ): return  # Appelle la méthode. Si elle renvoie True, arrête le thread

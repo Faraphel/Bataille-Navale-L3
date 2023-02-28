@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any
 
 from source.gui import scene
 from source.network import game_network
-from source.network.packet import PacketUsername
+from source.network.packet import PacketUsername, PacketSettings
 from source.network.packet.abc import Packet
 from source.utils import StoppableThread
 from source.utils.thread import in_pyglet_context
@@ -34,8 +34,9 @@ class Client(StoppableThread):
 
             print(f"[Client] Connecté avec {connection}")
 
-            settings: Any = Packet.from_connection(connection)
-            PacketUsername(username=self.username).send_connection(connection)
+            settings: Any = PacketSettings.from_connection(connection)
+            PacketUsername(username=self.username).instance_send_connection(connection)
+            packet_username = PacketUsername.from_connection(connection)
 
             game_scene = in_pyglet_context(
                 self.window.set_scene,
@@ -45,7 +46,7 @@ class Client(StoppableThread):
 
                 boats_length=settings.boats_length,
                 name_ally=self.username,
-                name_enemy=settings.username,
+                name_enemy=packet_username.username,
                 grid_width=settings.grid_width,
                 grid_height=settings.grid_height,
                 my_turn=not settings.host_start

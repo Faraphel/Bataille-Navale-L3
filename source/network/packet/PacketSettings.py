@@ -1,3 +1,4 @@
+import socket
 import struct
 from dataclasses import dataclass, field
 
@@ -6,37 +7,45 @@ from source.network.packet.abc import Packet
 
 @dataclass
 class PacketSettings(Packet):
-    username: str = field()
     grid_width: int = field()
     grid_height: int = field()
     host_start: bool = field()
     boats_length: list = field()
 
-    packet_size: int = 51
-    packet_format: str = ">16sBB?32B"
+    packet_format: str = ">BB?I"
 
     def to_bytes(self):
-        boat_size = self.boats_length + ([0] * (32 - len(self.boats_length)))
+        boats_len: int = len(self.boats_length)
 
         return struct.pack(
-            self.packet_format,
+            f"{self.packet_format}{boats_len}B",
 
-            self.username.encode("utf-8"),
             self.grid_width,
             self.grid_height,
             self.host_start,
 
-            *boat_size
+            boats_len,
+
+            *self.boats_length
         )
 
     @classmethod
-    def from_bytes(cls, data: bytes):
-        username, grid_width, grid_height, host_start, *boats_length = struct.unpack(cls.packet_format, data)
+    def from_connection(cls, connection: socket.socket) -> "Packet":
+        grid_width, grid_height, host_start, boats_len = struct.unpack(
+            cls.packet_format,
+            connection.recv(struct.calcsize(cls.packet_format))
+        )
+
+        format_ = f">{boats_len}B"
+
+        boats_length = struct.unpack(
+            format_,
+            connection.recv(struct.calcsize(format_))
+        )
 
         return cls(
-            username=username.replace(b"\x00", b"").decode("utf-8"),
             grid_width=grid_width,
             grid_height=grid_height,
             host_start=host_start,
-            boats_length=list(filter(lambda value: value != 0, boats_length))
+            boats_length=list(boats_length)
         )

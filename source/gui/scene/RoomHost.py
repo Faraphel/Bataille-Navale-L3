@@ -14,9 +14,10 @@ if TYPE_CHECKING:
 
 
 class RoomHost(Scene):
-    def __init__(self, window: "Window", port: int, settings: "PacketSettings", **kwargs):
+    def __init__(self, window: "Window", port: int, username: str, settings: "PacketSettings", **kwargs):
         super().__init__(window, **kwargs)
 
+        self.username: str = username
         self.ip_address: str = "127.0.0.1"
         self.port: int = port
 
@@ -59,7 +60,13 @@ class RoomHost(Scene):
             batch=self.batch_label
         )
 
-        self.thread_network = network.Host(window=self.window, daemon=True, port=self.port, settings=settings)
+        self.thread_network = network.Host(
+            window=self.window,
+            daemon=True,
+            port=self.port,
+            username=self.username,
+            settings=settings
+        )
         self.thread_network.start()
 
         self._refresh_ip_text()
@@ -70,10 +77,10 @@ class RoomHost(Scene):
     def _refresh_ip(self):
         while True:
             try:
-                response = requests.get('https://api.ipify.org')
+                response = requests.get('https://api.ipify.org', timeout=10)
                 response.raise_for_status()
                 break
-            except requests.HTTPError:
+            except (requests.HTTPError, requests.Timeout):
                 if self.thread_ip.stopped: return
 
         self.ip_address: str = response.content.decode('utf8')

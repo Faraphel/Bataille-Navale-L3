@@ -296,14 +296,18 @@ class RoomCreate(Scene):
         port = int(self.input_port.text)
 
         settings = PacketSettings(
-            username=self.input_username.text,
             grid_width=int(self.input_width.text),
             grid_height=int(self.input_height.text),
             host_start=self.checkbox_host_start.state,
             boats_length=[size for size, quantity in self.boat_size_amount.items() for _ in range(quantity)]
         )
 
-        self.window.set_scene(RoomHost, port=port, settings=settings)
+        self.window.set_scene(
+            RoomHost,
+            port=port,
+            username=self.input_username.text,
+            settings=settings
+        )
 
     def on_draw(self):
         self.batch_input_background.draw()
