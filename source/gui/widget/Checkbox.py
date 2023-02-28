@@ -31,7 +31,7 @@ class Checkbox(BoxWidget):
 
         self.style = style
 
-        self.tick = Sprite(img=self.style.disabled, **kwargs)
+        self.tick = Sprite(img=self.style.get("disabled"), **kwargs)
 
         self.state = state
 

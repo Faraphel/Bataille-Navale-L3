@@ -33,7 +33,7 @@ class Button(BoxWidget):
         self.style = style
 
         self.background = Sprite(
-            img=self.style.normal,
+            img=self.style.get("normal"),
             **dict_filter_prefix("background_", kwargs)
         )
 
@@ -60,9 +60,9 @@ class Button(BoxWidget):
         """
 
         return (
-            texture if self.clicking and (texture := self.style.click) is not None else  # NOQA
-            texture if self.hovering and (texture := self.style.hover) is not None else
-            self.style.normal
+            texture if self.clicking and (texture := self.style.get("click")) is not None else  # NOQA
+            texture if self.hovering and (texture := self.style.get("hover")) is not None else
+            self.style.get("normal")
         )
 
     # refresh
