@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
 
-import pyglet
-
 from source.gui.event import StopEvent
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
@@ -14,22 +12,13 @@ class Settings(Scene):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
 
-        self.batch_button_background = pyglet.graphics.Batch()
-        self.batch_scroller_background = pyglet.graphics.Batch()
-        self.batch_scroller_cursor = pyglet.graphics.Batch()
-        self.batch_checkbox = pyglet.graphics.Batch()
-        self.batch_label = pyglet.graphics.Batch()
-
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         self.back.add_listener("on_click_release", lambda *_: self.window.remove_scene(self))
@@ -39,9 +28,7 @@ class Settings(Scene):
 
             x=0.45, y=0.45, width=0.1, height=0.1,
 
-            style=texture.Checkbox.Style1,
-
-            batch=self.batch_checkbox
+            style=texture.Checkbox.Style1
         )
 
         self.checkbox.add_listener("on_click_release",
@@ -54,22 +41,8 @@ class Settings(Scene):
 
             style=texture.Scroller.Style1,
 
-            text_transform=lambda value: round(value, 2),
-
-            background_batch=self.batch_scroller_background,
-            cursor_batch=self.batch_scroller_cursor,
-            label_batch=self.batch_label
+            text_transform=lambda value: round(value, 2)
         )
-
-    def on_draw(self):
-        self.batch_button_background.draw()
-
-        self.batch_scroller_background.draw()
-        self.batch_scroller_cursor.draw()
-
-        self.batch_checkbox.draw()
-
-        self.batch_label.draw()
 
     def on_mouse_press_after(self, x: int, y: int, button: int, modifiers: int):
         raise StopEvent()

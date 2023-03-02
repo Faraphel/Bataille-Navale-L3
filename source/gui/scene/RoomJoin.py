@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
 
-import pyglet
-
 from source import network
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
@@ -14,20 +12,13 @@ class RoomJoin(Scene):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
 
-        self.batch_button_background = pyglet.graphics.Batch()
-        self.batch_input_background = pyglet.graphics.Batch()
-        self.batch_label = pyglet.graphics.Batch()
-
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         self.back.add_listener("on_click_release", self.button_back_callback)
@@ -40,10 +31,7 @@ class RoomJoin(Scene):
 
             style=texture.Input.Style1,
 
-            label_text="Client",
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label
+            label_text="Client"
         )
 
         # IP / Port
@@ -56,10 +44,7 @@ class RoomJoin(Scene):
 
             style=texture.Input.Style1,
 
-            label_text="127.0.0.1",
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label
+            label_text="127.0.0.1"
         )
 
         self.entry_port = self.add_widget(
@@ -70,10 +55,7 @@ class RoomJoin(Scene):
 
             label_text="52321",
 
-            style=texture.Input.Style1,
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label
+            style=texture.Input.Style1
         )
 
         self.connect = self.add_widget(
@@ -82,10 +64,7 @@ class RoomJoin(Scene):
 
             label_text="Se connecter",
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         self.connect.add_listener("on_click_release", self.button_connect)
@@ -102,8 +81,3 @@ class RoomJoin(Scene):
     def button_back_callback(self, widget, *_):
         from source.gui.scene import MainMenu
         self.window.set_scene(MainMenu)
-
-    def on_draw(self):
-        self.batch_button_background.draw()
-        self.batch_input_background.draw()
-        self.batch_label.draw()

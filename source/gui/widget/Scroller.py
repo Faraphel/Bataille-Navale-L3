@@ -44,16 +44,19 @@ class Scroller(BoxWidget):
 
         self.background = Sprite(
             img=self.style.get("background"),
+            batch=self.scene.batch,
             **dict_filter_prefix("background_", kwargs)
         )
 
         self.cursor = Sprite(
             img=self.style.get("cursor"),
+            batch=self.scene.batch,
             **dict_filter_prefix("cursor_", kwargs)
         )
 
         self.label = pyglet.text.Label(
             anchor_x="center", anchor_y="center",
+            batch=self.scene.batch,
             **dict_filter_prefix("label_", kwargs)
         )
 
@@ -125,8 +128,3 @@ class Scroller(BoxWidget):
 
     def on_resize(self, width: int, height: int):
         self._refresh()
-
-    def draw(self):
-        self.background.draw()
-        self.cursor.draw()
-        self.label.draw()

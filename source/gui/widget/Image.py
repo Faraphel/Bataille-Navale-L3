@@ -27,7 +27,11 @@ class Image(BoxWidget):
                  **kwargs):
         super().__init__(scene, x, y, width, height)
 
-        self.image = Sprite(img=image, **kwargs)
+        self.image = Sprite(
+            img=image,
+            batch=self.scene.batch,
+            **kwargs
+        )
 
         self._refresh_size()
 
@@ -40,8 +44,3 @@ class Image(BoxWidget):
 
     def on_resize(self, width: int, height: int):
         self._refresh_size()
-
-    # draw
-
-    def draw(self):
-        self.image.draw()

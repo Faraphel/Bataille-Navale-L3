@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-import pyglet
 import requests
 
 from source import network
@@ -21,19 +20,13 @@ class RoomHost(Scene):
         self.ip_address: str = "127.0.0.1"
         self.port: int = port
 
-        self.batch_button_background = pyglet.graphics.Batch()
-        self.batch_label = pyglet.graphics.Batch()
-
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         self.back.add_listener("on_click_release", self.button_back_callback)
@@ -44,9 +37,7 @@ class RoomHost(Scene):
             x=0.5, y=0.55,
 
             anchor_x="center", anchor_y="center",
-            font_size=20,
-
-            batch=self.batch_label
+            font_size=20
         )
 
         self.description = self.add_widget(
@@ -55,9 +46,7 @@ class RoomHost(Scene):
             x=0.5, y=0.45,
 
             anchor_x="center", anchor_y="center",
-            text="En attente d'un second joueur...",
-
-            batch=self.batch_label
+            text="En attente d'un second joueur..."
         )
 
         self.thread_network = network.Host(
@@ -95,7 +84,3 @@ class RoomHost(Scene):
         self.thread_ip.stop()
         from source.gui.scene import MainMenu
         self.window.set_scene(MainMenu)
-
-    def on_draw(self):
-        self.batch_button_background.draw()
-        self.batch_label.draw()

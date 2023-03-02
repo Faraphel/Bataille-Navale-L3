@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import TYPE_CHECKING, Type
 
+import pyglet
+
 from source.gui.event import EventPropagationMixin
 
 if TYPE_CHECKING:
@@ -18,6 +20,8 @@ class Scene(ABC, EventPropagationMixin):
 
     def __init__(self, window: "Window", **kwargs):
         self.window = window
+
+        self.batch = pyglet.graphics.Batch()
         self._widgets: list["Widget"] = list()
 
     # Event propagation
@@ -55,3 +59,12 @@ class Scene(ABC, EventPropagationMixin):
         """
 
         self._widgets.clear()
+
+    # event
+
+    def on_draw(self) -> None:
+        """
+        Draw all the objects in the scene.
+        """
+
+        self.batch.draw()

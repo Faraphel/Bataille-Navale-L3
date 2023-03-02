@@ -44,6 +44,9 @@ class GameGrid(BoxWidget):
 
         super().__init__(scene, x, y, width, height)
 
+        self.group_cursor = pyglet.graphics.Group(order=1)
+        self.group_line = pyglet.graphics.Group(order=2)
+
         self.rows = rows
         self.columns = columns
 
@@ -62,12 +65,15 @@ class GameGrid(BoxWidget):
 
         self.background = Sprite(
             img=grid_style.get("background"),
+            batch=self.scene.batch,
             **dict_filter_prefix("background_", kwargs)
         )
 
         self.lines: list[pyglet.shapes.Line] = [
             pyglet.shapes.Line(
                 0, 0, 0, 0,
+                batch=self.scene.batch,
+                group=self.group_line,
                 **dict_filter_prefix("line_", kwargs)
             )
             for _ in range((self.columns - 1) + (self.rows - 1))
@@ -76,7 +82,8 @@ class GameGrid(BoxWidget):
         self.cursor = pyglet.shapes.Rectangle(
             0, 0, 0, 0,
             color=(0, 0, 0, 100),
-            **dict_filter_prefix("cursor_", kwargs)
+            batch=self.scene.batch,
+            group=self.group_cursor
         )
 
         self.add_listener("on_click_release", lambda _, *args: self.on_click_release(*args))
@@ -175,6 +182,7 @@ class GameGrid(BoxWidget):
 
             sprite = Sprite(
                 img=self.boat_style.get(form),
+                batch=self.scene.batch,
                 **self._boat_kwargs
             )
             sprite.rotation = rotation * 90
@@ -225,6 +233,7 @@ class GameGrid(BoxWidget):
     def place_bomb(self, cell: Point2D, touched: bool):
         self.cell_sprites[cell] = Sprite(
             img=self.bomb_style.get("touched" if touched else "missed"),
+            batch=self.scene.batch,
             **self._bomb_kwargs
         )
 
@@ -260,9 +269,3 @@ class GameGrid(BoxWidget):
 
     def on_resize(self, width: int, height: int):
         self._refresh_size()
-
-    def draw(self):
-        self.background.draw()
-        for sprite in self.cell_sprites.values(): sprite.draw()
-        self.cursor.draw()
-        for line in self.lines: line.draw()

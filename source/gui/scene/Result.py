@@ -31,6 +31,3 @@ class Result(Scene):
 
     def on_mouse_motion_after(self, x: int, y: int, button: int, modifiers: int):
         raise StopEvent()
-
-    def on_draw(self):
-        self.image.draw()

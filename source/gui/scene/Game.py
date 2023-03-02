@@ -37,15 +37,6 @@ class Game(Scene):
         self.grid_width = grid_width
         self.grid_height = grid_height
 
-        self.batch_label = pyglet.graphics.Batch()
-        self.batch_button_background = pyglet.graphics.Batch()
-        self.batch_input_background = pyglet.graphics.Batch()
-        self.batch_grid_background = pyglet.graphics.Batch()
-        self.batch_grid_line = pyglet.graphics.Batch()
-        self.batch_grid_cursor = pyglet.graphics.Batch()
-        self.batch_grid_boat = pyglet.graphics.Batch()
-        self.batch_grid_bomb = pyglet.graphics.Batch()
-
         self.background = self.add_widget(
             widget.Image,
 
@@ -64,13 +55,7 @@ class Game(Scene):
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
             bomb_style=texture.Grid.Bomb.Style1,
-            rows=self.grid_height, columns=self.grid_width,
-
-            background_batch=self.batch_grid_background,
-            line_batch=self.batch_grid_line,
-            cursor_batch=self.batch_grid_cursor,
-            boat_batch=self.batch_grid_boat,
-            bomb_batch=self.batch_grid_bomb
+            rows=self.grid_height, columns=self.grid_width
         )
 
         def board_ally_ready(widget):
@@ -87,13 +72,7 @@ class Game(Scene):
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
             bomb_style=texture.Grid.Bomb.Style1,
-            rows=self.grid_height, columns=self.grid_width,
-
-            background_batch=self.batch_grid_background,
-            line_batch=self.batch_grid_line,
-            cursor_batch=self.batch_grid_cursor,
-            boat_batch=self.batch_grid_boat,
-            bomb_batch=self.batch_grid_bomb
+            rows=self.grid_height, columns=self.grid_width
         )
 
         def board_enemy_bomb(widget, cell: Point2D):
@@ -112,9 +91,7 @@ class Game(Scene):
 
             text=self.name_ally,
             font_size=20,
-            anchor_x="center", anchor_y="center",
-
-            batch=self.batch_label,
+            anchor_x="center", anchor_y="center"
         )
 
         self.add_widget(
@@ -124,9 +101,7 @@ class Game(Scene):
 
             text=self.name_enemy,
             font_size=20,
-            anchor_x="center", anchor_y="center",
-
-            batch=self.batch_label,
+            anchor_x="center", anchor_y="center"
         )
 
         self.score_ally = self.add_widget(
@@ -136,9 +111,7 @@ class Game(Scene):
 
             text="0",
             font_size=25,
-            anchor_x="center", anchor_y="center",
-
-            batch=self.batch_label,
+            anchor_x="center", anchor_y="center"
         )
 
         self.score_enemy = self.add_widget(
@@ -148,9 +121,7 @@ class Game(Scene):
 
             text="0",
             font_size=25,
-            anchor_x="center", anchor_y="center",
-
-            batch=self.batch_label,
+            anchor_x="center", anchor_y="center"
         )
 
         self.chat_log = self.add_widget(
@@ -160,9 +131,7 @@ class Game(Scene):
 
             text="",
             anchor_x="left",
-            multiline=True,
-
-            batch=self.batch_label,
+            multiline=True
         )
 
         self.chat_input = self.add_widget(
@@ -170,10 +139,7 @@ class Game(Scene):
 
             x=10, y=10, width=0.5, height=30,
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label,
+            style=texture.Button.Style1
         )
 
         def send_chat(widget):
@@ -194,10 +160,7 @@ class Game(Scene):
 
             label_text="Sauvegarder",
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label,
+            style=texture.Button.Style1
         )
 
         self.button_quit = self.add_widget(
@@ -207,10 +170,7 @@ class Game(Scene):
             
             label_text="Quitter",
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label,
+            style=texture.Button.Style1
         )
 
         self.label_state = self.add_widget(
@@ -220,9 +180,7 @@ class Game(Scene):
 
             anchor_x="center",
 
-            font_size=20,
-
-            batch=self.batch_label
+            font_size=20
         )
 
         self.board_ally = core.Board(rows=self.grid_height, columns=self.grid_width)
@@ -314,7 +272,7 @@ class Game(Scene):
             # l'opposant va rejouer, ce n'est donc pas notre tour
             self.my_turn = False
         else:
-            # si la bombe a bien été placé, affiche la sur la grille visuel allié
+            # si la bombe a bien été placé, affiche-la sur la grille visuel allié
             self.grid_ally.place_bomb(packet.position, bomb_state.success)
             # c'est à notre tour si l'opposant à loupé sa bombe
             self.my_turn = not bomb_state.success
@@ -351,18 +309,3 @@ class Game(Scene):
             # si cette bombe a touché le dernier bateau, alors l'on a gagné
             self.game_end(won=True)
             return True  # coupe la connexion
-
-    # event
-
-    def on_draw(self):
-        self.background.draw()
-
-        self.batch_button_background.draw()
-        self.batch_input_background.draw()
-        self.batch_grid_background.draw()
-        self.batch_grid_boat.draw()
-        self.batch_grid_bomb.draw()
-        self.batch_grid_line.draw()
-        self.batch_grid_cursor.draw()
-
-        self.batch_label.draw()

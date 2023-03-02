@@ -31,7 +31,11 @@ class Checkbox(BoxWidget):
 
         self.style = style
 
-        self.tick = Sprite(img=self.style.get("disabled"), **kwargs)
+        self.tick = Sprite(
+            img=self.style.get("disabled"), 
+            batch=self.scene.batch,
+            **kwargs
+        )
 
         self.state = state
 
@@ -72,6 +76,3 @@ class Checkbox(BoxWidget):
 
     def on_resize(self, width: int, height: int):
         self._refresh_size()
-
-    def draw(self):
-        self.tick.draw()

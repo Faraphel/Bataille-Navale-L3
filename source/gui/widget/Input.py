@@ -40,12 +40,14 @@ class Input(BoxWidget):
 
         self.background = Sprite(
             img=self.style.get("normal"),
+            batch=self.scene.batch,
             **dict_filter_prefix("background_", kwargs)
         )
 
         self.label = pyglet.text.Label(
             width=None, height=None,
             anchor_x="center", anchor_y="center",
+            batch=self.scene.batch,
             **dict_filter_prefix("label_", kwargs)
         )
 
@@ -126,7 +128,3 @@ class Input(BoxWidget):
 
     def on_resize(self, width: int, height: int):
         self._refresh_size()
-
-    def draw(self):
-        self.background.draw()
-        self.label.draw()

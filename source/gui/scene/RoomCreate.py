@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
 
-import pyglet
-
 from source.gui import widget, texture
 from source.gui.scene import RoomHost
 from source.gui.scene.abc import Scene
@@ -15,21 +13,13 @@ class RoomCreate(Scene):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
 
-        self.batch_label = pyglet.graphics.Batch()
-        self.batch_input_background = pyglet.graphics.Batch()
-        self.batch_button_background = pyglet.graphics.Batch()
-        self.batch_checkbox = pyglet.graphics.Batch()
-
         self.back = self.add_widget(
             widget.Button,
             x=20, y=20, width=0.2, height=0.1,
 
             label_text="Retour",
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         from source.gui.scene import MainMenu
@@ -44,9 +34,7 @@ class RoomCreate(Scene):
 
             anchor_x="center", anchor_y="center",
 
-            text="Port",
-
-            batch=self.batch_label
+            text="Port"
         )
 
         self.input_port = self.add_widget(
@@ -58,10 +46,7 @@ class RoomCreate(Scene):
 
             regex=r"\d{1,5}",
 
-            label_text="52321",
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label
+            label_text="52321"
         )
 
         # Username
@@ -73,9 +58,7 @@ class RoomCreate(Scene):
 
             anchor_x="center", anchor_y="center",
 
-            text="Pseudonyme",
-
-            batch=self.batch_label
+            text="Pseudonyme"
         )
 
         self.input_username = self.add_widget(
@@ -85,10 +68,7 @@ class RoomCreate(Scene):
 
             style=texture.Input.Style1,
 
-            label_text="Host",
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label
+            label_text="Host"
         )
 
         # Grid configuration
@@ -98,9 +78,7 @@ class RoomCreate(Scene):
 
             x=0.1, y=0.9,
             anchor_x="center", anchor_y="center",
-            text=f"Largeur de la grille",
-
-            batch=self.batch_label
+            text=f"Largeur de la grille"
         )
 
         self.input_width = self.add_widget(
@@ -112,10 +90,7 @@ class RoomCreate(Scene):
 
             style=texture.Input.Style1,
 
-            label_text="8",
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label
+            label_text="8"
         )
 
         self.add_widget(
@@ -123,9 +98,7 @@ class RoomCreate(Scene):
 
             x=0.1, y=0.8,
             anchor_x="center", anchor_y="center",
-            text=f"Longueur de la grille",
-
-            batch=self.batch_label
+            text=f"Longueur de la grille"
         )
 
         self.input_height = self.add_widget(
@@ -137,10 +110,7 @@ class RoomCreate(Scene):
 
             style=texture.Input.Style1,
 
-            label_text="8",
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label
+            label_text="8"
         )
 
         # Tour
@@ -152,9 +122,7 @@ class RoomCreate(Scene):
 
             style=texture.Checkbox.Style1,
 
-            state=True,
-
-            batch=self.batch_checkbox
+            state=True
         )
 
         self.add_widget(
@@ -164,9 +132,7 @@ class RoomCreate(Scene):
 
             anchor_y="center",
 
-            text="Premier tour pour l'hôte",
-
-            batch=self.batch_label
+            text="Premier tour pour l'hôte"
         )
 
         # taille et quantité des bateaux
@@ -190,10 +156,7 @@ class RoomCreate(Scene):
             label_text="<",
             label_font_size=25,
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         def previous_boat_size():
@@ -208,9 +171,7 @@ class RoomCreate(Scene):
 
             x=0.8, y=0.85,
 
-            anchor_x="center", anchor_y="center",
-
-            batch=self.batch_label,
+            anchor_x="center", anchor_y="center"
         )
 
         self.button_boat_size_next = self.add_widget(
@@ -221,10 +182,7 @@ class RoomCreate(Scene):
             label_text=">",
             label_font_size=25,
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         def next_boat_size():
@@ -242,10 +200,7 @@ class RoomCreate(Scene):
 
             style=texture.Input.Style1,
 
-            label_text="8",
-
-            background_batch=self.batch_input_background,
-            label_batch=self.batch_label
+            label_text="8"
         )
 
         def change_boat_amount():
@@ -267,9 +222,7 @@ class RoomCreate(Scene):
 
             x=0.7, y=0.60, width=0.2, height=0.1,
 
-            multiline=True,
-
-            batch=self.batch_label
+            multiline=True
         )
 
         update_boat_size_text()
@@ -284,10 +237,7 @@ class RoomCreate(Scene):
 
             label_text="Continuer",
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         self.start.add_listener("on_click_release", lambda *_: self.confirm())
@@ -308,9 +258,3 @@ class RoomCreate(Scene):
             username=self.input_username.text,
             settings=settings
         )
-
-    def on_draw(self):
-        self.batch_input_background.draw()
-        self.batch_button_background.draw()
-        self.batch_checkbox.draw()
-        self.batch_label.draw()

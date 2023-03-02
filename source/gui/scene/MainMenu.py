@@ -1,8 +1,5 @@
 from typing import TYPE_CHECKING
 
-import pyglet
-
-from source.gui.scene import Result
 from source.gui.scene.abc import Scene
 from source.gui import widget, scene, texture
 
@@ -13,9 +10,6 @@ if TYPE_CHECKING:
 class MainMenu(Scene):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
-
-        self.batch_button_background = pyglet.graphics.Batch()
-        self.batch_label = pyglet.graphics.Batch()
 
         self.background = self.add_widget(
             widget.Image,
@@ -31,9 +25,7 @@ class MainMenu(Scene):
             x=50, y=0.85,
 
             text="Bataille Navale",
-            font_size=50,
-
-            batch=self.batch_label
+            font_size=50
         )
 
         self.game_create = self.add_widget(
@@ -43,10 +35,7 @@ class MainMenu(Scene):
             label_text="Créer une salle",
             label_font_size=20,
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         self.game_create.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.RoomCreate))
@@ -59,10 +48,7 @@ class MainMenu(Scene):
             label_text="Rejoindre une salle",
             label_font_size=20,
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         self.game_join.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.RoomJoin))
@@ -75,16 +61,7 @@ class MainMenu(Scene):
             label_text="Paramètres",
             label_font_size=20,
 
-            style=texture.Button.Style1,
-
-            background_batch=self.batch_button_background,
-            label_batch=self.batch_label
+            style=texture.Button.Style1
         )
 
         self.settings.add_listener("on_click_release", lambda *_: self.window.add_scene(scene.Settings))
-
-    def on_draw(self):
-        self.background.draw()
-
-        self.batch_button_background.draw()
-        self.batch_label.draw()

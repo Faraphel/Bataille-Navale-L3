@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import TYPE_CHECKING
 
 from source.event import Listener
@@ -18,9 +18,3 @@ class Widget(Listener, ABC):
         super().__init__()
 
         self.scene = scene
-
-    @abstractmethod
-    def draw(self):
-        """
-        The draw function. Can be called to draw the widget.
-        """
