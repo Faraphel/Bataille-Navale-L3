@@ -41,6 +41,7 @@ class Client(StoppableThread):
                 self.window.set_scene,
                 scene.Game,
 
+                thread=self,
                 connection=connection,
 
                 boats_length=settings.boats_length,

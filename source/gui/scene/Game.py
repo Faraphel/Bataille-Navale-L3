@@ -3,12 +3,13 @@ from typing import TYPE_CHECKING
 
 from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
-from source.gui.scene import Result
+from source.gui.scene import GameResult
 from source.gui.scene.abc import Scene
-from source.gui import widget, texture
+from source.gui import widget, texture, scene
 from source import core
 from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced, PacketBombState
 from source.type import Point2D
+from source.utils import StoppableThread
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
 
 class Game(Scene):
     def __init__(self, window: "Window",
+                 thread: StoppableThread,
                  connection: socket.socket,
 
                  boats_length: list,
@@ -28,6 +30,7 @@ class Game(Scene):
                  **kwargs):
         super().__init__(window, **kwargs)
 
+        self.thread = thread
         self.connection = connection
         self.boats_length = boats_length
         self.name_ally = name_ally
@@ -171,6 +174,9 @@ class Game(Scene):
             style=texture.Button.Style1
         )
 
+        self.button_quit.add_listener("on_click_release",
+                                      lambda *_: self.window.add_scene(scene.GameQuit, game_scene=self))
+
         self.label_state = self.add_widget(
             widget.Text,
 
@@ -211,8 +217,13 @@ class Game(Scene):
             "L'adversaire place ses bombes..."
         )
 
+    def quit(self):
+        self.thread.stop()
+        from source.gui.scene import MainMenu
+        self.window.set_scene(MainMenu)
+
     def game_end(self, won: bool):
-        self.window.add_scene(Result, won=won)
+        self.window.add_scene(GameResult, won=won)
 
     def chat_new_message(self, author: str, content: str):
         message: str = f"[{author}] - {content}"

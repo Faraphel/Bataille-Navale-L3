@@ -52,6 +52,7 @@ class Host(StoppableThread):
                 self.window.set_scene,
                 scene.Game,
 
+                thread=self,
                 connection=connection,
 
                 boats_length=self.settings.boats_length,
