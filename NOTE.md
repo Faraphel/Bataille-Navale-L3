@@ -1,10 +1,10 @@
 A faire :
-- Faire marcher le tchat
 - Sauvegarde / Quitter
 - Historique / Replay
 - Police d'écriture
 - Gérer les erreurs (quitter en cours de connexion, ...)
 - Documenter  
+- Rendre le texte de status plus visible
 
 
 - Changer les images, rajouter les fonds, ...

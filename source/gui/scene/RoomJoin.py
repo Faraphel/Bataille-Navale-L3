@@ -29,6 +29,8 @@ class RoomJoin(Scene):
             widget.Input,
             x=0.4, y=0.55, width=0.2, height=0.1,
 
+            type_regex=r".{0,16}",
+
             style=texture.Input.Style1,
 
             label_text="Client"
@@ -40,7 +42,8 @@ class RoomJoin(Scene):
             widget.Input,
             x=0.4, y=0.45, width=0.13, height=0.1,
 
-            regex=r"\d{1,3}(\.\d{1,3}){3}",
+            type_regex=r"[\d\.]{0,15}",
+            check_regex=r"\d{1,3}(\.\d{1,3}){3}",
 
             style=texture.Input.Style1,
 
@@ -51,7 +54,8 @@ class RoomJoin(Scene):
             widget.Input,
             x=0.53, y=0.45, width=0.07, height=0.1,
 
-            regex=r"\d{1,5}",
+            type_regex=r"\d{0,5}",
+            check_regex=r"\d{1,5}",
 
             label_text="52321",
 

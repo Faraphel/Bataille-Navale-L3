@@ -44,7 +44,8 @@ class RoomCreate(Scene):
 
             style=texture.Input.Style1,
 
-            regex=r"\d{1,5}",
+            type_regex=r"\d{0,5}",
+            check_regex=r"\d{1,5}",
 
             label_text="52321"
         )
@@ -66,6 +67,8 @@ class RoomCreate(Scene):
 
             x=0.2, y=0.45, width=0.15, height=0.1,
 
+            type_regex=r".{0,16}",
+
             style=texture.Input.Style1,
 
             label_text="Host"
@@ -86,7 +89,8 @@ class RoomCreate(Scene):
 
             x=0.2, y=0.86, width=0.1, height=0.08,
 
-            regex=r"\d+",
+            type_regex=r"\d{0,4}",
+            check_regex=r"\d+",
 
             style=texture.Input.Style1,
 
@@ -106,7 +110,8 @@ class RoomCreate(Scene):
 
             x=0.2, y=0.76, width=0.1, height=0.08,
 
-            regex=r"\d+",
+            type_regex=r"\d{0,4}",
+            check_regex=r"\d+",
 
             style=texture.Input.Style1,
 
@@ -196,7 +201,8 @@ class RoomCreate(Scene):
 
             x=0.7, y=0.68, width=0.2, height=0.08,
 
-            regex=r"\d+",
+            type_regex=r"\d{0,4}",
+            check_regex=r"\d+",
 
             style=texture.Input.Style1,
 

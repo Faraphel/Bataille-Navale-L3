@@ -1,8 +1,6 @@
 import socket
 from typing import TYPE_CHECKING
 
-import pyglet
-
 from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import Result
@@ -127,10 +125,10 @@ class Game(Scene):
         self.chat_log = self.add_widget(
             widget.Text,
 
-            x=10, y=35, width=0.5,
+            x=10, y=45, width=0.4,
 
             text="",
-            anchor_x="left",
+            anchor_x="left", anchor_y="bottom",
             multiline=True
         )
 
@@ -139,16 +137,16 @@ class Game(Scene):
 
             x=10, y=10, width=0.5, height=30,
 
+            type_regex=".{0,60}",
+
             style=texture.Button.Style1
         )
 
         def send_chat(widget):
-            text = widget.text
+            text: str = widget.text
             widget.text = ""
 
-            self.chat_log.text += "\n" + text
-            self.chat_log.label.y = self.chat_log.y + self.chat_log.label.content_height
-
+            self.chat_new_message(self.name_ally, text)
             PacketChat(message=text).send_connection(connection)
 
         self.chat_input.add_listener("on_enter", send_chat)
@@ -196,6 +194,15 @@ class Game(Scene):
 
     # function
 
+    def _refresh_chat_box(self):
+        # supprime des messages jusqu'à ce que la boite soit plus petite que un quart de la fenêtre
+        while self.chat_log.label.content_height > (self.window.height / 4):
+            chat_logs: list[str] = self.chat_log.text.split("\n")
+            self.chat_log.text = "\n".join(chat_logs[1:])
+
+        # ajuste la boite de message pour être collé en bas
+        self.chat_log.label.y = self.chat_log.y + self.chat_log.label.content_height
+
     def _refresh_turn_text(self):
         self.label_state.text = (
             "Placer vos bateaux" if not self.boat_ready_ally else
@@ -206,6 +213,12 @@ class Game(Scene):
 
     def game_end(self, won: bool):
         self.window.add_scene(Result, won=won)
+
+    def chat_new_message(self, author: str, content: str):
+        message: str = f"[{author}] - {content}"
+        self.chat_log.text += "\n" + message
+
+        self._refresh_chat_box()
 
     # property
 
@@ -257,7 +270,7 @@ class Game(Scene):
     # network
 
     def network_on_chat(self, connection: socket.socket, packet: PacketChat):
-        print(packet.message)
+        self.chat_new_message(self.name_enemy, packet.message)
 
     def network_on_boat_placed(self, connection: socket.socket, packet: PacketBoatPlaced):
         self.boat_ready_enemy = True
@@ -309,3 +322,8 @@ class Game(Scene):
             # si cette bombe a touché le dernier bateau, alors l'on a gagné
             self.game_end(won=True)
             return True  # coupe la connexion
+
+    # event
+
+    def on_resize_after(self, width: int, height: int):
+        self._refresh_chat_box()
