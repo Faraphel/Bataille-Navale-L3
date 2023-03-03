@@ -1,17 +1,7 @@
-from dataclasses import dataclass
-
-from source.network.packet.abc import SimplePacket
+from source.network.packet.abc import SignalPacket
 
 
-@dataclass
-class PacketBoatPlaced(SimplePacket):
+class PacketBoatPlaced(SignalPacket):
     """
     A packet that signal that all the boat of the player have been placed
     """
-
-    def to_bytes(self) -> bytes:
-        return b""
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> "PacketBoatPlaced":
-        return cls()

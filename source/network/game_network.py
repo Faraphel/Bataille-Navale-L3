@@ -26,6 +26,7 @@ def game_network(
         packet.PacketBoatPlaced: game_scene.network_on_boat_placed,
         packet.PacketBombPlaced: game_scene.network_on_bomb_placed,
         packet.PacketBombState: game_scene.network_on_bomb_state,
+        packet.PacketQuit: game_scene.network_on_quit,
     }
 
     while True:
@@ -38,6 +39,5 @@ def game_network(
         data = data_type.from_connection(connection)
 
         if in_pyglet_context(
-            game_methods[data_type],  # récupère la methode relié ce type de donnée
-            connection, data
+            game_methods[data_type], data  # récupère la methode relié ce type de donnée
         ): return  # Appelle la méthode. Si elle renvoie True, arrête le thread

@@ -4,3 +4,4 @@ from .PacketBombState import PacketBombState
 from .PacketBoatPlaced import PacketBoatPlaced
 from .PacketSettings import PacketSettings
 from .PacketUsername import PacketUsername
+from .PacketQuit import PacketQuit

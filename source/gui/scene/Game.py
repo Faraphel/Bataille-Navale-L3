@@ -7,7 +7,7 @@ from source.gui.scene import GameResult
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture, scene
 from source import core
-from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced, PacketBombState
+from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced, PacketBombState, PacketQuit
 from source.type import Point2D
 from source.utils import StoppableThread
 
@@ -218,12 +218,14 @@ class Game(Scene):
         )
 
     def quit(self):
+        PacketQuit().send_connection(self.connection)
+
         self.thread.stop()
         from source.gui.scene import MainMenu
         self.window.set_scene(MainMenu)
 
     def game_end(self, won: bool):
-        self.window.add_scene(GameResult, won=won)
+        self.window.add_scene(GameResult, game_scene=self, won=won)
 
     def chat_new_message(self, author: str, content: str):
         message: str = f"[{author}] - {content}"
@@ -280,13 +282,13 @@ class Game(Scene):
 
     # network
 
-    def network_on_chat(self, connection: socket.socket, packet: PacketChat):
+    def network_on_chat(self, packet: PacketChat):
         self.chat_new_message(self.name_enemy, packet.message)
 
-    def network_on_boat_placed(self, connection: socket.socket, packet: PacketBoatPlaced):
+    def network_on_boat_placed(self, packet: PacketBoatPlaced):
         self.boat_ready_enemy = True
 
-    def network_on_bomb_placed(self, connection: socket.socket, packet: PacketBombPlaced):
+    def network_on_bomb_placed(self, packet: PacketBombPlaced):
         try:
             # essaye de poser la bombe sur la grille alliée
             bomb_state = self.grid_ally.board.bomb(packet.position)
@@ -302,7 +304,7 @@ class Game(Scene):
             self.my_turn = not bomb_state.success
 
         # envoie le résultat à l'autre joueur
-        PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(connection)
+        PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(self.connection)
 
         if bomb_state.success:
             # si la bombe a touché un bateau, incrémente le score
@@ -313,7 +315,7 @@ class Game(Scene):
             self.game_end(won=False)
             return True  # coupe la connexion
 
-    def network_on_bomb_state(self, connection: socket.socket, packet: PacketBombState):
+    def network_on_bomb_state(self, packet: PacketBombState):
         if packet.bomb_state is BombState.ERROR:
             # si une erreur est survenue, on rejoue
             self.my_turn = True
@@ -333,6 +335,11 @@ class Game(Scene):
             # si cette bombe a touché le dernier bateau, alors l'on a gagné
             self.game_end(won=True)
             return True  # coupe la connexion
+
+    def network_on_quit(self, packet: PacketQuit):
+        self.thread.stop()
+        from source.gui.scene import GameError
+        self.window.set_scene(GameError, text="L'adversaire a quitté la partie.")
 
     # event
 

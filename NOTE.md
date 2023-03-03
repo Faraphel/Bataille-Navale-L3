@@ -10,7 +10,7 @@ A faire :
 - Changer les images, rajouter les fonds, ...
 
 
-- Voir si les event listener intégré à pyglet sont plus pratique que l'event propagation (?)
+- Voir si les event listener intégré à pyglet sont plus pratiques que l'event propagation (?)
 - Faire une scène incluant par défaut les boutons "Retour" (?)
 
 

@@ -25,4 +25,4 @@ class GameResult(Popup):
 
         # TODO: rendre l'image transparente si possible
 
-        pyglet.clock.schedule_once(lambda dt: self.game_scene.quit, 5.0)
+        pyglet.clock.schedule_once(lambda dt: self.game_scene.quit(), 5.0)
