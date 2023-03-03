@@ -12,7 +12,6 @@ A faire :
 
 - Voir si les event listener intégré à pyglet sont plus pratique que l'event propagation (?)
 - Faire une scène incluant par défaut les boutons "Retour" (?)
-- Faire des scènes "pop-up" (?)
 
 
 Bug : 

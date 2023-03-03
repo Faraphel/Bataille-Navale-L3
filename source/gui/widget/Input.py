@@ -121,8 +121,6 @@ class Input(BoxWidget):
             self.trigger_event("on_enter")
 
     def on_text(self, char: str):
-        print("on_text")
-
         if not self.activated: return  # ignore si ce widget est désactivé / non sélectionné
         if not self.label.multiline and char in "\r\n": return  # si le texte est sur une ligne, ignore les retours
 

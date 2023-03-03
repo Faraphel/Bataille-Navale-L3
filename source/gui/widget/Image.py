@@ -38,7 +38,7 @@ class Image(BoxWidget):
     # refresh
 
     def _refresh_size(self):
-        self.image.width, self.image.height = self.size
+        self.image.x, self.image.y, self.image.width, self.image.height = self.bbox
 
     # event
 

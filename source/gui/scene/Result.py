@@ -5,12 +5,13 @@ import pyglet.clock
 from source.gui import texture, widget
 from source.gui.event import StopEvent
 from source.gui.scene.abc import Scene
+from source.gui.scene.abc.Popup import Popup
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class Result(Scene):
+class Result(Popup):
     def __init__(self, window: "Window", won: bool, **kwargs):
         super().__init__(window, **kwargs)
 
@@ -25,9 +26,3 @@ class Result(Scene):
 
         from source.gui.scene import MainMenu
         pyglet.clock.schedule_once(lambda dt: self.window.set_scene(MainMenu), 5.0)
-
-    def on_mouse_press_after(self, x: int, y: int, button: int, modifiers: int):
-        raise StopEvent()
-
-    def on_mouse_motion_after(self, x: int, y: int, button: int, modifiers: int):
-        raise StopEvent()

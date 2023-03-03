@@ -1,16 +1,23 @@
 from typing import TYPE_CHECKING
 
-from source.gui.event import StopEvent
-from source.gui.scene.abc import Scene
 from source.gui import widget, texture
+from source.gui.scene.abc.Popup import Popup
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class Settings(Scene):
+class Settings(Popup):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
+
+        self.background = self.add_widget(
+            widget.Image,
+
+            x=0, y=0, width=1.0, height=1.0,
+
+            image=texture.Popup.Style1.background
+        )
 
         self.back = self.add_widget(
             widget.Button,
@@ -43,9 +50,3 @@ class Settings(Scene):
 
             text_transform=lambda value: round(value, 2)
         )
-
-    def on_mouse_press_after(self, x: int, y: int, button: int, modifiers: int):
-        raise StopEvent()
-
-    def on_mouse_motion_after(self, x: int, y: int, button: int, modifiers: int):
-        raise StopEvent()

@@ -2,6 +2,7 @@ from pathlib import Path
 
 path: Path = Path("./assets/image")
 
+from .Popup import Popup
 from .Background import Background
 from .Button import Button
 from .Checkbox import Checkbox
