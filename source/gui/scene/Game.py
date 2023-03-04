@@ -198,7 +198,7 @@ class Game(Scene):
 
         self._refresh_turn_text()
 
-    # function
+    # refresh
 
     def _refresh_chat_box(self):
         # supprime des messages jusqu'à ce que la boite soit plus petite que un quart de la fenêtre
@@ -216,22 +216,6 @@ class Game(Scene):
             "Placer vos bombes" if self.my_turn else
             "L'adversaire place ses bombes..."
         )
-
-    def quit(self):
-        PacketQuit().send_connection(self.connection)
-
-        self.thread.stop()
-        from source.gui.scene import MainMenu
-        self.window.set_scene(MainMenu)
-
-    def game_end(self, won: bool):
-        self.window.add_scene(GameResult, game_scene=self, won=won)
-
-    def chat_new_message(self, author: str, content: str):
-        message: str = f"[{author}] - {content}"
-        self.chat_log.text += "\n" + message
-
-        self._refresh_chat_box()
 
     # property
 
@@ -280,6 +264,18 @@ class Game(Scene):
         self._boat_ready_enemy = boat_ready_enemy
         self._refresh_turn_text()
 
+    # function
+
+    def game_end(self, won: bool):
+        self.window.add_scene(GameResult, game_scene=self, won=won)  # affiche le résultat
+        self.thread.stop()  # coupe la connexion
+
+    def chat_new_message(self, author: str, content: str):
+        message: str = f"[{author}] - {content}"
+        self.chat_log.text += "\n" + message
+
+        self._refresh_chat_box()
+
     # network
 
     def network_on_chat(self, packet: PacketChat):
@@ -313,7 +309,6 @@ class Game(Scene):
         if bomb_state is BombState.WON:
             # si l'ennemie à gagner, alors l'on a perdu
             self.game_end(won=False)
-            return True  # coupe la connexion
 
     def network_on_bomb_state(self, packet: PacketBombState):
         if packet.bomb_state is BombState.ERROR:
@@ -334,10 +329,10 @@ class Game(Scene):
         if packet.bomb_state is BombState.WON:
             # si cette bombe a touché le dernier bateau, alors l'on a gagné
             self.game_end(won=True)
-            return True  # coupe la connexion
 
     def network_on_quit(self, packet: PacketQuit):
-        self.thread.stop()
+        self.thread.stop()  # coupe la connexion
+
         from source.gui.scene import GameError
         self.window.set_scene(GameError, text="L'adversaire a quitté la partie.")
 

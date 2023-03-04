@@ -1,15 +1,19 @@
 A faire :
-- Sauvegarde / Quitter
+
+
+1. Principal :
+- Sauvegarde
 - Historique / Replay
-- Police d'écriture
-- Gérer les erreurs (quitter en cours de connexion, ...)
 - Documenter  
+
+
+2. Visuel :
 - Rendre le texte de status plus visible
-
-
+- Police d'écriture
 - Changer les images, rajouter les fonds, ...
 
 
+3. Hypothétique :
 - Voir si les event listener intégré à pyglet sont plus pratiques que l'event propagation (?)
 - Faire une scène incluant par défaut les boutons "Retour" (?)
 

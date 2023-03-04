@@ -233,8 +233,6 @@ class RoomCreate(Scene):
 
         update_boat_size_text()
 
-        # TODO: si on diminue la taille de la grille après avoir mis des bateaux de plus longue taille, faire un check
-
         # Démarrer
 
         self.start = self.add_widget(

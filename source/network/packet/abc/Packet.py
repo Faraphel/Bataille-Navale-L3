@@ -18,12 +18,12 @@ class Packet(ABC):
     packet_id: int = 0
 
     def __init_subclass__(cls, **kwargs):
-        cls.packet_header = Packet.packet_id.to_bytes(1, "big")  # give a header to the newly created subclass
-        Packet.packet_id = Packet.packet_id + 1  # increment by one the packet header for the next subclass
+        if isabstract(cls): return  # si la classe est abstraite, ignore
 
-        if not isabstract(cls):
-            # si la classe n'est pas abstraite, ajoute-la aux types de packet enregistré.
-            cls.packet_types.add(cls)
+        cls.packet_header = Packet.packet_id.to_bytes(1, "big")  # ajoute un header à la sous-classe
+        Packet.packet_id = Packet.packet_id + 1  # incrémente l'id pour que le prochain header soit différent
+
+        cls.packet_types.add(cls)  # ajoute la sous-classe aux types de packet enregistré.
 
     @abstractmethod
     def to_bytes(self) -> bytes:

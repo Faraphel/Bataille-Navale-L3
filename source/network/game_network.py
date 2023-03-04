@@ -29,15 +29,25 @@ def game_network(
         packet.PacketQuit: game_scene.network_on_quit,
     }
 
-    while True:
-        data_type: Type["Packet"] = Packet.type_from_connection(connection)
+    try:
+        while True:
+            data_type: Type["Packet"] = Packet.type_from_connection(connection)
 
-        if data_type is None:
+            if data_type is None:
+                if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
+                continue
+
+            data = data_type.from_connection(connection)
+
+            in_pyglet_context(
+                game_methods[data_type], data  # récupère la methode relié ce type de donnée
+            )  # Appelle la méthode.
+
             if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
-            continue
 
-        data = data_type.from_connection(connection)
+    except Exception as e:
+        # TODO: meilleur messages
 
-        if in_pyglet_context(
-            game_methods[data_type], data  # récupère la methode relié ce type de donnée
-        ): return  # Appelle la méthode. Si elle renvoie True, arrête le thread
+        from source.gui.scene import GameError
+        in_pyglet_context(game_scene.window.set_scene, GameError, text=f"Une erreur est survenu :\n{str(e)}")
+        print(type(e), e)

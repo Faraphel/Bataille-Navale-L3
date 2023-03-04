@@ -20,6 +20,8 @@ class GameError(Scene):
             anchor_x="center",
 
             text=text,
+            align="center",
+            multiline=True,
             font_size=28,
         )
 

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
 from source.gui.scene.abc.Popup import Popup
+from source.network.packet import PacketQuit
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -55,4 +56,11 @@ class GameQuit(Popup):
             style=texture.Button.Style1
         )
 
-        self.confirm.add_listener("on_click_release", lambda *_: self.game_scene.quit())
+        self.confirm.add_listener("on_click_release", lambda *_: self.quit())
+
+    def quit(self):
+        PacketQuit().send_connection(self.game_scene.connection)  # envoie le packet
+        self.game_scene.thread.stop()  # coupe le thread & la connexion
+
+        from source.gui.scene import MainMenu
+        self.window.set_scene(MainMenu)  # affiche le menu principal
