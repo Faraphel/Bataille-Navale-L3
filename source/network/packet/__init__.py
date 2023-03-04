@@ -7,3 +7,5 @@ from .PacketResponseSave import PacketResponseSave
 from .PacketSettings import PacketSettings
 from .PacketUsername import PacketUsername
 from .PacketQuit import PacketQuit
+from .PacketLoadOldSave import PacketLoadOldSave
+from .PacketHaveSaveBeenFound import PacketHaveSaveBeenFound

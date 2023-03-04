@@ -3,7 +3,7 @@ A faire :
 
 1. Principal :
 - Sauvegarde
-- Historique / Replay
+- Historique
 - Documenter
 
 2. Visuel :
@@ -12,6 +12,7 @@ A faire :
 - Changer les images, rajouter les fonds, ...
 
 3. Hypothétique :
+- Vrai musique
 - Voir si les event listener intégré à pyglet sont plus pratiques que l'event propagation (?)
 - Faire une scène incluant par défaut les boutons "Retour" (?)
 

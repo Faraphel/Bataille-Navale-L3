@@ -1,12 +1,14 @@
 import socket
-from typing import TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING, Optional
+from threading import Condition
 
 from source import path_save
 from source.gui import scene
 from source.network import game_network
 from source.utils import StoppableThread
 from source.utils.thread import in_pyglet_context
-from source.network.packet import PacketUsername
+from source.network.packet import PacketUsername, PacketLoadOldSave, PacketHaveSaveBeenFound
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -25,6 +27,9 @@ class Host(StoppableThread):
         self.username = username
         self.settings = settings
         self.port = port
+
+        self.condition_load = Condition()
+        self.accept_load: Optional[bool] = None
 
     def run(self) -> None:
         print("[Serveur] Thread démarré")
@@ -45,9 +50,35 @@ class Host(StoppableThread):
 
             print(f"[Serveur] Connecté avec {ip_address}")
 
-            # check pour ancienne sauvegarde contre ce joueur
+            # ancienne sauvegarde
 
-            ...
+            path_old_save: Optional[Path] = None
+
+            for file in path_save.iterdir():  # cherche une ancienne sauvegarde correspondant à l'ip de l'adversaire
+                if file.stem == ip_address:
+                    path_old_save = file
+                    break
+
+            # envoie à l'adversaire si une ancienne sauvegarde a été trouvée
+            PacketHaveSaveBeenFound(value=path_old_save is not None).send_data_connection(connection)
+
+            if path_old_save is not None:
+                # si une ancienne sauvegarde a été trouvée, attend que l'adversaire confirme avoir également la save
+                packet_save_found = PacketHaveSaveBeenFound.from_connection(connection)
+
+                # si l'adversaire à également la sauvegarde, demande à l'hôte de confirmer l'utilisation de la save
+                if packet_save_found.value:
+
+                    from source.gui.scene import GameLoad
+                    in_pyglet_context(self.window.set_scene, GameLoad, thread_host=self)
+
+                    with self.condition_load: self.condition_load.wait()  # attend que l'utilisateur choisisse l'option
+
+                    PacketLoadOldSave(value=self.accept_load).send_data_connection(connection)
+
+                    if self.accept_load:
+                        ...
+                        # TODO: Charger nos données
 
             # paramètres & jeu
 
