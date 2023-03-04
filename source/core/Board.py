@@ -164,3 +164,5 @@ if __name__ == "__main__":
     print(board.bomb((4, 3)))
     print(board.bomb((4, 4)))
     print(board)
+
+    print(board.to_json())

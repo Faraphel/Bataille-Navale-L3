@@ -5,7 +5,7 @@ import numpy as np
 import pyglet.shapes
 
 from source.core import Board, Boat
-from source.core.enums import Orientation
+from source.core.enums import Orientation, BombState
 from source.core.error import InvalidBoatPosition
 from source.gui.sprite import Sprite
 from source.gui.texture.abc import Style
@@ -230,14 +230,20 @@ class GameGrid(BoxWidget):
         except InvalidBoatPosition: self.display_board(self.board)  # if the boat can't be placed, ignore
         else: self.display_board(preview_board, preview=True)
 
-    def place_bomb(self, cell: Point2D, touched: bool):
+    def place_bomb(self, cell: Point2D, force_touched: bool = None) -> BombState:
+        bomb_state = self.board.bomb(cell)
+
         self.cell_sprites[cell] = Sprite(
-            img=self.bomb_style.get("touched" if touched else "missed"),
+            img=self.bomb_style.get(
+                "touched" if (bomb_state.success if force_touched is None else force_touched) else "missed"
+            ),
             batch=self.scene.batch,
             **self._bomb_kwargs
         )
 
         self._refresh_size()
+
+        return bomb_state
 
     def on_click_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):
         cell = self.get_cell_from_rel(rel_x, rel_y)

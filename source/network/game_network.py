@@ -27,6 +27,8 @@ def game_network(
         packet.PacketBombPlaced: game_scene.network_on_bomb_placed,
         packet.PacketBombState: game_scene.network_on_bomb_state,
         packet.PacketQuit: game_scene.network_on_quit,
+        packet.PacketAskSave: game_scene.network_on_ask_save,
+        packet.PacketResponseSave: game_scene.network_on_response_save,
     }
 
     try:

@@ -33,6 +33,8 @@ class Client(StoppableThread):
 
             print(f"[Client] Connecté avec {connection}")
 
+            ...
+
             settings: Any = PacketSettings.from_connection(connection)
             PacketUsername(username=self.username).send_data_connection(connection)
             packet_username = PacketUsername.from_connection(connection)

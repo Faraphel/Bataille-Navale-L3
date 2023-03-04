@@ -1,13 +1,15 @@
+import json
 import socket
 from typing import TYPE_CHECKING
 
+from source import path_save
 from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import GameResult
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture, scene
-from source import core
-from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced, PacketBombState, PacketQuit
+from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced, PacketBombState, PacketQuit, \
+    PacketAskSave, PacketResponseSave
 from source.type import Point2D
 from source.utils import StoppableThread
 
@@ -164,6 +166,12 @@ class Game(Scene):
             style=texture.Button.Style1
         )
 
+        def ask_save(widget, x, y, button, modifiers):
+            PacketAskSave().send_connection(self.connection)
+            self.chat_new_message("System", "demande de sauvegarde envoyé.")
+
+        self.button_save.add_listener("on_click_release", ask_save)
+
         self.button_quit = self.add_widget(
             widget.Button,
 
@@ -186,9 +194,6 @@ class Game(Scene):
 
             font_size=20
         )
-
-        self.board_ally = core.Board(rows=self.grid_height, columns=self.grid_width)
-        self.board_enemy = core.Board(rows=self.grid_height, columns=self.grid_width)
 
         self._my_turn = my_turn  # is it the player turn ?
         self._boat_ready_ally: bool = False  # does the player finished placing his boat ?
@@ -266,6 +271,24 @@ class Game(Scene):
 
     # function
 
+    def to_json(self) -> dict:
+        return {
+            "grid_ally": self.grid_ally.board.to_json(),
+            "grid_enemy": self.grid_enemy.board.to_json(),
+        }
+
+    def save(self, value: bool):
+        self.chat_new_message(
+            "System",
+            "Sauvegarde de la partie..." if value else "Sauvegarde de la partie refusé."
+        )
+        if not value: return
+
+        ip_address, _ = self.connection.getpeername()
+
+        with open(path_save / (ip_address + ".bn-save"), "w", encoding="utf-8") as file:
+            json.dump(self.to_json(), file, ensure_ascii=False, indent=4)
+
     def game_end(self, won: bool):
         self.window.add_scene(GameResult, game_scene=self, won=won)  # affiche le résultat
         self.thread.stop()  # coupe la connexion
@@ -287,15 +310,13 @@ class Game(Scene):
     def network_on_bomb_placed(self, packet: PacketBombPlaced):
         try:
             # essaye de poser la bombe sur la grille alliée
-            bomb_state = self.grid_ally.board.bomb(packet.position)
+            bomb_state = self.grid_ally.place_bomb(packet.position)
         except (InvalidBombPosition, PositionAlreadyShot):
             # si une erreur se produit, signale l'erreur
             bomb_state = BombState.ERROR
             # l'opposant va rejouer, ce n'est donc pas notre tour
             self.my_turn = False
         else:
-            # si la bombe a bien été placé, affiche-la sur la grille visuel allié
-            self.grid_ally.place_bomb(packet.position, bomb_state.success)
             # c'est à notre tour si l'opposant à loupé sa bombe
             self.my_turn = not bomb_state.success
 
@@ -324,7 +345,7 @@ class Game(Scene):
             self.boat_broken_ally += 1
 
         # place la bombe sur la grille ennemie visuelle
-        self.grid_enemy.place_bomb(packet.position, packet.bomb_state.success)
+        self.grid_enemy.place_bomb(packet.position, force_touched=packet.bomb_state.success)
 
         if packet.bomb_state is BombState.WON:
             # si cette bombe a touché le dernier bateau, alors l'on a gagné
@@ -335,6 +356,13 @@ class Game(Scene):
 
         from source.gui.scene import GameError
         self.window.set_scene(GameError, text="L'adversaire a quitté la partie.")
+
+    def network_on_ask_save(self, packet: PacketAskSave):
+        from source.gui.scene import GameSave
+        self.window.add_scene(GameSave, game_scene=self)
+
+    def network_on_response_save(self, packet: PacketResponseSave):
+        self.save(value=packet.value)
 
     # event
 

@@ -1,6 +1,7 @@
 import socket
 from typing import TYPE_CHECKING
 
+from source import path_save
 from source.gui import scene
 from source.network import game_network
 from source.utils import StoppableThread
@@ -36,13 +37,19 @@ class Host(StoppableThread):
 
             while True:
                 try:
-                    connection, address = server.accept()  # accepte la première connexion entrante
+                    connection, (ip_address, port) = server.accept()  # accepte la première connexion entrante
                     break  # sort de la boucle
                 except socket.timeout:  # en cas de timeout
                     if self.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
                     # sinon, réessaye
 
-            print(f"[Serveur] Connecté avec {address}")
+            print(f"[Serveur] Connecté avec {ip_address}")
+
+            # check pour ancienne sauvegarde contre ce joueur
+
+            ...
+
+            # paramètres & jeu
 
             self.settings.send_data_connection(connection)
             packet_username = PacketUsername.from_connection(connection)
