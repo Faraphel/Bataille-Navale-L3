@@ -1,8 +1,10 @@
 import json
 import socket
+from datetime import datetime
+from pathlib import Path
 from typing import TYPE_CHECKING
 
-from source import path_save
+from source import path_save, path_history
 from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import GameResult
@@ -301,6 +303,29 @@ class Game(Scene):
             board_enemy_data=data["grid_enemy"]
         )
 
+    @property
+    def save_path(self) -> Path:
+        ip_address, port = self.connection.getpeername()
+
+        # Le nom du fichier est l'IP de l'opposent, suivi d'un entier indiquant si c'est à notre tour ou non.
+        # Cet entier permet aux localhost de toujours pouvoir sauvegarder et charger sans problème.
+        return path_save / (
+                ip_address +
+                (f"-{int(self.my_turn)}" if ip_address == "127.0.0.1" else "") +
+                ".bn-save"
+        )
+
+    @property
+    def history_path(self):
+        return path_history / (
+            datetime.now().strftime("%Y-%m-%d_%H-%M-%S") +
+            ".bn-history"
+        )
+
+    def save_to_path(self, path: Path):
+        with open(path, "w", encoding="utf-8") as file:
+            json.dump(self.to_json(), file, ensure_ascii=False)
+
     def save(self, value: bool):
         self.chat_new_message(
             "System",
@@ -308,19 +333,15 @@ class Game(Scene):
         )
         if not value: return
 
-        ip_address, port = self.connection.getpeername()
-        # Le nom du fichier est l'IP de l'opposent, suivi d'un entier indiquant si c'est à notre tour ou non.
-        # Cet entier permet aux localhost de toujours pouvoir sauvegarder et charger sans problème.
-        filename: str = (
-            ip_address +
-            (f"-{int(self.my_turn)}" if ip_address == "127.0.0.1" else "") +
-            ".bn-save"
-        )
-
-        with open(path_save / filename, "w", encoding="utf-8") as file:
-            json.dump(self.to_json(), file, ensure_ascii=False, indent=4)
+        self.save_to_path(self.save_path)
 
     def game_end(self, won: bool):
+        # s'il existe une ancienne sauvegarde, efface la
+        self.save_path.unlink(missing_ok=True)
+
+        # sauvegarde cette partie dans l'historique
+        self.save_to_path(self.history_path)
+
         self.window.add_scene(GameResult, game_scene=self, won=won)  # affiche le résultat
         self.thread.stop()  # coupe la connexion
 

@@ -14,9 +14,12 @@ A faire :
    - Changer les images, rajouter les fonds, mettre la musique, ...
    - Voir les TODOs
 
+3. Autre : 
+   - test avec "assert" (cahier des charges)
+   - mode d'emploi (video + pdf) expliquant le fonctionnement
 
 Bug : 
-    - Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
+    - (incertain) Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
 
 
 Autre :
