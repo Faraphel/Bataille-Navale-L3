@@ -2,27 +2,24 @@ A faire :
 
 
 1. Principal :
-- Historique
-- Documenter
+   - Historique
+   - Documenter (Docstring, README, ...)
 
 2. Visuel :
-- Rendre le texte de status plus visible
-- Police d'écriture
-- Changer les images, rajouter les fonds, ...
+   - Paramètres
+   - Rendre le texte de status plus visible
+   - Police d'écriture
+   - Changer les images, rajouter les fonds, ...
+   - Voir les TODOs
+   - Musique
 
 3. Hypothétique :
-- Vraie musique
-- Voir si les event listener intégré à pyglet sont plus pratiques que l'event propagation (?)
-- Faire une scène incluant par défaut les boutons "Retour" (?)
+   - Vraie musique
 
 
 Bug : 
-- Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
+    - Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
 
 
 Autre :
-- Tester sur Linux
-
-
-Bonus ultime : 
-- Envoyer la texture de la grille à l'adversaire (???)
+    - Tester sur Linux

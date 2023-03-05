@@ -311,7 +311,11 @@ class Game(Scene):
         ip_address, port = self.connection.getpeername()
         # Le nom du fichier est l'IP de l'opposent, suivi d'un entier indiquant si c'est à notre tour ou non.
         # Cet entier permet aux localhost de toujours pouvoir sauvegarder et charger sans problème.
-        filename: str = f"{ip_address}-{int(self.my_turn)}.bn-save"
+        filename: str = (
+            ip_address +
+            (f"-{int(self.my_turn)}" if ip_address == "127.0.0.1" else "") +
+            ".bn-save"
+        )
 
         with open(path_save / filename, "w", encoding="utf-8") as file:
             json.dump(self.to_json(), file, ensure_ascii=False, indent=4)
