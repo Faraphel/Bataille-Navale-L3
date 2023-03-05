@@ -6,15 +6,13 @@ A faire :
    - Documenter (Docstring, README, ...)
 
 2. Visuel :
-   - Paramètres
-   - Rendre le texte de status plus visible
+   - Système en gras ou en un peu différent
+   - Empêcher de spam "se connecter" dans le client (écran d'attente ?)
+   - Paramètres (contenu : fps, volume dans le jeu, plein écran, ...) (bouton dans le jeu)
+   - Rendre le texte de status plus visible (?)
    - Police d'écriture
-   - Changer les images, rajouter les fonds, ...
+   - Changer les images, rajouter les fonds, mettre la musique, ...
    - Voir les TODOs
-   - Musique
-
-3. Hypothétique :
-   - Vraie musique
 
 
 Bug : 
