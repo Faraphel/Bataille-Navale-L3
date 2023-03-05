@@ -175,11 +175,11 @@ class Game(Scene):
 
         def ask_save(widget, x, y, button, modifiers):
             if not (self._boat_ready_ally and self._boat_ready_enemy):
-                self.chat_new_message("System", "Veuillez poser vos bateaux avant de sauvegarder.")
+                self.chat_new_message("System", "Veuillez poser vos bateaux avant de sauvegarder.", system=True)
                 return
 
             PacketAskSave().send_connection(self.connection)
-            self.chat_new_message("System", "demande de sauvegarde envoyé.")
+            self.chat_new_message("System", "demande de sauvegarde envoyé.", system=True)
 
         self.button_save.add_listener("on_click_release", ask_save)
 
@@ -330,7 +330,8 @@ class Game(Scene):
     def save(self, value: bool):
         self.chat_new_message(
             "System",
-            "Sauvegarde de la partie..." if value else "Sauvegarde de la partie refusé."
+            "Sauvegarde de la partie..." if value else "Sauvegarde de la partie refusé.",
+            system=True
         )
         if not value: return
 
@@ -346,8 +347,9 @@ class Game(Scene):
         self.window.add_scene(GameResult, game_scene=self, won=won)  # affiche le résultat
         self.thread.stop()  # coupe la connexion
 
-    def chat_new_message(self, author: str, content: str):
-        message: str = f"[{author}] - {content}"
+    def chat_new_message(self, author: str, content: str, system: bool = False):
+        deco_left, deco_right = "<>" if system else "[]"
+        message: str = f"{deco_left}{author}{deco_right} - {content}"
         self.chat_log.text += "\n" + message
 
         self._refresh_chat_box()
