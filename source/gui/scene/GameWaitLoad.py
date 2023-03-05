@@ -1,15 +1,16 @@
+from pathlib import Path
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture
+from source.gui import widget
 from source.gui.scene.abc import Scene
-from source.network import Host
+from source.utils import path_ctime_str
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
 class GameWaitLoad(Scene):
-    def __init__(self, window: "Window", **kwargs):
+    def __init__(self, window: "Window", path: Path, **kwargs):
         super().__init__(window, **kwargs)
 
         self.label = self.add_widget(
@@ -19,7 +20,10 @@ class GameWaitLoad(Scene):
 
             anchor_x="center",
 
-            text="Une ancienne sauvegarde à été trouvé.\nL'hôte décide de son utilisation...",
+            text=f"Une ancienne sauvegarde à été trouvé.\n"
+                 f"L'hôte décide de son utilisation...\n"
+                 f"({path_ctime_str(path)})",
+
             align="center",
             multiline=True,
             font_size=28,

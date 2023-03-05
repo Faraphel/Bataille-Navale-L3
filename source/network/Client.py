@@ -63,7 +63,7 @@ class Client(StoppableThread):
                     # si l'on possède la sauvegarde, attend que l'hôte confirme son utilisation
 
                     from source.gui.scene import GameWaitLoad
-                    in_pyglet_context(self.window.set_scene, GameWaitLoad)
+                    in_pyglet_context(self.window.set_scene, GameWaitLoad, path=path_old_save)
 
                     while True:
                         # attend la décision de l'hôte

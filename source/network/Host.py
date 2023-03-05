@@ -71,7 +71,7 @@ class Host(StoppableThread):
                 if packet_save_found:
 
                     from source.gui.scene import GameLoad
-                    in_pyglet_context(self.window.set_scene, GameLoad, thread_host=self)
+                    in_pyglet_context(self.window.set_scene, GameLoad, path=path_old_save, thread_host=self)
 
                     with self.condition_load: self.condition_load.wait()  # attend que l'utilisateur choisisse l'option
 

@@ -1,15 +1,17 @@
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
 from source.gui.scene.abc import Scene
 from source.network import Host
+from source.utils import path_ctime_str
 
 if TYPE_CHECKING:
     from source.gui.window import Window
 
 
 class GameLoad(Scene):
-    def __init__(self, window: "Window", thread_host: Host, **kwargs):
+    def __init__(self, window: "Window", path: Path, thread_host: Host, **kwargs):
         super().__init__(window, **kwargs)
 
         self.thread_host = thread_host  # thread de l'hôte
@@ -21,7 +23,9 @@ class GameLoad(Scene):
 
             anchor_x="center",
 
-            text="Une ancienne partie contre cet adversaire a été sauvegardé.\nSouhaitez-vous la reprendre ?",
+            text=f"Une ancienne partie contre cet adversaire a été sauvegardé.\n"
+                 f"Souhaitez-vous la reprendre ?\n"
+                 f"({path_ctime_str(path)})",
             align="center",
             multiline=True,
             font_size=28,
