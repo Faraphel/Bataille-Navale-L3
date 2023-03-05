@@ -1,8 +1,8 @@
 import json
 import socket
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from source import path_save, path_history
 from source.core.enums import BombState
@@ -178,7 +178,6 @@ class Game(Scene):
                 self.chat_new_message("System", "Veuillez poser vos bateaux avant de sauvegarder.")
                 return
 
-            # TODO: Pas spam le bouton
             PacketAskSave().send_connection(self.connection)
             self.chat_new_message("System", "demande de sauvegarde envoyé.")
 
@@ -214,6 +213,8 @@ class Game(Scene):
         if len(boats_length) == 0:  # s'il n'y a pas de bateau à placé
             self._boat_ready_ally = True  # défini l'état de notre planche comme prête
             PacketBoatPlaced().send_connection(connection)  # indique à l'adversaire que notre planche est prête
+
+        self.save_cooldown: Optional[datetime] = None
 
         self._refresh_turn_text()
         self._refresh_score_text()
@@ -406,6 +407,15 @@ class Game(Scene):
         self.window.set_scene(GameError, text="L'adversaire a quitté la partie.")
 
     def network_on_ask_save(self, packet: PacketAskSave):
+        now = datetime.now()
+
+        if self.save_cooldown is not None:  # si un cooldown est défini
+            if self.save_cooldown + timedelta(seconds=40) >= now:
+                # si l'action à déjà été faite dans les 40 dernières secondes, ignore la requête de sauvegarde
+                return
+
+        self.save_cooldown = now
+
         from source.gui.scene import GameSave
         self.window.add_scene(GameSave, game_scene=self)
 
