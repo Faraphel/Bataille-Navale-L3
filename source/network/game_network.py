@@ -1,3 +1,4 @@
+import builtins
 import socket
 from typing import Type, Callable
 
@@ -47,9 +48,14 @@ def game_network(
 
             if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
 
-    except Exception as e:
-        # TODO: meilleur messages
+    except Exception as exception:
+        message: str = "Erreur :\n"
+
+        match type(exception):
+            case builtins.ConnectionResetError:
+                message += "Perte de connexion avec l'adversaire."
+            case _:
+                message += str(exception)
 
         from source.gui.scene import GameError
-        in_pyglet_context(game_scene.window.set_scene, GameError, text=f"Une erreur est survenu :\n{str(e)}")
-        print(type(e), e)
+        in_pyglet_context(game_scene.window.set_scene, GameError, text=message)

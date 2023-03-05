@@ -137,3 +137,5 @@ dmypy.json
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/Projet_S6.iml
 /.idea/vcs.xml
+
+/.save/

@@ -1,3 +1,4 @@
+import json
 import socket
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
@@ -29,7 +30,7 @@ class Host(StoppableThread):
         self.port = port
 
         self.condition_load = Condition()
-        self.accept_load: Optional[bool] = None
+        self.accept_load: bool = False
 
     def run(self) -> None:
         print("[Serveur] Thread démarré")
@@ -55,7 +56,7 @@ class Host(StoppableThread):
             path_old_save: Optional[Path] = None
 
             for file in path_save.iterdir():  # cherche une ancienne sauvegarde correspondant à l'ip de l'adversaire
-                if file.stem == ip_address:
+                if file.stem.startswith(ip_address):
                     path_old_save = file
                     break
 
@@ -64,10 +65,10 @@ class Host(StoppableThread):
 
             if path_old_save is not None:
                 # si une ancienne sauvegarde a été trouvée, attend que l'adversaire confirme avoir également la save
-                packet_save_found = PacketHaveSaveBeenFound.from_connection(connection)
+                packet_save_found = PacketHaveSaveBeenFound.from_connection(connection).value
 
                 # si l'adversaire à également la sauvegarde, demande à l'hôte de confirmer l'utilisation de la save
-                if packet_save_found.value:
+                if packet_save_found:
 
                     from source.gui.scene import GameLoad
                     in_pyglet_context(self.window.set_scene, GameLoad, thread_host=self)
@@ -77,29 +78,46 @@ class Host(StoppableThread):
                     PacketLoadOldSave(value=self.accept_load).send_data_connection(connection)
 
                     if self.accept_load:
-                        ...
-                        # TODO: Charger nos données
 
-            # paramètres & jeu
+                        # charge la sauvegarde
+                        with open(path_old_save, "r", encoding="utf-8") as file:
+                            save_data = json.load(file)
+
+            # paramètres et jeu
 
             self.settings.send_data_connection(connection)
-            packet_username = PacketUsername.from_connection(connection)
+            enemy_username = PacketUsername.from_connection(connection).username
             PacketUsername(username=self.username).send_data_connection(connection)
 
-            game_scene = in_pyglet_context(
-                self.window.set_scene,
-                scene.Game,
+            if self.accept_load:
+                game_scene = in_pyglet_context(
+                    self.window.set_scene,
+                    scene.Game.from_json,  # depuis le fichier json
 
-                thread=self,
-                connection=connection,
+                    data=save_data,
 
-                boats_length=self.settings.boats_length,
-                name_ally=self.username,
-                name_enemy=packet_username.username,
-                grid_width=self.settings.grid_width,
-                grid_height=self.settings.grid_height,
-                my_turn=self.settings.host_start
-            )
+                    thread=self,
+                    connection=connection,
+
+                    name_ally=self.username,
+                    name_enemy=enemy_username,
+                )
+
+            else:
+                game_scene = in_pyglet_context(
+                    self.window.set_scene,
+                    scene.Game,
+
+                    thread=self,
+                    connection=connection,
+
+                    boats_length=self.settings.boats_length,
+                    name_ally=self.username,
+                    name_enemy=enemy_username,
+                    grid_width=self.settings.grid_width,
+                    grid_height=self.settings.grid_height,
+                    my_turn=self.settings.host_start
+                )
 
             game_network(
                 thread=self,

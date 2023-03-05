@@ -25,9 +25,12 @@ class Game(Scene):
                  boats_length: list,
                  name_ally: str,
                  name_enemy: str,
-                 grid_width: int,
-                 grid_height: int,
                  my_turn: bool,
+
+                 grid_width: int = None,
+                 grid_height: int = None,
+                 board_ally_data: dict = None,
+                 board_enemy_data: dict = None,
 
                  **kwargs):
         super().__init__(window, **kwargs)
@@ -57,8 +60,9 @@ class Game(Scene):
 
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
-            bomb_style=texture.Grid.Bomb.Style1,
-            rows=self.grid_height, columns=self.grid_width
+            rows=self.grid_height, columns=self.grid_width,
+
+            board_data=board_ally_data
         )
 
         def board_ally_ready(widget):
@@ -74,8 +78,9 @@ class Game(Scene):
 
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
-            bomb_style=texture.Grid.Bomb.Style1,
-            rows=self.grid_height, columns=self.grid_width
+            rows=self.grid_height, columns=self.grid_width,
+
+            board_data=board_enemy_data
         )
 
         def board_enemy_bomb(widget, cell: Point2D):
@@ -167,6 +172,11 @@ class Game(Scene):
         )
 
         def ask_save(widget, x, y, button, modifiers):
+            if not (self._boat_ready_ally and self._boat_ready_enemy):
+                self.chat_new_message("System", "Veuillez poser vos bateaux avant de sauvegarder.")
+                return
+
+            # TODO: Pas spam le bouton
             PacketAskSave().send_connection(self.connection)
             self.chat_new_message("System", "demande de sauvegarde envoyé.")
 
@@ -196,10 +206,14 @@ class Game(Scene):
         )
 
         self._my_turn = my_turn  # is it the player turn ?
-        self._boat_ready_ally: bool = False  # does the player finished placing his boat ?
+        self._boat_ready_ally: bool = False   # does the player finished placing his boat ?
         self._boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
         self._boat_broken_ally: int = 0
         self._boat_broken_enemy: int = 0
+
+        if len(boats_length) == 0:  # s'il n'y a pas de bateau à placé
+            self._boat_ready_ally = True  # défini l'état de notre planche comme prête
+            PacketBoatPlaced().send_connection(connection)  # indique à l'adversaire que notre planche est prête
 
         self._refresh_turn_text()
 
@@ -273,9 +287,34 @@ class Game(Scene):
 
     def to_json(self) -> dict:
         return {
+            "my_turn": self.my_turn,
             "grid_ally": self.grid_ally.board.to_json(),
             "grid_enemy": self.grid_enemy.board.to_json(),
         }
+
+    @classmethod
+    def from_json(cls,
+                  data: dict,
+
+                  window: "Window",
+                  thread: StoppableThread,
+                  connection: socket.socket,
+                  name_ally: str,
+                  name_enemy: str) -> "Game":
+
+        return cls(
+            window=window,
+            thread=thread,
+            connection=connection,
+            boats_length=[],
+            name_ally=name_ally,
+            name_enemy=name_enemy,
+
+            my_turn=data["my_turn"],
+
+            board_ally_data=data["grid_ally"],
+            board_enemy_data=data["grid_enemy"]
+        )
 
     def save(self, value: bool):
         self.chat_new_message(
@@ -284,9 +323,12 @@ class Game(Scene):
         )
         if not value: return
 
-        ip_address, _ = self.connection.getpeername()
+        ip_address, port = self.connection.getpeername()
+        # Le nom du fichier est l'IP de l'opposent, suivi d'un entier indiquant si c'est à notre tour ou non.
+        # Cet entier permet aux localhost de toujours pouvoir sauvegarder et charger sans problème.
+        filename: str = f"{ip_address}-{int(self.my_turn)}.bn-save"
 
-        with open(path_save / (ip_address + ".bn-save"), "w", encoding="utf-8") as file:
+        with open(path_save / filename, "w", encoding="utf-8") as file:
             json.dump(self.to_json(), file, ensure_ascii=False, indent=4)
 
     def game_end(self, won: bool):

@@ -1,3 +1,4 @@
+import json
 import socket
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
@@ -37,17 +38,21 @@ class Client(StoppableThread):
 
             # sauvegarde
 
-            # attend que l'hôte indique s'il a trouvé une ancienne sauvegarde
-            packet_save_found = PacketHaveSaveBeenFound.from_connection(connection)
+            load_old_save: bool = False
 
-            if packet_save_found.value:
+            # attend que l'hôte indique s'il a trouvé une ancienne sauvegarde
+            packet_save_found = PacketHaveSaveBeenFound.from_connection(connection).value
+
+            if packet_save_found:
                 # si l'hôte a trouvé une ancienne sauvegarde, vérifier de notre côté également.
 
                 path_old_save: Optional[Path] = None
                 ip_address, _ = connection.getpeername()
 
-                for file in path_save.iterdir():
-                    if file.stem == ip_address:
+                for file in reversed(list(path_save.iterdir())):
+                    # la liste est inversée dans le cas où le fichier est en localhost, afin que l'hôte
+                    # prenne le fichier en -0.bn-save et le client en -1.bn-save
+                    if file.stem.startswith(ip_address):
                         path_old_save = file
                         break
 
@@ -63,37 +68,52 @@ class Client(StoppableThread):
                     while True:
                         # attend la décision de l'hôte
                         try:
-                            load_old_save = PacketLoadOldSave.from_connection(connection)
+                            load_old_save = PacketLoadOldSave.from_connection(connection).value
                             break
                         except socket.timeout:
                             if self.stopped: return
 
-                    print("accept load", load_old_save)
+                    if load_old_save:
 
-                    if load_old_save.value:
-                        ...
-                        # TODO: Charger nos données
+                        # charge la sauvegarde
+                        with open(path_old_save, "r", encoding="utf-8") as file:
+                            save_data = json.load(file)
 
             # paramètres & jeu
 
             settings: Any = PacketSettings.from_connection(connection)
             PacketUsername(username=self.username).send_data_connection(connection)
-            packet_username = PacketUsername.from_connection(connection)
+            enemy_username = PacketUsername.from_connection(connection).username
 
-            game_scene = in_pyglet_context(
-                self.window.set_scene,
-                scene.Game,
+            if load_old_save:
+                game_scene = in_pyglet_context(
+                    self.window.set_scene,
+                    scene.Game.from_json,  # depuis le fichier json
 
-                thread=self,
-                connection=connection,
+                    data=save_data,
 
-                boats_length=settings.boats_length,
-                name_ally=self.username,
-                name_enemy=packet_username.username,
-                grid_width=settings.grid_width,
-                grid_height=settings.grid_height,
-                my_turn=not settings.host_start
-            )
+                    thread=self,
+                    connection=connection,
+
+                    name_ally=self.username,
+                    name_enemy=enemy_username,
+                )
+
+            else:
+                game_scene = in_pyglet_context(
+                    self.window.set_scene,
+                    scene.Game,
+
+                    thread=self,
+                    connection=connection,
+
+                    boats_length=settings.boats_length,
+                    name_ally=self.username,
+                    name_enemy=enemy_username,
+                    grid_width=settings.grid_width,
+                    grid_height=settings.grid_height,
+                    my_turn=not settings.host_start
+                )
 
             game_network(
                 thread=self,

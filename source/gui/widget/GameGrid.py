@@ -24,12 +24,8 @@ class GameGrid(BoxWidget):
 
     def __init__(self, scene: "Scene",
 
-                 rows: int,
-                 columns: int,
-
                  grid_style: Type[Style],
                  boat_style: Type[Style],
-                 bomb_style: Type[Style],
 
                  x: Distance = 0,
                  y: Distance = 0,
@@ -39,29 +35,36 @@ class GameGrid(BoxWidget):
                  preview_color: ColorRGB = (150, 255, 150),
                  boats_length: list[int] = None,
 
+                 rows: int = None,
+                 columns: int = None,
+                 board_data: dict = None,
+
                  **kwargs):
-        self.cell_sprites: dict[Point2D, "Sprite"] = {}
+        if (rows is None or columns is None) and board_data is None:
+            raise ValueError(f"{self.__class__} object need to set rows and columns, or the board_data")
+
+        self.cell_sprites: dict[Point2D, tuple["Sprite", hash]] = {}
 
         super().__init__(scene, x, y, width, height)
 
         self.group_cursor = pyglet.graphics.Group(order=1)
         self.group_line = pyglet.graphics.Group(order=2)
 
-        self.rows = rows
-        self.columns = columns
-
         # the list of the size of the boats to place
         self.boats_length = [] if boats_length is None else sorted(boats_length, reverse=True)
         self.preview_color = preview_color
 
-        self.board = Board(rows=self.rows, columns=self.columns)
+        # créer la planche du jeu
+        self.board = Board(width=rows, height=columns) if board_data is None else Board.from_json(board_data)
+        self.rows = self.board.height
+        self.columns = self.board.width
+
         self.orientation: Orientation = Orientation.HORIZONTAL
 
         self._boat_kwargs = dict_filter_prefix("boat_", kwargs)
         self._bomb_kwargs = dict_filter_prefix("bomb_", kwargs)
         self.grid_style = grid_style
         self.boat_style = boat_style
-        self.bomb_style = bomb_style
 
         self.background = Sprite(
             img=grid_style.get("background"),
@@ -91,6 +94,7 @@ class GameGrid(BoxWidget):
         self.add_listener("on_hover", lambda _, *args: self._refresh_cursor(*args))
 
         self._refresh_size()
+        self.display_board(self.board)
 
     def get_cell_from_rel(self, rel_x: int, rel_y: int) -> tuple[int, int]:
         """
@@ -124,7 +128,7 @@ class GameGrid(BoxWidget):
 
         # sprites
 
-        for (x, y), sprite in self.cell_sprites.items():
+        for (x, y), (sprite, hash_) in self.cell_sprites.items():
             # calcul des décalages à cause de la rotation qui est faite par rapport à l'origine de l'image
 
             offset_x = 0 if sprite.rotation <= 90 else self.cell_width
@@ -147,7 +151,7 @@ class GameGrid(BoxWidget):
         self.cursor.y = self.y + cell_y * self.height / self.rows
         self.cursor.width, self.cursor.height = self.cell_size
 
-        self.preview_boat((cell_x, cell_y))  # display the previsualisation of the boat on this cell
+        self.preview_boat((cell_x, cell_y))  # display the preview of the boat on this cell
 
     # function
 
@@ -155,17 +159,28 @@ class GameGrid(BoxWidget):
         self.cursor.width, self.cursor.height = 0, 0
 
     def display_board(self, board: Board, preview: bool = False):
-        self.cell_sprites: dict[Point2D, "Sprite"] = {}
+        # remplacer par l'utilisation de board.boats ?
 
-        matrice = board.get_matrice()
-        max_boat: int = matrice.max()
+        matrice = board.boats
+        max_boat: int = np.max(matrice)
 
         for (y, x), value in np.ndenumerate(matrice):
-            if value == 0: continue
+            bombed: bool = not board.bombs[y, x]  # cette case a déjà été attaqué si la valeur est "False".
+
+            if value == 0 and not bombed:
+
+                if (x, y) in self.cell_sprites:
+                    self.cell_sprites.pop((x, y))
+
+                continue  # ignore s'il n'y a ni bombe, ni bateau.
 
             # calcul de la forme et de la rotation de cette cellule du bateau
 
             form, rotation = (
+                # bombe
+                ("touched", 0) if bombed and value != 0 else
+                ("missed", 0) if bombed else
+
                 # corps
                 ("body", 0) if 0 < y < (self.rows-1) and matrice[y-1, x] == matrice[y+1, x] == value else  # colonne
                 ("body", 1) if 0 < x < (self.columns-1) and matrice[y, x-1] == matrice[y, x+1] == value else  # ligne
@@ -180,17 +195,25 @@ class GameGrid(BoxWidget):
                 ("solo", 0)
             )
 
+            # si le bateau est le dernier placé et qu'on est en prévisualisation, change sa teinte.
+            color: ColorRGB = self.preview_color if preview and value == max_boat else (255, 255, 255)
+
+            hash_new = hash((form, rotation, color))
+            sprite_old, hash_old = self.cell_sprites.get((x, y), (None, None))
+
+            if hash_old == hash_new:
+                # si la texture n'a pas changé, ne rafraichi pas le sprite
+                continue
+
             sprite = Sprite(
                 img=self.boat_style.get(form),
                 batch=self.scene.batch,
                 **self._boat_kwargs
             )
             sprite.rotation = rotation * 90
+            sprite.color = color
 
-            if preview and value == max_boat:  # if in preview and it is the latest boat
-                sprite.color = self.preview_color   # make the image more greenish
-
-            self.cell_sprites[(x, y)] = sprite
+            self.cell_sprites[x, y] = (sprite, hash_new)
 
         self._refresh_size()
 
@@ -208,14 +231,15 @@ class GameGrid(BoxWidget):
                 Boat(self.boats_length[0], orientation=self.orientation),
                 cell
             )
-        except InvalidBoatPosition: pass  # if the boat can't be placed, ignore
+        except InvalidBoatPosition:
+            pass  # if the boat can't be placed, ignore
 
         else:  # if the boat have been placed
             self.boats_length.pop(0)  # remove the boat from the list of boat to place
             if len(self.boats_length) == 0:
                 self.trigger_event("on_all_boats_placed")
 
-        self.display_board(self.board)
+        self.display_board(self.board)  # rafraichi l'affichage
 
     def preview_boat(self, cell: Point2D):
         if len(self.boats_length) == 0: return
@@ -226,23 +250,19 @@ class GameGrid(BoxWidget):
                 Boat(self.boats_length[0], orientation=self.orientation),
                 cell
             )
+        except InvalidBoatPosition:
+            self.display_board(self.board)  # if the boat can't be placed, ignore
 
-        except InvalidBoatPosition: self.display_board(self.board)  # if the boat can't be placed, ignore
         else: self.display_board(preview_board, preview=True)
 
     def place_bomb(self, cell: Point2D, force_touched: bool = None) -> BombState:
         bomb_state = self.board.bomb(cell)
 
-        self.cell_sprites[cell] = Sprite(
-            img=self.bomb_style.get(
-                "touched" if (bomb_state.success if force_touched is None else force_touched) else "missed"
-            ),
-            batch=self.scene.batch,
-            **self._bomb_kwargs
-        )
+        if force_touched is not None:
+            x, y = cell
+            self.board.boats[y, x] = int(force_touched)
 
-        self._refresh_size()
-
+        self.display_board(self.board)
         return bomb_state
 
     def on_click_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):

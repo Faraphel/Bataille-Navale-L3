@@ -12,13 +12,13 @@ A faire :
 - Changer les images, rajouter les fonds, ...
 
 3. Hypothétique :
-- Vrai musique
+- Vraie musique
 - Voir si les event listener intégré à pyglet sont plus pratiques que l'event propagation (?)
 - Faire une scène incluant par défaut les boutons "Retour" (?)
 
 
 Bug : 
-- /
+- Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
 
 
 Autre :

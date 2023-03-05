@@ -13,27 +13,24 @@ class Board:
     Boat can be added and bomb can be placed.
     """
 
-    __slots__ = ("_columns", "_rows", "_boats", "_bombs")
+    __slots__ = ("width", "height", "boats", "bombs")
 
     def __init__(
             self,
-            rows: int,
-            columns: int = None,
-            boats: dict[Boat, Point2D] = None,
-            bombs: np.array = None
-    ) -> None:
+            width: int, height: int = None,
 
-        self._rows: int = rows
-        self._columns: int = rows if columns is None else columns
+            boats: np.array = None,
+            bombs: np.array = None) -> None:
 
-        # associate the boats to their position
-        self._boats: dict[Boat, Point2D] = {} if boats is None else boats
+        self.height: int = width
+        self.width: int = width if height is None else height
 
-        # position that have been shot by a bomb
-        self._bombs: np.array = np.ones((self._rows, self._columns), dtype=np.bool_) if bombs is None else bombs
+        # associate the boats and the bombs to array
+        self.boats: np.array = np.zeros((self.height, self.width), dtype=np.ushort) if boats is None else boats
+        self.bombs: np.array = np.ones((self.height, self.width), dtype=np.bool_) if bombs is None else bombs
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} width={self._columns}, height={self._rows}>"
+        return f"<{self.__class__.__name__} width={self.width}, height={self.height}>"
 
     def __str__(self) -> str:
         return str(self.get_matrice())
@@ -46,33 +43,31 @@ class Board:
         :raise: InvalidBoatPosition if the boat position is not valid
         """
 
-        # get the sum of the boat
-        boat_mat: np.array = boat.get_matrice()
-        boat_mat_sum: int = boat_mat.sum()
-
         # get the old board matrice sum
-        board_mat: np.array = self.get_matrice()
-        board_mat_sum_old: int = board_mat.sum()
+        board_matrice = self.boats.copy()
+        board_matrice_sum_old: int = board_matrice.sum()
+        board_matrice_max = np.max(board_matrice)
+
+        # get the sum of the boat
+        boat_matrice: np.array = boat.get_matrice(board_matrice_max+1)
+        boat_matrice_sum: int = boat_matrice.sum()
 
         # add the boat to the board matrice
-        try: copy_array_offset(boat_mat, board_mat, offset=position)
-        except ValueError: raise InvalidBoatPosition(boat, position)
+        try:
+            copy_array_offset(boat_matrice, board_matrice, offset=position)
+        except ValueError:
+            raise InvalidBoatPosition(boat, position)
 
         #  get the new board matrice sum
-        board_mat_sum_new: int = board_mat.sum()
+        board_matrice_sum_new: int = board_matrice.sum()
 
         # if the sum of the old board plus the boat sum is different from the new board sum,
         # then the boat have been incorrectly placed (overlapping, outside of bounds, ...)
-        if board_mat_sum_old + boat_mat_sum != board_mat_sum_new: raise InvalidBoatPosition(boat, position)
+        if board_matrice_sum_old + boat_matrice_sum != board_matrice_sum_new:
+            raise InvalidBoatPosition(boat, position)
 
         # otherwise accept the boat in the boats dict
-        self._boats[boat] = position
-
-    def remove_boat(self, boat: Boat) -> None:
-        """
-        Remove a boat from the boat dict
-        """
-        self._boats.pop(boat)
+        self.boats = board_matrice
 
     def bomb(self, position: Point2D) -> BombState:
         """
@@ -83,16 +78,16 @@ class Board:
 
         # if the bomb is inside the board
         x, y = position
-        if x >= self._columns or y >= self._rows: raise InvalidBombPosition(position)
+        if x >= self.width or y >= self.height: raise InvalidBombPosition(position)
 
         # if this position have already been shot
-        if not self._bombs[y, x]: raise PositionAlreadyShot(position)
+        if not self.bombs[y, x]: raise PositionAlreadyShot(position)
 
         # get the old board matrice
         board_mat_old_sum = self.get_matrice().sum()
 
         # place the bomb (setting the position to False cause the matrice multiplication to remove the boat if any)
-        self._bombs[y, x] = False
+        self.bombs[y, x] = False
 
         # get the new board matrice
         board_mat_new = self.get_matrice()
@@ -116,42 +111,34 @@ class Board:
 
     def get_matrice(self) -> np.array:
         """
-        :return: the boat represented as a matrice
+        :return: the boats and bombs represented as a matrice
         """
-        board = np.zeros((self._rows, self._columns), dtype=np.ushort)
 
-        for index, (boat, position) in enumerate(self._boats.items(), start=1):
-            # Paste the boat into the board at the correct position.
-            # The boat is represented by a number representing its order in the boats list
-            copy_array_offset(boat.get_matrice(value=index), board, offset=position)
-
-        board *= self._bombs  # Remove the position that have been bombed
-
-        return board
+        return self.boats * self.bombs  # Remove the position that have been bombed
 
     def to_json(self) -> dict:
         return {
-            "columns": self._columns,
-            "rows": self._rows,
-            "boats": [[boat.to_json(), position] for boat, position in self._boats.items()],
-            "bombs": self._bombs.tolist()
+            "columns": self.width,
+            "rows": self.height,
+            "boats": [[boat.to_json(), position] for boat, position in self.boats.items()],
+            "bombs": self.bombs.tolist()
         }
 
     @classmethod
     def from_json(cls, json_: dict) -> "Board":
         return Board(
-            rows=json_["columns"],
-            columns=json_["rows"],
+            width=json_["columns"],
+            height=json_["rows"],
             boats={Boat.from_json(boat_json): tuple(position) for boat_json, position in json_["boats"]},
             bombs=np.array(json_["bombs"], dtype=np.bool_)
         )
 
     def __copy__(self):
         return self.__class__(
-            rows=self._rows,
-            columns=self._columns,
-            boats=self._boats.copy(),
-            bombs=self._bombs.copy(),
+            height=self.height,
+            width=self.width,
+            boats=self.boats.copy(),
+            bombs=self.bombs.copy(),
         )
 
 
