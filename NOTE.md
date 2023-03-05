@@ -2,7 +2,6 @@ A faire :
 
 
 1. Principal :
-- Sauvegarde
 - Historique
 - Documenter
 

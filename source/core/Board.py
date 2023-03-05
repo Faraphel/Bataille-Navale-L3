@@ -17,20 +17,24 @@ class Board:
 
     def __init__(
             self,
-            width: int, height: int = None,
+            width: int = None,
+            height: int = None,
 
             boats: np.array = None,
             bombs: np.array = None) -> None:
 
-        self.height: int = width
-        self.width: int = width if height is None else height
+        if (width is None or height is None) and (boats is None or bombs is None):
+            raise ValueError(f"{self.__class__}: width and height or boats and bombs should be set.")
 
         # associate the boats and the bombs to array
-        self.boats: np.array = np.zeros((self.height, self.width), dtype=np.ushort) if boats is None else boats
-        self.bombs: np.array = np.ones((self.height, self.width), dtype=np.bool_) if bombs is None else bombs
+        self.boats: np.array = np.zeros((height, width), dtype=np.ushort) if boats is None else boats
+        self.bombs: np.array = np.ones((height, width), dtype=np.bool_) if bombs is None else bombs
+
+        # récupère la hauteur et la largeur
+        self.height, self.width = self.boats.shape
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} width={self.width}, height={self.height}>"
+        return f"<{self.__class__.__name__} width={self.width} height={self.height}>"
 
     def __str__(self) -> str:
         return str(self.get_matrice())
@@ -116,34 +120,38 @@ class Board:
 
         return self.boats * self.bombs  # Remove the position that have been bombed
 
+    def get_score(self) -> int:
+        """
+        :return: le score du joueur. (Nombre de bateau cassé)
+        """
+
+        boat_total: int = np.count_nonzero(self.boats)
+        boat_left: int = np.count_nonzero(self.get_matrice())
+
+        return boat_total - boat_left
+
     def to_json(self) -> dict:
         return {
-            "columns": self.width,
-            "rows": self.height,
-            "boats": [[boat.to_json(), position] for boat, position in self.boats.items()],
+            "boats": self.boats.tolist(),
             "bombs": self.bombs.tolist()
         }
 
     @classmethod
     def from_json(cls, json_: dict) -> "Board":
         return Board(
-            width=json_["columns"],
-            height=json_["rows"],
-            boats={Boat.from_json(boat_json): tuple(position) for boat_json, position in json_["boats"]},
+            boats=np.array(json_["boats"], dtype=np.ushort),
             bombs=np.array(json_["bombs"], dtype=np.bool_)
         )
 
     def __copy__(self):
         return self.__class__(
-            height=self.height,
-            width=self.width,
             boats=self.boats.copy(),
             bombs=self.bombs.copy(),
         )
 
 
 if __name__ == "__main__":
-    board = Board(5)
+    board = Board(5, 10)
     board.add_boat(Boat(3, Orientation.VERTICAL), (4, 0))
     board.add_boat(Boat(4, Orientation.HORIZONTAL), (1, 4))
     print(board.bomb((4, 1)))

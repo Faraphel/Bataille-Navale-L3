@@ -208,14 +208,13 @@ class Game(Scene):
         self._my_turn = my_turn  # is it the player turn ?
         self._boat_ready_ally: bool = False   # does the player finished placing his boat ?
         self._boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
-        self._boat_broken_ally: int = 0
-        self._boat_broken_enemy: int = 0
 
         if len(boats_length) == 0:  # s'il n'y a pas de bateau à placé
             self._boat_ready_ally = True  # défini l'état de notre planche comme prête
             PacketBoatPlaced().send_connection(connection)  # indique à l'adversaire que notre planche est prête
 
         self._refresh_turn_text()
+        self._refresh_score_text()
 
     # refresh
 
@@ -236,25 +235,11 @@ class Game(Scene):
             "L'adversaire place ses bombes..."
         )
 
+    def _refresh_score_text(self):
+        self.score_ally.text = str(self.grid_enemy.board.get_score())
+        self.score_enemy.text = str(self.grid_ally.board.get_score())
+
     # property
-
-    @property
-    def boat_broken_ally(self):
-        return self._boat_broken_ally
-
-    @boat_broken_ally.setter
-    def boat_broken_ally(self, boat_broken_ally: int):
-        self._boat_broken_ally = boat_broken_ally
-        self.score_ally.text = str(self._boat_broken_ally)
-
-    @property
-    def boat_broken_enemy(self):
-        return self._boat_broken_enemy
-
-    @boat_broken_enemy.setter
-    def boat_broken_enemy(self, boat_broken_enemy: int):
-        self._boat_broken_enemy = boat_broken_enemy
-        self.score_enemy.text = str(self._boat_broken_enemy)
 
     @property
     def my_turn(self):
@@ -365,9 +350,7 @@ class Game(Scene):
         # envoie le résultat à l'autre joueur
         PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(self.connection)
 
-        if bomb_state.success:
-            # si la bombe a touché un bateau, incrémente le score
-            self.boat_broken_enemy += 1
+        self._refresh_score_text()  # le score a changé, donc rafraichi son texte
 
         if bomb_state is BombState.WON:
             # si l'ennemie à gagner, alors l'on a perdu
@@ -382,9 +365,7 @@ class Game(Scene):
         # on rejoue uniquement si la bombe à toucher
         self.my_turn = packet.bomb_state.success
 
-        if packet.bomb_state.success:
-            # si la bombe à toucher, incrémente le score
-            self.boat_broken_ally += 1
+        self._refresh_score_text()  # le score a changé, donc rafraichi son texte
 
         # place la bombe sur la grille ennemie visuelle
         self.grid_enemy.place_bomb(packet.position, force_touched=packet.bomb_state.success)
