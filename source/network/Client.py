@@ -93,10 +93,7 @@ class Client(StoppableThread):
                     data=save_data,
 
                     thread=self,
-                    connection=connection,
-
-                    name_ally=self.username,
-                    name_enemy=enemy_username,
+                    connection=connection
                 )
 
             else:

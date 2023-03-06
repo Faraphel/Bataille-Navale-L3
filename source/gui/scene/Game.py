@@ -34,6 +34,8 @@ class Game(Scene):
                  board_ally_data: dict = None,
                  board_enemy_data: dict = None,
 
+                 history: list[bool, Point2D] = None,
+
                  **kwargs):
         super().__init__(window, **kwargs)
 
@@ -210,6 +212,8 @@ class Game(Scene):
         self._boat_ready_ally: bool = False   # does the player finished placing his boat ?
         self._boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
 
+        self.history: list[tuple[bool, Point2D]] = [] if history is None else history  # liste des bombes posées
+
         if len(boats_length) == 0:  # s'il n'y a pas de bateau à placé
             self._boat_ready_ally = True  # défini l'état de notre planche comme prête
             PacketBoatPlaced().send_connection(connection)  # indique à l'adversaire que notre planche est prête
@@ -275,9 +279,12 @@ class Game(Scene):
 
     def to_json(self) -> dict:
         return {
+            "name_ally": self.name_ally,
+            "name_enemy": self.name_enemy,
             "my_turn": self.my_turn,
             "grid_ally": self.grid_ally.board.to_json(),
             "grid_enemy": self.grid_enemy.board.to_json(),
+            "history": self.history,
         }
 
     @classmethod
@@ -286,22 +293,23 @@ class Game(Scene):
 
                   window: "Window",
                   thread: StoppableThread,
-                  connection: socket.socket,
-                  name_ally: str,
-                  name_enemy: str) -> "Game":
+                  connection: socket.socket) -> "Game":
 
         return cls(
             window=window,
             thread=thread,
             connection=connection,
             boats_length=[],
-            name_ally=name_ally,
-            name_enemy=name_enemy,
+
+            name_ally=data["name_ally"],
+            name_enemy=data["name_enemy"],
 
             my_turn=data["my_turn"],
 
             board_ally_data=data["grid_ally"],
-            board_enemy_data=data["grid_enemy"]
+            board_enemy_data=data["grid_enemy"],
+
+            history=data["history"]
         )
 
     @property
@@ -378,6 +386,9 @@ class Game(Scene):
         # envoie le résultat à l'autre joueur
         PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(self.connection)
 
+        # sauvegarde la bombe dans l'historique
+        self.history.append((False, packet.position))
+
         self._refresh_score_text()  # le score a changé, donc rafraichi son texte
 
         if bomb_state is BombState.WON:
@@ -397,6 +408,9 @@ class Game(Scene):
 
         # place la bombe sur la grille ennemie visuelle
         self.grid_enemy.place_bomb(packet.position, force_touched=packet.bomb_state.success)
+
+        # sauvegarde la bombe dans l'historique
+        self.history.append((True, packet.position))
 
         if packet.bomb_state is BombState.WON:
             # si cette bombe a touché le dernier bateau, alors l'on a gagné
