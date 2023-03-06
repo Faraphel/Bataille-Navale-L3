@@ -7,6 +7,7 @@ from source.gui.window import GameWindow
 from source import path_font
 from source.gui.better_pyglet import Label
 
+
 pyglet.font.add_directory(path_font)
 Label.default_kwargs["font_name"] = "Century Gothic"  # NOQA: Label à un "default_kwargs" avec la metaclass
 

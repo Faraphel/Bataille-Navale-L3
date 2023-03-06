@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from source.network.packet.abc import Packet
 
 
-class VariableLengthBytesPacket(Packet, ABC):
+class VariableLengthPacket(Packet, ABC):
     """
     A Packet that represent a single value that can be encoded with a variable length.
     The property "data" and the method "from_bytes" need to be defined.

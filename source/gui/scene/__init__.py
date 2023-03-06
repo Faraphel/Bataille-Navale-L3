@@ -9,5 +9,6 @@ from .Settings import Settings
 from .RoomHost import RoomHost
 from .RoomJoin import RoomJoin
 from .RoomCreate import RoomCreate
+from .HistoryMenu import HistoryMenu
 
 from .MainMenu import MainMenu

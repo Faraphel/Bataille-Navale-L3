@@ -11,7 +11,7 @@ from source.gui.scene import GameResult
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture, scene
 from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced, PacketBombState, PacketQuit, \
-    PacketAskSave, PacketResponseSave
+    PacketAskSave, PacketResponseSave, PacketBoatsData
 from source.type import Point2D
 from source.utils import StoppableThread
 
@@ -346,6 +346,11 @@ class Game(Scene):
         self.save_to_path(self.save_path)
 
     def game_end(self, won: bool):
+        # envoie notre planche à l'adversaire
+        PacketBoatsData(boats=self.grid_ally.board.boats).send_data_connection(self.connection)
+        packet_boats = PacketBoatsData.from_connection(self.connection)
+        self.grid_enemy.board.boats = packet_boats.boats
+
         # s'il existe une ancienne sauvegarde, efface la
         self.save_path.unlink(missing_ok=True)
 
@@ -353,7 +358,7 @@ class Game(Scene):
         self.save_to_path(self.history_path)
 
         self.window.add_scene(GameResult, game_scene=self, won=won)  # affiche le résultat
-        self.thread.stop()  # coupe la connexion
+        self.thread.stop()
 
     def chat_new_message(self, author: str, content: str, system: bool = False):
         deco_left, deco_right = "<>" if system else "[]"

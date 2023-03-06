@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 
-from source.network.packet.abc import VariableLengthBytesPacket
+from source.network.packet.abc import VariableLengthPacket
 
 
 @dataclass
-class PacketUsername(VariableLengthBytesPacket):
+class PacketUsername(VariableLengthPacket):
     username: str = field()
 
     @property

@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 
-from source.network.packet.abc import VariableLengthBytesPacket
+from source.network.packet.abc import VariableLengthPacket
 
 
 @dataclass
-class PacketChat(VariableLengthBytesPacket):
+class PacketChat(VariableLengthPacket):
     """
     A packet that represent a message from the chat
     """

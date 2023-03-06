@@ -9,3 +9,4 @@ from .PacketUsername import PacketUsername
 from .PacketQuit import PacketQuit
 from .PacketLoadOldSave import PacketLoadOldSave
 from .PacketHaveSaveBeenFound import PacketHaveSaveBeenFound
+from .PacketBoatsData import PacketBoatsData

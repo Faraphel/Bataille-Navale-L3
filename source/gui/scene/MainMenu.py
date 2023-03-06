@@ -30,7 +30,7 @@ class MainMenu(Scene):
 
         self.game_create = self.add_widget(
             widget.Button,
-            x=50, y=0.45, width=0.3, height=0.1,
+            x=50, y=0.50, width=0.3, height=0.1,
 
             label_text="Créer une salle",
             label_font_size=20,
@@ -43,7 +43,7 @@ class MainMenu(Scene):
         self.game_join = self.add_widget(
             widget.Button,
 
-            x=50, y=0.3, width=0.3, height=0.1,
+            x=50, y=0.35, width=0.3, height=0.1,
 
             label_text="Rejoindre une salle",
             label_font_size=20,
@@ -53,10 +53,23 @@ class MainMenu(Scene):
 
         self.game_join.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.RoomJoin))
 
+        self.history = self.add_widget(
+            widget.Button,
+
+            x=50, y=0.20, width=0.3, height=0.1,
+
+            label_text="Historique",
+            label_font_size=20,
+
+            style=texture.Button.Style1
+        )
+
+        self.history.add_listener("on_click_release", lambda *_: self.window.set_scene(scene.HistoryMenu))
+
         self.settings = self.add_widget(
             widget.Button,
 
-            x=50, y=0.15, width=0.3, height=0.1,
+            x=50, y=0.05, width=0.3, height=0.1,
 
             label_text="Paramètres",
             label_font_size=20,
