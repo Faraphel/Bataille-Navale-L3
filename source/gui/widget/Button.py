@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Type
 
 import pyglet
 
-from source.gui.sprite import Sprite
+from source.gui.better_pyglet import Sprite, Label
 from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
@@ -38,7 +38,7 @@ class Button(BoxWidget):
             **dict_filter_prefix("background_", kwargs)
         )
 
-        self.label = pyglet.text.Label(
+        self.label = Label(
             width=None, height=None,
             anchor_x="center", anchor_y="center",
             batch=self.scene.batch,

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from source.gui.better_pyglet import Label
 from source.gui.widget.abc import BoxWidget
 
 import pyglet
@@ -25,7 +26,7 @@ class Text(BoxWidget):
                  **kwargs):
         super().__init__(scene, x, y, width, height)
 
-        self.label = pyglet.text.Label(
+        self.label = Label(
             x=self.x, y=self.y, width=self.width, height=self.height,
             batch=self.scene.batch,
             **kwargs

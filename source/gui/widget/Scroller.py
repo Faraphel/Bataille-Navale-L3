@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Callable, Any, Type
 
 import pyglet.image
 
-from source.gui.sprite import Sprite
+from source.gui.better_pyglet import Sprite, Label
 from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
@@ -54,7 +54,7 @@ class Scroller(BoxWidget):
             **dict_filter_prefix("cursor_", kwargs)
         )
 
-        self.label = pyglet.text.Label(
+        self.label = Label(
             anchor_x="center", anchor_y="center",
             batch=self.scene.batch,
             **dict_filter_prefix("label_", kwargs)

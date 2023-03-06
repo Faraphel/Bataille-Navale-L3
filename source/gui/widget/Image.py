@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pyglet.image
 
-from source.gui.sprite import Sprite
+from source.gui.better_pyglet import Sprite
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
 

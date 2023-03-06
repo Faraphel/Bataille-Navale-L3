@@ -1,13 +1,15 @@
 import pyglet
 
+from source.gui.better_pyglet.abc import Element
 
-class Sprite(pyglet.sprite.Sprite):
+
+class Sprite(Element, pyglet.sprite.Sprite):
     """
     Same as the pyglet sprite, but allow to set a width and height easier
     """
 
     def __init__(self, width: int = None, height: int = None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **(self.default_kwargs | kwargs))
 
         self._orig_width: int = self.width
         self._orig_height: int = self.height

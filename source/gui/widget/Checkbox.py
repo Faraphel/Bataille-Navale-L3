@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Type
 
-from source.gui.sprite import Sprite
+from source.gui.better_pyglet import Sprite
 from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance

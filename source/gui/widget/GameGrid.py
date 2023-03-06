@@ -7,7 +7,7 @@ import pyglet.shapes
 from source.core import Board, Boat
 from source.core.enums import Orientation, BombState
 from source.core.error import InvalidBoatPosition
-from source.gui.sprite import Sprite
+from source.gui.better_pyglet import Sprite
 from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance, ColorRGB, Point2D
