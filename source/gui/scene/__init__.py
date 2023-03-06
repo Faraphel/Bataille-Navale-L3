@@ -10,5 +10,6 @@ from .RoomHost import RoomHost
 from .RoomJoin import RoomJoin
 from .RoomCreate import RoomCreate
 from .HistoryMenu import HistoryMenu
+from .HistoryGame import HistoryGame
 
 from .MainMenu import MainMenu
