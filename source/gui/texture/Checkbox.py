@@ -1,8 +1,8 @@
-from . import path
 from .abc import Style
 from .type import Texture
+from source import path_image
 
-path = path / "checkbox"
+path = path_image / "checkbox"
 
 
 class Checkbox:

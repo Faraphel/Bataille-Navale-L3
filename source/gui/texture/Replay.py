@@ -1,8 +1,8 @@
-from . import path
 from .abc import Style
 from .type import Texture
+from source import path_image
 
-path = path / "replay"
+path = path_image / "replay"
 
 
 class Replay:

@@ -1,8 +1,8 @@
-from . import path
 from .abc import Style
 from .type import Animation
+from source import path_image
 
-path = path / "result"
+path = path_image / "result"
 
 
 class Result:

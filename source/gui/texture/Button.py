@@ -1,8 +1,8 @@
-from . import path
 from .abc import Style
 from source.gui.texture.type import Texture
+from source import path_image
 
-path = path / "button"
+path = path_image / "button"
 
 
 class Button:

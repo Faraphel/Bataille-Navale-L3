@@ -1,8 +1,8 @@
-from . import path
 from .abc import Style
 from .type import Texture, Animation
+from source import path_image
 
-path = path / "grid"
+path = path_image / "grid"
 path_boat = path / "boat"
 
 
