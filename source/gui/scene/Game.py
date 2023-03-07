@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-from source.gui.position import w_percent, h_percent
+from source.gui.position import vw, vh
 from source.path import path_save, path_history
 from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
@@ -50,7 +50,7 @@ class Game(BaseGame):
         self.chat_log = self.add_widget(
             widget.Text,
 
-            x=10, y=45, width=w_percent(40),
+            x=10, y=45, width=40*vw,
 
             text="",
             anchor_x="left", anchor_y="bottom",
@@ -60,7 +60,7 @@ class Game(BaseGame):
         self.chat_input = self.add_widget(
             widget.Input,
 
-            x=10, y=10, width=w_percent(50), height=30,
+            x=10, y=10, width=50*vw, height=30,
 
             type_regex=".{0,60}",
 
@@ -79,7 +79,7 @@ class Game(BaseGame):
         self.button_save = self.add_widget(
             widget.Button,
 
-            x=w_percent(70), y=0, width=w_percent(15), height=h_percent(10),
+            x=70*vw, y=0, width=15*vw, height=10*vh,
 
             label_text="Sauvegarder",
 
@@ -104,7 +104,7 @@ class Game(BaseGame):
         self.label_state = self.add_widget(
             widget.Text,
 
-            x=w_percent(50), y=h_percent(15),
+            x=50*vw, y=15*vh,
 
             anchor_x="center",
 

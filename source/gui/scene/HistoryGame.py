@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
-from source.gui.position import h_percent, w_percent
+from source.gui.position import vw, vh, vw_center
 from source.gui.scene.abc import BaseGame
 
 if TYPE_CHECKING:
@@ -41,7 +41,7 @@ class HistoryGame(BaseGame):
 
         self.previous = self.add_widget(
             widget.Button,
-            x=w_percent(20), y=h_percent(10), width=w_percent(20), height=h_percent(10),
+            x=20*vw, y=10*vh, width=20*vw, height=10*vh,
 
             label_text="Précédent",
 
@@ -52,7 +52,7 @@ class HistoryGame(BaseGame):
 
         self.next = self.add_widget(
             widget.Button,
-            x=w_percent(60), y=h_percent(10), width=w_percent(20), height=h_percent(10),
+            x=60*vw, y=10*vh, width=20*vw, height=10*vh,
 
             label_text="Suivant",
 
@@ -63,7 +63,7 @@ class HistoryGame(BaseGame):
 
         self.text_move = self.add_widget(
             widget.Text,
-            x=w_percent(50), y=h_percent(12),
+            x=vw_center, y=12*vh,
 
             anchor_x="center",
 

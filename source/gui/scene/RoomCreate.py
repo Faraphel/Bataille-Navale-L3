@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture, regex
-from source.gui.position import w_percent, h_percent, right_content
+from source.gui.position import vw, vh, right, px
 from source.gui.scene import RoomHost
 from source.gui.scene.abc import Scene
 from source.network.packet import PacketSettings
@@ -16,7 +16,7 @@ class RoomCreate(Scene):
 
         self.back = self.add_widget(
             widget.Button,
-            x=20, y=20, width=w_percent(20), height=h_percent(10),
+            x=20, y=20, width=20*vw, height=10*vh,
 
             label_text="Retour",
 
@@ -31,7 +31,7 @@ class RoomCreate(Scene):
         self.add_widget(
             widget.Text,
 
-            x=w_percent(10), y=h_percent(65),
+            x=10*vw, y=65*vh,
 
             anchor_x="center", anchor_y="center",
 
@@ -41,7 +41,7 @@ class RoomCreate(Scene):
         self.input_port = self.add_widget(
             widget.Input,
 
-            x=w_percent(20), y=h_percent(60), width=w_percent(15), height=h_percent(10),
+            x=20*vw, y=60*vh, width=15*vw, height=10*vh,
 
             style=texture.Input.Style1,
 
@@ -56,7 +56,7 @@ class RoomCreate(Scene):
         self.add_widget(
             widget.Text,
 
-            x=w_percent(10), y=h_percent(50),
+            x=10*vw, y=50*vh,
 
             anchor_x="center", anchor_y="center",
 
@@ -66,7 +66,7 @@ class RoomCreate(Scene):
         self.input_username = self.add_widget(
             widget.Input,
 
-            x=w_percent(20), y=h_percent(45), width=w_percent(15), height=h_percent(10),
+            x=20*vw, y=45*vh, width=15*vw, height=10*vh,
 
             type_regex=regex.username_type,
             check_regex=regex.username_check,
@@ -81,7 +81,7 @@ class RoomCreate(Scene):
         self.add_widget(
             widget.Text,
 
-            x=w_percent(10), y=h_percent(90),
+            x=10*vw, y=90*vh,
             anchor_x="center", anchor_y="center",
             text=f"Largeur de la grille"
         )
@@ -89,7 +89,7 @@ class RoomCreate(Scene):
         self.input_width = self.add_widget(
             widget.Input,
 
-            x=w_percent(20), y=h_percent(86), width=w_percent(10), height=h_percent(8),
+            x=20*vw, y=86*vh, width=10*vw, height=8*vh,
 
             type_regex=regex.number(min_length=0, max_length=4),
             check_regex=regex.number(min_length=1, max_length=4),
@@ -102,7 +102,7 @@ class RoomCreate(Scene):
         self.add_widget(
             widget.Text,
 
-            x=w_percent(10), y=h_percent(80),
+            x=10*vw, y=80*vh,
             anchor_x="center", anchor_y="center",
             text=f"Longueur de la grille"
         )
@@ -110,7 +110,7 @@ class RoomCreate(Scene):
         self.input_height = self.add_widget(
             widget.Input,
 
-            x=w_percent(20), y=h_percent(76), width=w_percent(10), height=h_percent(8),
+            x=20*vw, y=76*vh, width=10*vw, height=8*vh,
 
             type_regex=regex.number(min_length=0, max_length=4),
             check_regex=regex.number(min_length=1, max_length=4),
@@ -125,7 +125,7 @@ class RoomCreate(Scene):
         self.checkbox_host_start = self.add_widget(
             widget.Checkbox,
 
-            x=w_percent(40), y=h_percent(80), width=w_percent(5), height=h_percent(10),
+            x=40*vw, y=80*vh, width=5*vw, height=10*vh,
 
             style=texture.Checkbox.Style1,
 
@@ -135,7 +135,7 @@ class RoomCreate(Scene):
         self.add_widget(
             widget.Text,
 
-            x=w_percent(46), y=h_percent(85),
+            x=46*vw, y=85*vh,
 
             anchor_y="center",
 
@@ -158,7 +158,7 @@ class RoomCreate(Scene):
         self.button_boat_size_previous = self.add_widget(
             widget.Button,
 
-            x=w_percent(70), y=h_percent(80), width=w_percent(3), height=h_percent(10),
+            x=70*vw, y=80*vh, width=3*vw, height=10*vh,
 
             label_text="<",
             label_font_size=25,
@@ -176,7 +176,7 @@ class RoomCreate(Scene):
         self.label_boat_size = self.add_widget(
             widget.Text,
 
-            x=w_percent(80), y=h_percent(85),
+            x=80*vw, y=85*vh,
 
             anchor_x="center", anchor_y="center"
         )
@@ -184,7 +184,7 @@ class RoomCreate(Scene):
         self.button_boat_size_next = self.add_widget(
             widget.Button,
 
-            x=w_percent(87), y=h_percent(80), width=w_percent(3), height=h_percent(10),
+            x=87*vw, y=80*vh, width=3*vw, height=10*vh,
 
             label_text=">",
             label_font_size=25,
@@ -201,7 +201,7 @@ class RoomCreate(Scene):
         self.input_boat_amount = self.add_widget(
             widget.Input,
 
-            x=w_percent(70), y=h_percent(68), width=w_percent(20), height=h_percent(8),
+            x=70*vw, y=68*vh, width=20*vw, height=8*vh,
 
             type_regex=regex.number(min_length=0, max_length=4),
             check_regex=regex.number(min_length=1, max_length=4),
@@ -228,7 +228,7 @@ class RoomCreate(Scene):
         self.label_boat_recap = self.add_widget(
             widget.Text,
 
-            x=w_percent(70), y=h_percent(60), width=w_percent(20), height=h_percent(10),
+            x=70*vw, y=60*vh, width=20*vw, height=10*vh,
 
             multiline=True
         )
@@ -239,7 +239,7 @@ class RoomCreate(Scene):
 
         self.start = self.add_widget(
             widget.Button,
-            x=right_content(20), y=20, width=w_percent(20), height=h_percent(10),
+            x=right(20*px), y=20, width=20*vw, height=10*vh,
 
             label_text="Continuer",
 

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
-from source.gui.position import w_full, h_percent, w_percent, right_content
+from source.gui.position import vw_full, vw_center, vh_center, right, px, vw, vh
 from source.gui.scene.abc import Scene
 
 
@@ -16,7 +16,7 @@ class GameError(Scene):
         self.label = self.add_widget(
             widget.Text,
 
-            x=w_percent(50), y=h_percent(50), width=w_full,
+            x=vw_center, y=vh_center, width=vw_full,
 
             anchor_x="center",
 
@@ -29,7 +29,7 @@ class GameError(Scene):
         self.back = self.add_widget(
             widget.Button,
 
-            x=right_content(20), y=20, width=w_percent(20), height=h_percent(10),
+            x=right(20*px), y=20, width=20*vw, height=10*vh,
 
             label_text="Retour",
 

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
-from source.gui.position import w_full, h_full, w_percent, h_percent
+from source.gui.position import vw_full, vh_full, vw, vh
 from source.gui.scene.abc.Popup import Popup
 
 if TYPE_CHECKING:
@@ -15,14 +15,14 @@ class Settings(Popup):
         self.background = self.add_widget(
             widget.Image,
 
-            x=0, y=0, width=w_full, height=h_full,
+            x=0, y=0, width=vw_full, height=vh_full,
 
             image=texture.Popup.Style1.background
         )
 
         self.back = self.add_widget(
             widget.Button,
-            x=20, y=20, width=w_percent(20), height=h_percent(10),
+            x=20, y=20, width=20*vw, height=10*vh,
 
             label_text="Retour",
 
@@ -34,7 +34,7 @@ class Settings(Popup):
         self.checkbox = self.add_widget(
             widget.Checkbox,
 
-            x=w_percent(45), y=h_percent(45), width=w_percent(10), height=h_percent(10),
+            x=45*vw, y=45*vh, width=10*vw, height=10*vh,
 
             style=texture.Checkbox.Style1
         )
@@ -45,7 +45,7 @@ class Settings(Popup):
         self.scroller = self.add_widget(
             widget.Scroller,
 
-            x=w_percent(30), y=h_percent(20), width=w_percent(30), height=h_percent(10),
+            x=30*vw, y=20*vh, width=30*vw, height=10*vh,
 
             style=texture.Scroller.Style1,
 

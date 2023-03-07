@@ -2,7 +2,7 @@ from abc import ABC
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
-from source.gui.position import right_content, h_percent, w_percent, w_full, h_full
+from source.gui.position import right, vw, vh, vw_full, vh_full, px
 from source.gui.scene.abc import Scene
 from source.type import Point2D
 
@@ -35,7 +35,7 @@ class BaseGame(Scene, ABC):
         self.background = self.add_widget(
             widget.Image,
 
-            x=0, y=0, width=w_full, height=h_full,
+            x=0, y=0, width=vw_full, height=vh_full,
 
             image=texture.Background.game,
         )
@@ -43,7 +43,7 @@ class BaseGame(Scene, ABC):
         self.grid_ally = self.add_widget(
             widget.GameGrid,
 
-            x=75, y=h_percent(25), width=w_percent(35), height=h_percent(50),
+            x=75, y=25*vh, width=35*vw, height=50*vh,
 
             boats_length=self.boats_length,
 
@@ -57,7 +57,7 @@ class BaseGame(Scene, ABC):
         self.grid_enemy = self.add_widget(
             widget.GameGrid,
 
-            x=right_content(75), y=h_percent(25), width=w_percent(35), height=h_percent(50),
+            x=right(75*px), y=25*vh, width=35*vw, height=50*vh,
 
             grid_style=texture.Grid.Style1,
             boat_style=texture.Grid.Boat.Style1,
@@ -69,7 +69,7 @@ class BaseGame(Scene, ABC):
         self.add_widget(
             widget.Text,
 
-            x=w_percent(27), y=h_percent(99.5),
+            x=27*vw, y=99.5*vh,
 
             text=self.name_ally,
             font_size=20,
@@ -79,7 +79,7 @@ class BaseGame(Scene, ABC):
         self.add_widget(
             widget.Text,
 
-            x=w_percent(73), y=h_percent(99.5),
+            x=73*vw, y=99.5*vh,
 
             text=self.name_enemy,
             font_size=20,
@@ -89,7 +89,7 @@ class BaseGame(Scene, ABC):
         self.score_ally = self.add_widget(
             widget.Text,
 
-            x=w_percent(44), y=h_percent(99.5),
+            x=44*vw, y=99.5*vh,
 
             text="0",
             font_size=25,
@@ -99,7 +99,7 @@ class BaseGame(Scene, ABC):
         self.score_enemy = self.add_widget(
             widget.Text,
 
-            x=w_percent(56), y=h_percent(99.5),
+            x=56*vw, y=99.5*vh,
 
             text="0",
             font_size=25,
@@ -109,7 +109,7 @@ class BaseGame(Scene, ABC):
         self.button_quit = self.add_widget(
             widget.Button,
 
-            x=w_percent(85), y=0, width=w_percent(15), height=h_percent(10),
+            x=85*vw, y=0, width=15*vw, height=10*vh,
 
             label_text="Quitter",
 

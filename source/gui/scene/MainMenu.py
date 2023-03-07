@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from source.gui.position import w_full, h_full, h_percent, w_percent
+from source.gui.position import vw_full, vh_full, vw, vh
 from source.gui.scene.abc import Scene
 from source.gui import widget, scene, texture
 
@@ -15,7 +15,7 @@ class MainMenu(Scene):
         self.background = self.add_widget(
             widget.Image,
 
-            x=0, y=0, width=w_full, height=h_full,
+            x=0, y=0, width=vw_full, height=vh_full,
 
             image=texture.Background.main
         )
@@ -23,7 +23,7 @@ class MainMenu(Scene):
         self.title = self.add_widget(
             widget.Text,
 
-            x=50, y=h_percent(85),
+            x=50, y=85*vh,
 
             text="Bataille Navale",
             font_size=50
@@ -31,7 +31,7 @@ class MainMenu(Scene):
 
         self.game_create = self.add_widget(
             widget.Button,
-            x=50, y=h_percent(50), width=w_percent(30), height=h_percent(10),
+            x=50, y=50*vh, width=30*vw, height=10*vh,
 
             label_text="Créer une salle",
             label_font_size=20,
@@ -44,7 +44,7 @@ class MainMenu(Scene):
         self.game_join = self.add_widget(
             widget.Button,
 
-            x=50, y=h_percent(35), width=w_percent(30), height=h_percent(10),
+            x=50, y=35*vh, width=30*vw, height=10*vh,
 
             label_text="Rejoindre une salle",
             label_font_size=20,
@@ -57,7 +57,7 @@ class MainMenu(Scene):
         self.history = self.add_widget(
             widget.Button,
 
-            x=50, y=h_percent(20), width=w_percent(30), height=h_percent(10),
+            x=50, y=20*vh, width=30*vw, height=10*vh,
 
             label_text="Historique",
             label_font_size=20,
@@ -70,7 +70,7 @@ class MainMenu(Scene):
         self.settings = self.add_widget(
             widget.Button,
 
-            x=50, y=h_percent(5), width=w_percent(30), height=h_percent(10),
+            x=50, y=5*vh, width=30*vw, height=10*vh,
 
             label_text="Paramètres",
             label_font_size=20,

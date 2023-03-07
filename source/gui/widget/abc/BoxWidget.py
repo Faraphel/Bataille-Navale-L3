@@ -2,7 +2,7 @@ from abc import ABC
 from typing import TYPE_CHECKING, Optional
 
 from source.gui.widget.abc import Widget
-from source.type import Distance, Percentage
+from source.type import Distance
 from source.utils import in_bbox
 
 if TYPE_CHECKING:
@@ -33,15 +33,13 @@ class BoxWidget(Widget, ABC):
 
     # property
 
-    def _getter_distance(self, max_distance: int, raw_distance: Distance) -> int:
+    def _getter_distance(self, raw_distance: Distance) -> int:
         """
         Return the true distance in pixel from a more abstract distance
-        :param max_distance: the max value the distance in pixel should have
         :param raw_distance: the distance object to convert to pixel
         :return: the true distance in pixel
         """
 
-        if isinstance(raw_distance, Percentage): return int(max_distance * raw_distance)
         if isinstance(raw_distance, int): return raw_distance
         if callable(raw_distance): return raw_distance(self)
         if raw_distance is None: return 0
@@ -50,7 +48,7 @@ class BoxWidget(Widget, ABC):
 
     @property
     def x(self) -> int:
-        return self._getter_distance(self.scene.window.width, self._x)
+        return self._getter_distance(self._x)
 
     @x.setter
     def x(self, x: Distance):
@@ -58,7 +56,7 @@ class BoxWidget(Widget, ABC):
 
     @property
     def y(self) -> int:
-        return self._getter_distance(self.scene.window.height, self._y)
+        return self._getter_distance(self._y)
 
     @y.setter
     def y(self, y: Distance):
@@ -82,7 +80,7 @@ class BoxWidget(Widget, ABC):
 
     @property
     def width(self) -> int:
-        return self._getter_distance(self.scene.window.width, self._width)
+        return self._getter_distance(self._width)
 
     @width.setter
     def width(self, width: Optional[Distance]):
@@ -90,7 +88,7 @@ class BoxWidget(Widget, ABC):
 
     @property
     def height(self) -> int:
-        return self._getter_distance(self.scene.window.height, self._height)
+        return self._getter_distance(self._height)
 
     @height.setter
     def height(self, height: Optional[Distance]):

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import requests
 
 from source import network
-from source.gui.position import w_percent, h_percent
+from source.gui.position import vw, vh
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 from source.utils.thread import in_pyglet_context, StoppableThread
@@ -23,7 +23,7 @@ class RoomHost(Scene):
 
         self.back = self.add_widget(
             widget.Button,
-            x=20, y=20, width=w_percent(20), height=h_percent(10),
+            x=20, y=20, width=20*vw, height=10*vh,
 
             label_text="Retour",
 
@@ -35,7 +35,7 @@ class RoomHost(Scene):
         self.label_ip = self.add_widget(
             widget.Text,
 
-            x=w_percent(50), y=h_percent(55),
+            x=50*vw, y=55*vh,
 
             anchor_x="center", anchor_y="center",
             font_size=20
@@ -44,7 +44,7 @@ class RoomHost(Scene):
         self.description = self.add_widget(
             widget.Text,
 
-            x=w_percent(50), y=h_percent(45),
+            x=50*vw, y=45*vh,
 
             anchor_x="center", anchor_y="center",
             text="En attente d'un second joueur..."

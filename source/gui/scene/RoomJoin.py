@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 
 from source import network
-from source.gui.position import w_percent, h_percent
+from source.gui.position import vw, vh
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture, regex
 
@@ -15,7 +15,7 @@ class RoomJoin(Scene):
 
         self.back = self.add_widget(
             widget.Button,
-            x=20, y=20, width=w_percent(20), height=h_percent(10),
+            x=20, y=20, width=20*vw, height=10*vh,
 
             label_text="Retour",
 
@@ -28,7 +28,7 @@ class RoomJoin(Scene):
 
         self.entry_username = self.add_widget(
             widget.Input,
-            x=w_percent(40), y=h_percent(55), width=w_percent(20), height=h_percent(10),
+            x=40*vw, y=55*vh, width=20*vw, height=10*vh,
 
             type_regex=regex.username_type,
             check_regex=regex.username_check,
@@ -42,7 +42,7 @@ class RoomJoin(Scene):
 
         self.entry_ip = self.add_widget(
             widget.Input,
-            x=w_percent(40), y=h_percent(45), width=w_percent(13), height=h_percent(10),
+            x=40*vw, y=45*vh, width=13*vw, height=10*vh,
 
             type_regex=regex.ipv4_type,
             check_regex=regex.ipv4_check,
@@ -54,7 +54,7 @@ class RoomJoin(Scene):
 
         self.entry_port = self.add_widget(
             widget.Input,
-            x=w_percent(53), y=h_percent(45), width=w_percent(7), height=h_percent(10),
+            x=53*vw, y=45*vh, width=7*vw, height=10*vh,
 
             type_regex=regex.port_type,
             check_regex=regex.port_check,
@@ -66,7 +66,7 @@ class RoomJoin(Scene):
 
         self.connect = self.add_widget(
             widget.Button,
-            x=w_percent(40), y=h_percent(35), width=w_percent(20), height=h_percent(10),
+            x=40*vw, y=35*vh, width=20*vw, height=10*vh,
 
             label_text="Se connecter",
 
@@ -77,7 +77,7 @@ class RoomJoin(Scene):
 
         self.status = self.add_widget(
             widget.Text,
-            x=w_percent(50), y=h_percent(25),
+            x=50*vw, y=25*vh,
 
             anchor_x="center",
         )
