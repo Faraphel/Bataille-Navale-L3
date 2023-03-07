@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture
+from source.gui import widget, texture, regex
 from source.gui.scene import RoomHost
 from source.gui.scene.abc import Scene
 from source.network.packet import PacketSettings
@@ -44,8 +44,8 @@ class RoomCreate(Scene):
 
             style=texture.Input.Style1,
 
-            type_regex=r"\d{0,5}",
-            check_regex=r"\d{1,5}",
+            type_regex=regex.port_type,
+            check_regex=regex.port_check,
 
             label_text="52321"
         )
@@ -67,7 +67,8 @@ class RoomCreate(Scene):
 
             x=0.2, y=0.45, width=0.15, height=0.1,
 
-            type_regex=r".{0,16}",
+            type_regex=regex.username_type,
+            check_regex=regex.username_check,
 
             style=texture.Input.Style1,
 
@@ -89,8 +90,8 @@ class RoomCreate(Scene):
 
             x=0.2, y=0.86, width=0.1, height=0.08,
 
-            type_regex=r"\d{0,4}",
-            check_regex=r"\d+",
+            type_regex=regex.number(min_length=0, max_length=4),
+            check_regex=regex.number(min_length=1, max_length=4),
 
             style=texture.Input.Style1,
 
@@ -110,8 +111,8 @@ class RoomCreate(Scene):
 
             x=0.2, y=0.76, width=0.1, height=0.08,
 
-            type_regex=r"\d{0,4}",
-            check_regex=r"\d+",
+            type_regex=regex.number(min_length=0, max_length=4),
+            check_regex=regex.number(min_length=1, max_length=4),
 
             style=texture.Input.Style1,
 
@@ -201,8 +202,8 @@ class RoomCreate(Scene):
 
             x=0.7, y=0.68, width=0.2, height=0.08,
 
-            type_regex=r"\d{0,4}",
-            check_regex=r"\d+",
+            type_regex=regex.number(min_length=0, max_length=4),
+            check_regex=regex.number(min_length=1, max_length=4),
 
             style=texture.Input.Style1,
 

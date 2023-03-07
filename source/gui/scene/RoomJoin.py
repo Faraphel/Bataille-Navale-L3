@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional
 
 from source import network
 from source.gui.scene.abc import Scene
-from source.gui import widget, texture
+from source.gui import widget, texture, regex
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -29,7 +29,8 @@ class RoomJoin(Scene):
             widget.Input,
             x=0.4, y=0.55, width=0.2, height=0.1,
 
-            type_regex=r".{0,16}",
+            type_regex=regex.username_type,
+            check_regex=regex.username_check,
 
             style=texture.Input.Style1,
 
@@ -42,8 +43,8 @@ class RoomJoin(Scene):
             widget.Input,
             x=0.4, y=0.45, width=0.13, height=0.1,
 
-            type_regex=r"[\d\.]{0,15}",
-            check_regex=r"\d{1,3}(\.\d{1,3}){3}",
+            type_regex=regex.ipv4_type,
+            check_regex=regex.ipv4_check,
 
             style=texture.Input.Style1,
 
@@ -54,8 +55,8 @@ class RoomJoin(Scene):
             widget.Input,
             x=0.53, y=0.45, width=0.07, height=0.1,
 
-            type_regex=r"\d{0,5}",
-            check_regex=r"\d{1,5}",
+            type_regex=regex.port_type,
+            check_regex=regex.port_check,
 
             label_text="52321",
 
