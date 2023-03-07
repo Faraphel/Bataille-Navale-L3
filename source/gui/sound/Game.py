@@ -1,6 +1,6 @@
 from .type import Sound
 from .abc import SoundGroup
-from source import path_sound
+from source.path import path_sound
 
 path = path_sound / "game"
 

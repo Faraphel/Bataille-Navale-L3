@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-from source import path_save, path_history
+from source.path import path_save, path_history
 from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import GameResult

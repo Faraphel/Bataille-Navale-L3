@@ -2,7 +2,7 @@ import math
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from source import path_history
+from source.path import path_history
 from source.gui import widget, texture
 from source.gui.scene.abc import Scene
 

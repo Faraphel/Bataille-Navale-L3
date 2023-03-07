@@ -1,6 +1,6 @@
 from .abc import Style
 from source.gui.texture.type import Texture
-from source import path_image
+from source.path import path_image
 
 path = path_image / "button"
 

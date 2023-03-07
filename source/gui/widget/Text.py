@@ -3,8 +3,6 @@ from typing import TYPE_CHECKING
 from source.gui.better_pyglet import Label
 from source.gui.widget.abc import BoxWidget
 
-import pyglet
-
 from source.type import Distance
 
 if TYPE_CHECKING:

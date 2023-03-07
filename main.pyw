@@ -4,7 +4,7 @@ from source.gui.scene import MainMenu
 from source.gui.window import GameWindow
 
 
-from source import path_font
+from source.path import path_font
 from source.gui.better_pyglet import Label
 
 

@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING, Callable, Any, Type
 
-import pyglet.image
-
 from source.gui.better_pyglet import Sprite, Label
 from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
