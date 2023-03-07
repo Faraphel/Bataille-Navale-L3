@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
+from source.gui.position import h_full, w_full, w_percent, h_percent
 from source.gui.scene.abc.Popup import Popup
 from source.network.packet import PacketResponseSave
 
@@ -18,7 +19,7 @@ class GameSave(Popup):
         self.background = self.add_widget(
             widget.Image,
 
-            x=0, y=0, width=1.0, height=1.0,
+            x=0, y=0, width=w_full, height=h_full,
 
             image=texture.Popup.Style1.background
         )
@@ -26,7 +27,7 @@ class GameSave(Popup):
         self.text = self.add_widget(
             widget.Text,
 
-            x=0.5, y=0.5,
+            x=w_percent(50), y=h_percent(50),
 
             anchor_x="center",
 
@@ -37,7 +38,7 @@ class GameSave(Popup):
 
         self.refuse = self.add_widget(
             widget.Button,
-            x=0.20, y=0.20, width=0.2, height=0.1,
+            x=w_percent(20), y=h_percent(20), width=w_percent(20), height=h_percent(10),
 
             label_text="Refuser",
 
@@ -48,7 +49,7 @@ class GameSave(Popup):
 
         self.accept = self.add_widget(
             widget.Button,
-            x=0.60, y=0.20, width=0.2, height=0.1,
+            x=w_percent(60), y=h_percent(20), width=w_percent(20), height=h_percent(10),
 
             label_text="Accepter",
 

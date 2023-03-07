@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import pyglet.clock
 
 from source.gui import texture, widget, sound
+from source.gui.position import w_full, h_full
 from source.gui.scene.abc.Popup import Popup
 
 if TYPE_CHECKING:
@@ -19,7 +20,7 @@ class GameResult(Popup):
         self.image = self.add_widget(
             widget.Image,
 
-            x=0, y=0, width=1.0, height=1.0,
+            x=0, y=0, width=w_full, height=h_full,
             image=texture.Result.Style1.get("victory" if won else "defeat")
         )
 

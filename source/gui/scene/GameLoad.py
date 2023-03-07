@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
+from source.gui.position import w_percent, w_full, h_percent, right_content
 from source.gui.scene.abc import Scene
 from source.network import Host
 from source.utils import path_ctime_str
@@ -19,7 +20,7 @@ class GameLoad(Scene):
         self.label = self.add_widget(
             widget.Text,
 
-            x=0.5, y=0.5, width=1.0,
+            x=w_percent(50), y=h_percent(50), width=w_full,
 
             anchor_x="center",
 
@@ -34,7 +35,7 @@ class GameLoad(Scene):
         self.refuse = self.add_widget(
             widget.Button,
 
-            x=20, y=20, width=0.2, height=0.1,
+            x=20, y=20, width=w_percent(20), height=h_percent(10),
 
             label_text="Refuser",
 
@@ -46,7 +47,7 @@ class GameLoad(Scene):
         self.accept = self.add_widget(
             widget.Button,
 
-            x=lambda widget: widget.scene.window.width - 20 - widget.width, y=20, width=0.2, height=0.1,
+            x=right_content(20), y=20, width=w_percent(20), height=h_percent(10),
 
             label_text="Accepter",
 

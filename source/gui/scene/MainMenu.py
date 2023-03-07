@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from source.gui.position import w_full, h_full, h_percent
+from source.gui.position import w_full, h_full, h_percent, w_percent
 from source.gui.scene.abc import Scene
 from source.gui import widget, scene, texture
 
@@ -31,7 +31,7 @@ class MainMenu(Scene):
 
         self.game_create = self.add_widget(
             widget.Button,
-            x=50, y=0.50, width=0.3, height=0.1,
+            x=50, y=h_percent(50), width=w_percent(30), height=h_percent(10),
 
             label_text="Créer une salle",
             label_font_size=20,
@@ -44,7 +44,7 @@ class MainMenu(Scene):
         self.game_join = self.add_widget(
             widget.Button,
 
-            x=50, y=0.35, width=0.3, height=0.1,
+            x=50, y=h_percent(35), width=w_percent(30), height=h_percent(10),
 
             label_text="Rejoindre une salle",
             label_font_size=20,
@@ -57,7 +57,7 @@ class MainMenu(Scene):
         self.history = self.add_widget(
             widget.Button,
 
-            x=50, y=0.20, width=0.3, height=0.1,
+            x=50, y=h_percent(20), width=w_percent(30), height=h_percent(10),
 
             label_text="Historique",
             label_font_size=20,
@@ -70,7 +70,7 @@ class MainMenu(Scene):
         self.settings = self.add_widget(
             widget.Button,
 
-            x=50, y=0.05, width=0.3, height=0.1,
+            x=50, y=h_percent(5), width=w_percent(30), height=h_percent(10),
 
             label_text="Paramètres",
             label_font_size=20,

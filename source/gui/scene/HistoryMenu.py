@@ -2,6 +2,7 @@ import math
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from source.gui.position import w_percent, h_percent
 from source.path import path_history
 from source.gui import widget, texture
 from source.gui.scene.abc import Scene
@@ -19,7 +20,7 @@ class HistoryMenu(Scene):
 
         self.back = self.add_widget(
             widget.Button,
-            x=20, y=20, width=0.2, height=0.1,
+            x=20, y=20, width=w_percent(20), height=h_percent(10),
 
             label_text="Retour",
 
@@ -36,7 +37,7 @@ class HistoryMenu(Scene):
         self.title = self.add_widget(
             widget.Text,
 
-            x=0.5, y=0.80,
+            x=w_percent(50), y=h_percent(80),
 
             anchor_x="center",
 
@@ -48,7 +49,7 @@ class HistoryMenu(Scene):
             button = self.add_widget(
                 widget.Button,
 
-                x=0.25, y=0.75 - ((i+1) * 0.09), width=0.5, height=0.08,
+                x=w_percent(25), y=h_percent(75 - ((i+1) * 9)), width=w_percent(50), height=h_percent(8),
 
                 label_text=path.stem,
 
@@ -65,7 +66,7 @@ class HistoryMenu(Scene):
             # si nous ne sommes pas à la première page, ajoute un bouton "précédent".
             self.previous = self.add_widget(
                 widget.Button,
-                x=0.1, y=0.45, width=0.1, height=0.1,
+                x=w_percent(10), y=h_percent(45), width=w_percent(10), height=h_percent(10),
 
                 label_text="Précédent",
 
@@ -81,7 +82,7 @@ class HistoryMenu(Scene):
             # si nous ne sommes pas à la dernière page, ajoute un bouton "suivant".
             self.next = self.add_widget(
                 widget.Button,
-                x=0.80, y=0.45, width=0.1, height=0.1,
+                x=w_percent(80), y=h_percent(45), width=w_percent(10), height=h_percent(10),
 
                 label_text="Suivant",
 

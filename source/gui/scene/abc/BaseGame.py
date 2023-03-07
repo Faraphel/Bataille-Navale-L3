@@ -43,7 +43,7 @@ class BaseGame(Scene, ABC):
         self.grid_ally = self.add_widget(
             widget.GameGrid,
 
-            x=75, y=0.25, width=0.35, height=0.5,
+            x=75, y=h_percent(25), width=w_percent(35), height=h_percent(50),
 
             boats_length=self.boats_length,
 
@@ -69,7 +69,7 @@ class BaseGame(Scene, ABC):
         self.add_widget(
             widget.Text,
 
-            x=0.27, y=0.995,
+            x=w_percent(27), y=h_percent(99.5),
 
             text=self.name_ally,
             font_size=20,
@@ -79,7 +79,7 @@ class BaseGame(Scene, ABC):
         self.add_widget(
             widget.Text,
 
-            x=0.73, y=0.995,
+            x=w_percent(73), y=h_percent(99.5),
 
             text=self.name_enemy,
             font_size=20,
@@ -89,7 +89,7 @@ class BaseGame(Scene, ABC):
         self.score_ally = self.add_widget(
             widget.Text,
 
-            x=0.44, y=0.995,
+            x=w_percent(44), y=h_percent(99.5),
 
             text="0",
             font_size=25,
@@ -99,7 +99,7 @@ class BaseGame(Scene, ABC):
         self.score_enemy = self.add_widget(
             widget.Text,
 
-            x=0.56, y=0.995,
+            x=w_percent(56), y=h_percent(99.5),
 
             text="0",
             font_size=25,
@@ -109,7 +109,7 @@ class BaseGame(Scene, ABC):
         self.button_quit = self.add_widget(
             widget.Button,
 
-            x=0.85, y=0, width=0.15, height=0.1,
+            x=w_percent(85), y=0, width=w_percent(15), height=h_percent(10),
 
             label_text="Quitter",
 

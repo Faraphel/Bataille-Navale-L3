@@ -4,11 +4,11 @@ from typing import Callable
 # pourcentage
 
 
-def w_percent(value: int) -> Callable:  # positionne en pourcentage la largeur
+def w_percent(value: float) -> Callable:  # positionne en pourcentage la largeur
     return lambda widget: int(widget.scene.window.width * (value / 100))
 
 
-def h_percent(value: int) -> Callable:  # positionne en pourcentage la hauteur
+def h_percent(value: float) -> Callable:  # positionne en pourcentage la hauteur
     return lambda widget: int(widget.scene.window.height * (value / 100))
 
 

@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
+from source.gui.position import w_full, h_full, w_percent, h_percent
 from source.gui.scene.abc.Popup import Popup
 from source.network.packet import PacketQuit
 
@@ -18,7 +19,7 @@ class GameQuit(Popup):
         self.background = self.add_widget(
             widget.Image,
 
-            x=0, y=0, width=1.0, height=1.0,
+            x=0, y=0, width=w_full, height=h_full,
 
             image=texture.Popup.Style1.background
         )
@@ -26,7 +27,7 @@ class GameQuit(Popup):
         self.text = self.add_widget(
             widget.Text,
 
-            x=0.5, y=0.5, width=1.0,
+            x=w_percent(50), y=h_percent(50), width=w_full,
 
             anchor_x="center",
 
@@ -38,7 +39,7 @@ class GameQuit(Popup):
 
         self.cancel = self.add_widget(
             widget.Button,
-            x=0.20, y=0.20, width=0.2, height=0.1,
+            x=w_percent(20), y=h_percent(20), width=w_percent(20), height=h_percent(10),
 
             label_text="Annuler",
 
@@ -49,7 +50,7 @@ class GameQuit(Popup):
 
         self.confirm = self.add_widget(
             widget.Button,
-            x=0.60, y=0.20, width=0.2, height=0.1,
+            x=w_percent(60), y=h_percent(20), width=w_percent(20), height=h_percent(10),
 
             label_text="Confirmer",
 
