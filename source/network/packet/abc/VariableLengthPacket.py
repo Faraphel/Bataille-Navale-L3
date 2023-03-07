@@ -1,8 +1,12 @@
 import socket
 import struct
 from abc import ABC, abstractmethod
+from typing import TypeVar
 
 from source.network.packet.abc import Packet
+
+
+T = TypeVar("T", bound="VariableLengthPacket")
 
 
 class VariableLengthPacket(Packet, ABC):
@@ -31,7 +35,7 @@ class VariableLengthPacket(Packet, ABC):
         pass
 
     @classmethod
-    def from_connection(cls, connection: socket.socket) -> "Packet":
+    def from_connection(cls, connection: socket.socket) -> T:
         data_len, *_ = struct.unpack(
             cls.packet_format,
             connection.recv(struct.calcsize(cls.packet_format))

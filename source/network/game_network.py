@@ -34,7 +34,7 @@ def game_network(
 
     try:
         while True:
-            data_type: Type["Packet"] = Packet.type_from_connection(connection)
+            data_type = Packet.type_from_connection(connection)
 
             if data_type is None:
                 if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter

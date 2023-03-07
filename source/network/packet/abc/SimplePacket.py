@@ -1,8 +1,12 @@
 import socket
 import struct
 from abc import ABC, abstractmethod
+from typing import TypeVar
 
 from source.network.packet.abc import Packet
+
+
+T = TypeVar("T", bound="SimplePacket")
 
 
 class SimplePacket(Packet, ABC):
@@ -15,7 +19,7 @@ class SimplePacket(Packet, ABC):
 
     @classmethod
     @abstractmethod
-    def from_bytes(cls, data: bytes) -> "Packet":
+    def from_bytes(cls, data: bytes) -> T:
         """
         Convert a bytes object into a packet.
         :param data: the data to convert into a packet. Should be "packet_size" long.
@@ -24,7 +28,7 @@ class SimplePacket(Packet, ABC):
         pass
 
     @classmethod
-    def from_connection(cls, connection: socket.socket) -> "Packet":
+    def from_connection(cls, connection: socket.socket) -> T:
         # récupère la taille du packet en fonction du format et charge
         # les données dans une nouvelle instance.
         packet_size: int = struct.calcsize(cls.packet_format)

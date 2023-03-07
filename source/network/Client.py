@@ -12,7 +12,6 @@ from source.utils.thread import in_pyglet_context
 
 if TYPE_CHECKING:
     from source.gui.window import Window
-    from source.gui.scene import RoomJoin
 
 
 class Client(StoppableThread):
@@ -97,7 +96,7 @@ class Client(StoppableThread):
 
             # paramètres & jeu
 
-            settings: Any = PacketSettings.from_connection(connection)
+            settings = PacketSettings.from_connection(connection)
             PacketUsername(username=self.username).send_data_connection(connection)
             enemy_username = PacketUsername.from_connection(connection).username
 

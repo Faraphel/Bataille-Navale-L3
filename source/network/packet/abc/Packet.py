@@ -1,7 +1,10 @@
 import socket
 from abc import abstractmethod, ABC
 from inspect import isabstract
-from typing import Type, Optional
+from typing import Optional, TypeVar
+
+
+T = TypeVar("T", bound="Packet")
 
 
 class Packet(ABC):
@@ -12,7 +15,7 @@ class Packet(ABC):
     The to_bytes and from_connection method need to be defined.
     """
 
-    packet_types: set[Type["Packet"]] = set()
+    packet_types: set[T] = set()
 
     packet_header: bytes
     packet_id: int = 0
@@ -48,7 +51,7 @@ class Packet(ABC):
         connection.send(self.to_bytes())
 
     @classmethod
-    def type_from_header(cls, packet_header: bytes) -> Type["Packet"]:
+    def type_from_header(cls, packet_header: bytes) -> T:
         """
         Get a subclass from its packet header.
         :param packet_header: the header to find the corresponding subclass
@@ -61,7 +64,7 @@ class Packet(ABC):
         ))
 
     @classmethod
-    def type_from_connection(cls, connection: socket.socket) -> Optional[Type["Packet"]]:
+    def type_from_connection(cls, connection: socket.socket) -> Optional[T]:
         try:
             packet_header = connection.recv(1)
         except socket.timeout:
@@ -72,7 +75,7 @@ class Packet(ABC):
 
     @classmethod
     @abstractmethod
-    def from_connection(cls, connection: socket.socket) -> "Packet":
+    def from_connection(cls, connection: socket.socket) -> T:
         """
         Receive a packet from a socket.
         :param connection: the socket where to get the data from

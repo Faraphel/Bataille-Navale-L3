@@ -1,7 +1,11 @@
 from abc import ABC
 import socket
+from typing import TypeVar
 
 from source.network.packet.abc import Packet
+
+
+T = TypeVar("T", bound="SignalPacket")
 
 
 class SignalPacket(Packet, ABC):
@@ -14,5 +18,5 @@ class SignalPacket(Packet, ABC):
         return b""
 
     @classmethod
-    def from_connection(cls, connection: socket.socket) -> "SignalPacket":
+    def from_connection(cls, connection: socket.socket) -> T:
         return cls()
