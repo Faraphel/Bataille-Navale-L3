@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from source.gui.position import w_full, h_full, h_percent
 from source.gui.scene.abc import Scene
 from source.gui import widget, scene, texture
 
@@ -14,7 +15,7 @@ class MainMenu(Scene):
         self.background = self.add_widget(
             widget.Image,
 
-            x=0.0, y=0.0, width=1.0, height=1.0,
+            x=0, y=0, width=w_full, height=h_full,
 
             image=texture.Background.main
         )
@@ -22,7 +23,7 @@ class MainMenu(Scene):
         self.title = self.add_widget(
             widget.Text,
 
-            x=50, y=0.85,
+            x=50, y=h_percent(85),
 
             text="Bataille Navale",
             font_size=50

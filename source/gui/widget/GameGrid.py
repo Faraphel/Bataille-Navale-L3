@@ -94,7 +94,7 @@ class GameGrid(BoxWidget):
         self.add_listener("on_hover", lambda _, *args: self._refresh_cursor(*args))
 
         self._refresh_size()
-        self.display_board(self.board)
+        self.refresh_board()
 
     def get_cell_from_rel(self, rel_x: int, rel_y: int) -> tuple[int, int]:
         """
@@ -157,6 +157,10 @@ class GameGrid(BoxWidget):
 
     def hide_cursor(self):
         self.cursor.width, self.cursor.height = 0, 0
+
+    def refresh_board(self):
+        # rafraichi l'affichage de la grille
+        self.display_board(self.board)
 
     def display_board(self, board: Board, preview: bool = False):
         # remplacer par l'utilisation de board.boats ?
@@ -239,7 +243,7 @@ class GameGrid(BoxWidget):
             if len(self.boats_length) == 0:
                 self.trigger_event("on_all_boats_placed")
 
-        self.display_board(self.board)  # rafraichi l'affichage
+        self.refresh_board()  # rafraichi l'affichage
 
     def preview_boat(self, cell: Point2D):
         if len(self.boats_length) == 0: return
@@ -251,7 +255,7 @@ class GameGrid(BoxWidget):
                 cell
             )
         except InvalidBoatPosition:
-            self.display_board(self.board)  # if the boat can't be placed, ignore
+            self.refresh_board()  # if the boat can't be placed, ignore
 
         else: self.display_board(preview_board, preview=True)
 
@@ -262,8 +266,13 @@ class GameGrid(BoxWidget):
             x, y = cell
             self.board.boats[y, x] = int(force_touched)
 
-        self.display_board(self.board)
+        self.refresh_board()
         return bomb_state
+
+    def remove_bomb(self, cell: Point2D):
+        # retire une bombe de la planche
+        self.board.remove_bomb(cell)
+        self.refresh_board()
 
     def on_click_release(self, rel_x: int, rel_y: int, button: int, modifiers: int):
         cell = self.get_cell_from_rel(rel_x, rel_y)

@@ -8,10 +8,9 @@ from source.path import path_save, path_history
 from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import GameResult
-from source.gui.scene.abc import Scene
+from source.gui.scene.abc import BaseGame
 from source.gui import widget, texture, scene
-from source.network.packet import PacketChat, PacketBombPlaced, PacketBoatPlaced, PacketBombState, PacketQuit, \
-    PacketAskSave, PacketResponseSave, PacketBoatsData
+from source.network.packet import *
 from source.type import Point2D
 from source.utils import StoppableThread
 
@@ -19,73 +18,24 @@ if TYPE_CHECKING:
     from source.gui.window import Window
 
 
-class Game(Scene):
+class Game(BaseGame):
     def __init__(self, window: "Window",
                  thread: StoppableThread,
                  connection: socket.socket,
 
-                 boats_length: list,
-                 name_ally: str,
-                 name_enemy: str,
                  my_turn: bool,
-
-                 grid_width: int = None,
-                 grid_height: int = None,
-                 board_ally_data: dict = None,
-                 board_enemy_data: dict = None,
-
-                 history: list[bool, Point2D] = None,
 
                  **kwargs):
         super().__init__(window, **kwargs)
 
         self.thread = thread
         self.connection = connection
-        self.boats_length = boats_length
-        self.name_ally = name_ally
-        self.name_enemy = name_enemy
-        self.grid_width = grid_width
-        self.grid_height = grid_height
-
-        self.background = self.add_widget(
-            widget.Image,
-
-            x=0, y=0, width=1.0, height=1.0,
-
-            image=texture.Background.game,
-        )
-
-        self.grid_ally = self.add_widget(
-            widget.GameGrid,
-
-            x=75, y=0.25, width=0.35, height=0.5,
-
-            boats_length=self.boats_length,
-
-            grid_style=texture.Grid.Style1,
-            boat_style=texture.Grid.Boat.Style1,
-            rows=self.grid_height, columns=self.grid_width,
-
-            board_data=board_ally_data
-        )
 
         def board_ally_ready(widget):
             self.boat_ready_ally = True
             PacketBoatPlaced().send_connection(connection)
 
         self.grid_ally.add_listener("on_all_boats_placed", board_ally_ready)
-
-        self.grid_enemy = self.add_widget(
-            widget.GameGrid,
-
-            x=lambda widget: widget.scene.window.width - 75 - widget.width, y=0.25, width=0.35, height=0.5,
-
-            grid_style=texture.Grid.Style1,
-            boat_style=texture.Grid.Boat.Style1,
-            rows=self.grid_height, columns=self.grid_width,
-
-            board_data=board_enemy_data
-        )
 
         def board_enemy_bomb(widget, cell: Point2D):
             if not (self.boat_ready_ally and self.boat_ready_enemy): return
@@ -95,46 +45,6 @@ class Game(Scene):
             self.my_turn = False
 
         self.grid_enemy.add_listener("on_request_place_bomb", board_enemy_bomb)
-
-        self.add_widget(
-            widget.Text,
-
-            x=0.27, y=0.995,
-
-            text=self.name_ally,
-            font_size=20,
-            anchor_x="center", anchor_y="center"
-        )
-
-        self.add_widget(
-            widget.Text,
-
-            x=0.73, y=0.995,
-
-            text=self.name_enemy,
-            font_size=20,
-            anchor_x="center", anchor_y="center"
-        )
-
-        self.score_ally = self.add_widget(
-            widget.Text,
-
-            x=0.44, y=0.995,
-
-            text="0",
-            font_size=25,
-            anchor_x="center", anchor_y="center"
-        )
-
-        self.score_enemy = self.add_widget(
-            widget.Text,
-
-            x=0.56, y=0.995,
-
-            text="0",
-            font_size=25,
-            anchor_x="center", anchor_y="center"
-        )
 
         self.chat_log = self.add_widget(
             widget.Text,
@@ -185,18 +95,10 @@ class Game(Scene):
 
         self.button_save.add_listener("on_click_release", ask_save)
 
-        self.button_quit = self.add_widget(
-            widget.Button,
-
-            x=0.85, y=0, width=0.15, height=0.1,
-            
-            label_text="Quitter",
-
-            style=texture.Button.Style1
+        self.button_quit.add_listener(
+            "on_click_release",
+            lambda *_: self.window.add_scene(scene.GameQuit, game_scene=self)
         )
-
-        self.button_quit.add_listener("on_click_release",
-                                      lambda *_: self.window.add_scene(scene.GameQuit, game_scene=self))
 
         self.label_state = self.add_widget(
             widget.Text,
@@ -212,9 +114,7 @@ class Game(Scene):
         self._boat_ready_ally: bool = False   # does the player finished placing his boat ?
         self._boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
 
-        self.history: list[tuple[bool, Point2D]] = [] if history is None else history  # liste des bombes posées
-
-        if len(boats_length) == 0:  # s'il n'y a pas de bateau à placé
+        if len(self.boats_length) == 0:  # s'il n'y a pas de bateau à placé
             self._boat_ready_ally = True  # défini l'état de notre planche comme prête
             PacketBoatPlaced().send_connection(connection)  # indique à l'adversaire que notre planche est prête
 
@@ -241,10 +141,6 @@ class Game(Scene):
             "Placer vos bombes" if self.my_turn else
             "L'adversaire place ses bombes..."
         )
-
-    def _refresh_score_text(self):
-        self.score_ally.text = str(self.grid_enemy.board.get_score())
-        self.score_enemy.text = str(self.grid_ally.board.get_score())
 
     # property
 
@@ -312,15 +208,19 @@ class Game(Scene):
             history=data["history"]
         )
 
+    def get_save_suffix(self) -> str:
+        # Le suffix est un entier indiquant si c'est à notre tour ou non.
+        # Cet entier permet aux localhost de toujours pouvoir sauvegarder et charger sans problème.
+        ip_address, port = self.connection.getpeername()
+        return f"-{int(self.my_turn)}" if ip_address == "127.0.0.1" else ""
+
     @property
     def save_path(self) -> Path:
         ip_address, port = self.connection.getpeername()
 
-        # Le nom du fichier est l'IP de l'opposent, suivi d'un entier indiquant si c'est à notre tour ou non.
-        # Cet entier permet aux localhost de toujours pouvoir sauvegarder et charger sans problème.
         return path_save / (
                 ip_address +
-                (f"-{int(self.my_turn)}" if ip_address == "127.0.0.1" else "") +
+                self.get_save_suffix() +
                 ".bn-save"
         )
 
@@ -328,6 +228,7 @@ class Game(Scene):
     def history_path(self):
         return path_history / (
             datetime.now().strftime("%Y-%m-%d_%H-%M-%S") +
+            self.get_save_suffix() +
             ".bn-history"
         )
 
@@ -387,12 +288,11 @@ class Game(Scene):
         else:
             # c'est à notre tour si l'opposant à loupé sa bombe
             self.my_turn = not bomb_state.success
+            # sauvegarde la bombe dans l'historique
+            self.history.append((False, packet.position))
 
         # envoie le résultat à l'autre joueur
         PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(self.connection)
-
-        # sauvegarde la bombe dans l'historique
-        self.history.append((False, packet.position))
 
         self._refresh_score_text()  # le score a changé, donc rafraichi son texte
 

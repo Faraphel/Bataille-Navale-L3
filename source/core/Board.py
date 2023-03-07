@@ -113,6 +113,20 @@ class Board:
         # if the boat have been touched, but without sinking
         return BombState.TOUCHED
 
+    def remove_bomb(self, cell: Point2D):
+        """
+        Retire une bombe de la matrice
+        :param cell: cellule de la bombe
+        """
+        x, y = cell
+        self.bombs[y, x] = True
+
+    def clear_bombs(self):
+        """
+        Retire toutes les bombes de la planche
+        """
+        self.bombs = np.ones(self.bombs.shape)
+
     def get_matrice(self) -> np.array:
         """
         :return: the boats and bombs represented as a matrice

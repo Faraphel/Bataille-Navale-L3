@@ -2,7 +2,6 @@ A faire :
 
 
 1. Principal :
-   - Historique
    - Paramètres (contenu : fps, volume dans le jeu, plein écran, ...) (bouton dans le jeu)
    - Documenter (Docstring, README, ...)
 
@@ -17,6 +16,7 @@ A faire :
 Bug : 
    - (incertain) Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
    - Quitter pendant que l'on décide de si l'on doit charger ou non une ancienne sauvegarde fait crash l'adversaire
+   - Les champs invalides n'empêchent pas de faire l'action
 
 Autre :
     - Tester sur Linux
