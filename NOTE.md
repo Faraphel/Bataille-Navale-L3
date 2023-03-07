@@ -3,12 +3,10 @@ A faire :
 
 1. Principal :
    - Historique
+   - Paramètres (contenu : fps, volume dans le jeu, plein écran, ...) (bouton dans le jeu)
    - Documenter (Docstring, README, ...)
 
 2. Visuel :
-   - Empêcher de spam "se connecter" dans le client (écran d'attente ?)
-   - Paramètres (contenu : fps, volume dans le jeu, plein écran, ...) (bouton dans le jeu)
-   - Rendre le texte de status plus visible (fond un peu plus sombre ?)
    - Changer les images, animations, rajouter les fonds, mettre la musique, ...
    - Voir les TODOs
 
@@ -17,8 +15,9 @@ A faire :
    - mode d'emploi (video + pdf) expliquant le fonctionnement
 
 Bug : 
-    - (incertain) Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
-
+   - (incertain) Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
+   - Quitter pendant que l'on décide de si l'on doit charger ou non une ancienne sauvegarde fait crash l'adversaire
+   - Il est possible de se connecter à soi-même si l'on quitte très vite le menu hote vers le menu client
 
 Autre :
     - Tester sur Linux

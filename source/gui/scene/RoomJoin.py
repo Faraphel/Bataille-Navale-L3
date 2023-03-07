@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from source import network
 from source.gui.scene.abc import Scene
@@ -73,15 +73,39 @@ class RoomJoin(Scene):
 
         self.connect.add_listener("on_click_release", self.button_connect)
 
+        self.status = self.add_widget(
+            widget.Text,
+            x=0.5, y=0.25,
+
+            anchor_x="center",
+        )
+
+        self.thread: Optional[network.Client] = None
+
     def button_connect(self, widget, *_):
-        network.Client(
+        self.status.text = "Connexion..."
+        self.status.label.color = (255, 255, 255, 255)  # blanc
+        widget.remove_listener("on_click_release", self.button_connect)
+
+        self.thread = network.Client(
             window=self.window,
+            on_connexion_refused=self.connexion_refused,
             ip_address=self.entry_ip.text,
             port=int(self.entry_port.text),
             daemon=True,
             username=self.entry_username.text
-        ).start()
+        )
+        self.thread.start()
+
+    def connexion_refused(self):
+        self.status.text = "Échec de la connexion"
+        self.status.label.color = (255, 32, 32, 255)  # rouge
+        self.connect.add_listener("on_click_release", self.button_connect)
 
     def button_back_callback(self, widget, *_):
+        if self.thread is not None: self.thread.stop()
+
         from source.gui.scene import MainMenu
         self.window.set_scene(MainMenu)
+
+

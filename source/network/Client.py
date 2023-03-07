@@ -1,7 +1,7 @@
 import json
 import socket
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Callable
 
 from source import path_save
 from source.gui import scene
@@ -12,6 +12,7 @@ from source.utils.thread import in_pyglet_context
 
 if TYPE_CHECKING:
     from source.gui.window import Window
+    from source.gui.scene import RoomJoin
 
 
 class Client(StoppableThread):
@@ -19,10 +20,18 @@ class Client(StoppableThread):
     The thread executed on the person who join a room.
     """
 
-    def __init__(self, window: "Window", username: str, ip_address: str, port: int, **kw):
+    def __init__(self, window: "Window",
+                 username: str,
+                 ip_address: str,
+                 port: int,
+                 on_connexion_refused: Optional[Callable] = None,
+                 **kw):
         super().__init__(**kw)
 
         self.window = window
+
+        self.on_connexion_refused = on_connexion_refused
+
         self.username = username
         self.ip_address = ip_address
         self.port = port
@@ -31,7 +40,14 @@ class Client(StoppableThread):
         print("[Client] Thread démarré")
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:
-            connection.connect((self.ip_address, self.port))
+            try:
+                connection.connect((self.ip_address, self.port))
+            except ConnectionRefusedError:
+                # Appelle l'événement lorsque la connexion échoue
+                if self.on_connexion_refused is not None:
+                    in_pyglet_context(self.on_connexion_refused)
+                return
+
             connection.settimeout(5)  # défini le timeout à 5 secondes
 
             print(f"[Client] Connecté avec {connection}")

@@ -33,5 +33,7 @@ class Listener:
         :param args: the args of the callbacks
         :param kwargs: the kwargs of the callbacks
         """
-        for listener in self._events_listener.get(name, set()):
+
+        # .copy() pour que si le listener supprime un de ses événements, la liste de la boucle de change pas de taille
+        for listener in self._events_listener.get(name, set()).copy():
             listener(self, *args, **kwargs)
