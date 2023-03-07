@@ -17,7 +17,6 @@ A faire :
 Bug : 
    - (incertain) Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
    - Quitter pendant que l'on décide de si l'on doit charger ou non une ancienne sauvegarde fait crash l'adversaire
-   - Il est possible de se connecter à soi-même si l'on quitte très vite le menu hote vers le menu client
 
 Autre :
     - Tester sur Linux

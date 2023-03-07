@@ -48,7 +48,7 @@ class Client(StoppableThread):
                     in_pyglet_context(self.on_connexion_refused)
                 return
 
-            connection.settimeout(5)  # défini le timeout à 5 secondes
+            connection.settimeout(1)  # défini le timeout à 1 secondes
 
             print(f"[Client] Connecté avec {connection}")
 

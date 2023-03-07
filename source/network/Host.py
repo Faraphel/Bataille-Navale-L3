@@ -38,7 +38,7 @@ class Host(StoppableThread):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
             server.bind(("", self.port))  # connecte le socket au port indiqué
 
-            server.settimeout(5)  # défini le timeout à 5 secondes
+            server.settimeout(1)  # défini le timeout à 1 secondes
             server.listen()  # écoute de nouvelle connexion
 
             while True:
