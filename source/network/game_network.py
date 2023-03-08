@@ -32,30 +32,17 @@ def game_network(
         packet.PacketResponseSave: game_scene.network_on_response_save,
     }
 
-    try:
-        while True:
-            data_type = Packet.type_from_connection(connection)
+    while True:
+        data_type = Packet.type_from_connection(connection)
 
-            if data_type is None:
-                if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
-                continue
-
-            data = data_type.from_connection(connection)
-
-            in_pyglet_context(
-                game_methods[data_type], data  # récupère la methode relié ce type de donnée
-            )  # Appelle la méthode.
-
+        if data_type is None:
             if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
+            continue
 
-    except Exception as exception:
-        message: str = "Erreur :\n"
+        data = data_type.from_connection(connection)
 
-        match type(exception):
-            case builtins.ConnectionResetError:
-                message += "Perte de connexion avec l'adversaire."
-            case _:
-                message += str(exception)
+        in_pyglet_context(
+            game_methods[data_type], data  # récupère la methode relié ce type de donnée
+        )  # Appelle la méthode.
 
-        from source.gui.scene import GameError
-        in_pyglet_context(game_scene.window.set_scene, GameError, text=message)
+        if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
