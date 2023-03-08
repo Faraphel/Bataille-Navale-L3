@@ -87,6 +87,14 @@ class Client(StoppableThread):
                             break
                         except socket.timeout:
                             if self.stopped: return
+                        except ConnectionResetError:
+                            from source.gui.scene import GameError
+                            in_pyglet_context(
+                                self.window.set_scene,
+                                GameError,
+                                text="Perte de connexion avec l'adversaire"
+                            )
+                            return
 
                     if load_old_save:
 

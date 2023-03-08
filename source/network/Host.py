@@ -38,7 +38,7 @@ class Host(StoppableThread):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
             server.bind(("", self.port))  # connecte le socket au port indiqué
 
-            server.settimeout(1)  # défini le timeout à 1 secondes
+            server.settimeout(1)  # défini le timeout à 1 seconde
             server.listen()  # écoute de nouvelle connexion
 
             while True:
@@ -75,7 +75,16 @@ class Host(StoppableThread):
 
                     with self.condition_load: self.condition_load.wait()  # attend que l'utilisateur choisisse l'option
 
-                    PacketLoadOldSave(value=self.accept_load).send_data_connection(connection)
+                    try:
+                        PacketLoadOldSave(value=self.accept_load).send_data_connection(connection)
+                    except ConnectionResetError:
+                        from source.gui.scene import GameError
+                        in_pyglet_context(
+                            self.window.set_scene,
+                            GameError,
+                            text="Perte de connexion avec l'adversaire"
+                        )
+                        return
 
                     if self.accept_load:
 
@@ -121,3 +130,6 @@ class Host(StoppableThread):
                 connection=connection,
                 game_scene=game_scene
             )
+
+            # TODO: englober les threads de try sur ConnectionResetError pour ramener au menu d'erreur directement
+            # au lieu de le faire manuellement à chaque fois
