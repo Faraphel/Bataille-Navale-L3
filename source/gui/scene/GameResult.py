@@ -24,8 +24,6 @@ class GameResult(Popup):
             image=texture.Result.Style1.get("victory" if won else "defeat")
         )
 
-        sound.Game.get("won" if won else "loose").play()
-
         # TODO: rendre l'image transparente si possible
 
         from source.gui.scene import MainMenu

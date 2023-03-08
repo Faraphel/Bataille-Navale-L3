@@ -10,7 +10,7 @@ from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import GameResult
 from source.gui.scene.abc import BaseGame
-from source.gui import widget, texture, scene
+from source.gui import widget, texture, scene, sound
 from source.network.packet import *
 from source.type import Point2D
 from source.utils import StoppableThread
@@ -292,6 +292,13 @@ class Game(BaseGame):
             # sauvegarde la bombe dans l'historique
             self.history.append((False, packet.position))
 
+            # joue la musique associée à ce mouvement
+            match bomb_state:
+                case BombState.NOTHING: sound.Game.touched.play()
+                case BombState.TOUCHED: sound.Game.missed.play()
+                case BombState.SUNKEN: sound.Game.sunken_ally.play()
+                case BombState.WON: sound.Game.loose.play()
+
         # envoie le résultat à l'autre joueur
         PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(self.connection)
 
@@ -317,6 +324,13 @@ class Game(BaseGame):
 
         # sauvegarde la bombe dans l'historique
         self.history.append((True, packet.position))
+
+        # joue la musique associée à ce mouvement
+        match packet.bomb_state:
+            case BombState.NOTHING: sound.Game.missed.play()
+            case BombState.TOUCHED: sound.Game.touched.play()
+            case BombState.SUNKEN: sound.Game.sunken_enemy.play()
+            case BombState.WON: sound.Game.won.play()
 
         if packet.bomb_state is BombState.WON:
             # si cette bombe a touché le dernier bateau, alors l'on a gagné
