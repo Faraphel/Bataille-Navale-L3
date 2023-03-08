@@ -14,7 +14,7 @@ A faire :
    - Si le port est déjà utilisé, le jeu n'indique par l'erreur à l'hôte
    - Les champs invalides n'empêchent pas de faire l'action
    - (incertain) Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
-   - Si la fenêtre est fermé, l'erreur "delete_vao AttributeError: 'NoneType' object has no attribute 'current_context'" apparait parfois
+   - Si la fenêtre est fermée, l'erreur "delete_vao AttributeError: 'NoneType' object has no attribute 'current_context'" apparait parfois
 
 4. Vérification :
    - Tester sur Linux
