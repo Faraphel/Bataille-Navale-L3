@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import requests
 
 from source import network
-from source.gui.position import vw, vh
+from source.gui.position import vw, vh, vh_full, vw_full
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture
 from source.utils.thread import in_pyglet_context, StoppableThread
@@ -20,6 +20,14 @@ class RoomHost(Scene):
         self.username: str = username
         self.ip_address: str = "127.0.0.1"
         self.port: int = port
+
+        self.background = self.add_widget(
+            widget.Image,
+
+            x=0, y=0, width=vw_full, height=vh_full,
+
+            image=texture.Background.connexion
+        )
 
         self.back = self.add_widget(
             widget.Button,

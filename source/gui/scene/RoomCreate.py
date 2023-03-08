@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture, regex
-from source.gui.position import vw, vh, right, px
+from source.gui.position import vw, vh, right, px, vw_full, vh_full
 from source.gui.scene import RoomHost
 from source.gui.scene.abc import Scene
 from source.network.packet import PacketSettings
@@ -13,6 +13,14 @@ if TYPE_CHECKING:
 class RoomCreate(Scene):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
+
+        self.background = self.add_widget(
+            widget.Image,
+
+            x=0, y=0, width=vw_full, height=vh_full,
+
+            image=texture.Background.settings
+        )
 
         self.back = self.add_widget(
             widget.Button,

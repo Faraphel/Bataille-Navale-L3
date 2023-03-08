@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
-from source.gui.position import vw_full, vw_center, vh_center, right, px, vw, vh
+from source.gui.position import vw_full, vw_center, vh_center, right, px, vw, vh, vh_full
 from source.gui.scene.abc import Scene
 
 
@@ -12,6 +12,14 @@ if TYPE_CHECKING:
 class GameError(Scene):
     def __init__(self, window: "Window", text: str, **kwargs):
         super().__init__(window, **kwargs)
+
+        self.background = self.add_widget(
+            widget.Image,
+
+            x=0, y=0, width=vw_full, height=vh_full,
+
+            image=texture.Background.error
+        )
 
         self.label = self.add_widget(
             widget.Text,

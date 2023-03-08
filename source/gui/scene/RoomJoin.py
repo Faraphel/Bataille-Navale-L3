@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 
 from source import network
-from source.gui.position import vw, vh
+from source.gui.position import vw, vh, vw_full, vh_full
 from source.gui.scene.abc import Scene
 from source.gui import widget, texture, regex
 
@@ -12,6 +12,14 @@ if TYPE_CHECKING:
 class RoomJoin(Scene):
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
+
+        self.background = self.add_widget(
+            widget.Image,
+
+            x=0, y=0, width=vw_full, height=vh_full,
+
+            image=texture.Background.connexion
+        )
 
         self.back = self.add_widget(
             widget.Button,

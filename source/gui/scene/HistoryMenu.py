@@ -2,7 +2,7 @@ import math
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from source.gui.position import vw, vh, top
+from source.gui.position import vw, vh, top, vh_full, vw_full
 from source.path import path_history
 from source.gui import widget, texture
 from source.gui.scene.abc import Scene
@@ -17,6 +17,14 @@ class HistoryMenu(Scene):
 
     def __init__(self, window: "Window", page: int = 0, **kwargs):
         super().__init__(window, **kwargs)
+
+        self.background = self.add_widget(
+            widget.Image,
+
+            x=0, y=0, width=vw_full, height=vh_full,
+
+            image=texture.Background.time
+        )
 
         self.back = self.add_widget(
             widget.Button,

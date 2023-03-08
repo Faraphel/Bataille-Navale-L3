@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture
-from source.gui.position import vw_full, vw, vh, right, px, vw_center, vh_center
+from source.gui.position import vw_full, vw, vh, right, px, vw_center, vh_center, vh_full
 from source.gui.scene.abc import Scene
 from source.network import Host
 from source.utils import path_ctime_str
@@ -16,6 +16,14 @@ class GameLoad(Scene):
         super().__init__(window, **kwargs)
 
         self.thread_host = thread_host  # thread de l'hôte
+
+        self.background = self.add_widget(
+            widget.Image,
+
+            x=0, y=0, width=vw_full, height=vh_full,
+
+            image=texture.Background.choice
+        )
 
         self.label = self.add_widget(
             widget.Text,

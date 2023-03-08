@@ -6,7 +6,8 @@ A faire :
    - Documenter (Docstring, README, ...)
 
 2. Visuel :
-   - Changer les images, animations, rajouter les fonds, mettre la musique, ...
+   - animations, mettre la musique, ...
+   - le replay devrait commencer par la fin ? (évite un bug visuel et les fonctions clears)
    - Voir les TODOs
 
 3. Autre : 
@@ -14,10 +15,11 @@ A faire :
    - mode d'emploi (video + pdf) expliquant le fonctionnement
 
 Bug : 
-   - (incertain) Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
    - Quitter pendant que l'on décide de si l'on doit charger ou non une ancienne sauvegarde fait crash l'adversaire
-   - Les champs invalides n'empêchent pas de faire l'action
    - Si le port est déjà utilisé, le jeu n'indique par l'erreur à l'hote
+   - Les champs invalides n'empêchent pas de faire l'action
+   - (incertain) Dans de rare cas (souvent en fermant brutalement la fenêtre) le processus ne s'arrête pas
+   - Si la fenêtre est fermé, l'erreur "delete_vao AttributeError: 'NoneType' object has no attribute 'current_context'" apparait parfois
 
-Autre :
+   - Autre :
     - Tester sur Linux
