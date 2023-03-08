@@ -10,7 +10,7 @@ from source.core.error import InvalidBoatPosition
 from source.gui.better_pyglet import Sprite
 from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
-from source.type import Distance, ColorRGB, Point2D
+from source.type import Distance, Point2D
 from source.utils import dict_filter_prefix
 
 if TYPE_CHECKING:
@@ -32,7 +32,6 @@ class GameGrid(BoxWidget):
                  width: Distance = None,
                  height: Distance = None,
 
-                 preview_color: ColorRGB = (150, 255, 150),
                  boats_length: list[int] = None,
 
                  rows: int = None,
@@ -52,7 +51,6 @@ class GameGrid(BoxWidget):
 
         # the list of the size of the boats to place
         self.boats_length = [] if boats_length is None else sorted(boats_length, reverse=True)
-        self.preview_color = preview_color
 
         # créer la planche du jeu
         self.board = Board(width=rows, height=columns) if board_data is None else Board.from_json(board_data)
@@ -200,9 +198,10 @@ class GameGrid(BoxWidget):
             )
 
             # si le bateau est le dernier placé et qu'on est en prévisualisation, change sa teinte.
-            color: ColorRGB = self.preview_color if preview and value == max_boat else (255, 255, 255)
+            if preview and value == max_boat:
+                form: str = f"preview_{form}"
 
-            hash_new = hash((form, rotation, color))
+            hash_new = hash((form, rotation))
             sprite_old, hash_old = self.cell_sprites.get((x, y), (None, None))
 
             if hash_old == hash_new:
@@ -215,7 +214,6 @@ class GameGrid(BoxWidget):
                 **self._boat_kwargs
             )
             sprite.rotation = rotation * 90
-            sprite.color = color
 
             self.cell_sprites[x, y] = (sprite, hash_new)
 
