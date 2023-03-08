@@ -32,12 +32,7 @@ class HistoryGame(BaseGame):
         from source.gui.scene import MainMenu
         self.button_quit.add_listener("on_click_release", lambda *_: window.set_scene(MainMenu))
 
-        self.move_number: int = 0  # numéro du mouvement en cours
-
-        self.grid_ally.board.clear_bombs()
-        self.grid_ally.refresh_board()
-        self.grid_enemy.board.clear_bombs()
-        self.grid_enemy.refresh_board()
+        self.move_number: int = len(self.history)  # numéro du mouvement en cours
 
         self.previous = self.add_widget(
             widget.Button,
@@ -94,3 +89,9 @@ class HistoryGame(BaseGame):
         (self.grid_enemy if turn else self.grid_ally).place_bomb(cell)
 
         self._refresh_move_text()
+
+    # event
+
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: float, scroll_y: float):
+        for _ in range(abs(int(scroll_y))):
+            self.next_move() if scroll_y < 0 else self.previous_move()
