@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Type
 import pyglet
 
 from source.gui.event import EventPropagationMixin
+from source.gui.widget import Input
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -59,6 +60,20 @@ class Scene(ABC, EventPropagationMixin):
         """
 
         self._widgets.clear()
+
+    # shortcut
+
+    @property
+    def valid(self) -> bool:
+        """
+        Indique si la scène à tout ses éléments de formulaire valides
+        :return: True si tous les éléments (Input, ...) sont correctement rempli.
+        """
+
+        for widget in self._widgets:
+            if isinstance(widget, Input) and widget.invalid: return False
+
+        return True
 
     # event
 

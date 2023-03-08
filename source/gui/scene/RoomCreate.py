@@ -257,6 +257,8 @@ class RoomCreate(Scene):
         self.start.add_listener("on_click_release", lambda *_: self.confirm())
 
     def confirm(self):
+        if not self.valid: return  # si tous les formulaires ne sont pas correctement remplis, ignore
+
         port = int(self.input_port.text)
 
         settings = PacketSettings(

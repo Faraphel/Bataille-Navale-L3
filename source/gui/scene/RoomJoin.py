@@ -93,6 +93,8 @@ class RoomJoin(Scene):
         self.thread: Optional[network.Client] = None
 
     def button_connect(self, widget, *_):
+        if not self.valid: return  # si tous les formulaires ne sont pas correctement remplis, ignore
+
         self.status.text = "Connexion..."
         self.status.label.color = (255, 255, 255, 255)  # blanc
         widget.remove_listener("on_click_release", self.button_connect)
