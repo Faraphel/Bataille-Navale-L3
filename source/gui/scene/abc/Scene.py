@@ -71,7 +71,7 @@ class Scene(ABC, EventPropagationMixin):
         """
 
         for widget in self._widgets:
-            if isinstance(widget, Input) and widget.invalid: return False
+            if isinstance(widget, Input) and not widget.valid: return False
 
         return True
 

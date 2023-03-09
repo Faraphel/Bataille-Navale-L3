@@ -35,7 +35,7 @@ class Input(BoxWidget):
 
         self.style = style
 
-        self._invalid = False
+        self._valid = True
 
         self.type_regex = re.compile(type_regex) if type_regex is not None else None
         self.check_regex = re.compile(check_regex) if check_regex is not None else None
@@ -55,6 +55,8 @@ class Input(BoxWidget):
 
         self.add_listener("on_activate_change", lambda *_: self._refresh_background())
 
+        self.check()  # actualise si le regex est valide ou non
+
         self._refresh_size()
 
     # background
@@ -69,7 +71,7 @@ class Input(BoxWidget):
         """
         return (
             texture if self.activated and (texture := self.style.get("active")) is not None else  # NOQA
-            texture if self.invalid and (texture := self.style.get("error")) is not None else
+            texture if not self.valid and (texture := self.style.get("error")) is not None else
             self.style.get("normal")
         )
 
@@ -87,17 +89,17 @@ class Input(BoxWidget):
 
     def check(self):
         if self.check_regex is not None:  # si il y a un regex de validation, applique le pour vérifier le texte
-            self.invalid = self.check_regex.fullmatch(self.text) is None
+            self.valid = self.check_regex.fullmatch(self.text) is not None
 
     # property
 
     @property
-    def invalid(self):
-        return self._invalid
+    def valid(self):
+        return self._valid
 
-    @invalid.setter
-    def invalid(self, invalid: bool):
-        self._invalid = invalid
+    @valid.setter
+    def valid(self, valid: bool):
+        self._valid = valid
         self._refresh_background()
 
     @property
@@ -134,7 +136,7 @@ class Input(BoxWidget):
 
         self.check()  # rafraichi le fait que le texte est considéré comme valide ou non
 
-        if not self.invalid:
+        if self.valid:
             self.trigger_event("on_valid_text")
 
     def on_resize(self, width: int, height: int):
