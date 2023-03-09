@@ -1,3 +1,4 @@
+import json
 import math
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -6,7 +7,7 @@ from source.gui.position import vw, vh, top, vh_full, vw_full
 from source.path import path_history
 from source.gui import widget, texture
 from source.gui.scene.abc import Scene
-
+from source.utils import path_ctime_str
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -54,12 +55,20 @@ class HistoryMenu(Scene):
         )
 
         for i, path in enumerate(paths[page*self.PAGE_SIZE:(page+1)*self.PAGE_SIZE]):
+            with open(path, "r", encoding="utf-8") as file:
+                data = json.load(file)
+                title = (
+                    f"{data['name_ally']} VS. {data['name_enemy']} "
+                    f"({'Gagné' if data['my_turn'] else 'Perdu'}) "
+                    f"- {path_ctime_str(path)}"
+                )
+
             button = self.add_widget(
                 widget.Button,
 
                 x=25*vw, y=top((25 + (i*9))*vh), width=50*vw, height=8*vh,
 
-                label_text=path.stem,
+                label_text=title,
 
                 style=texture.Button.Style1
             )
