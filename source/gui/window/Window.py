@@ -1,3 +1,5 @@
+import itertools
+from math import inf
 from typing import Type, TYPE_CHECKING
 
 import pyglet
@@ -23,6 +25,40 @@ class Window(pyglet.window.Window, EventPropagationMixin):  # NOQA
     @property
     def childs(self):
         return self._scenes
+
+    # FPS
+
+    @staticmethod
+    def get_fps() -> float:
+        # on récupère la fonction responsable du rafraichissement de la fenêtre
+        refresh_func = pyglet.app.event_loop._redraw_windows  # NOQA
+
+        # on récupère l'événement correspondant dans l'horloge de l'application
+        refresh_event = next(filter(
+            lambda item: item.func is refresh_func,
+            itertools.chain(
+                pyglet.clock._default._schedule_interval_items,  # NOQA
+                pyglet.clock._default._schedule_items  # NOQA
+            )
+        ))
+
+        # renvoie infini s'il n'y avait pas de fréquence, sinon 1 / fréquence pour avoir le nombre de FPS
+        return inf if isinstance(refresh_event, pyglet.clock._ScheduledItem) else 1 / refresh_event.interval  # NOQA
+
+    @staticmethod
+    def set_fps(value: float):
+        # on récupère la fonction responsable du rafraichissement de la fenêtre
+        refresh_func = pyglet.app.event_loop._redraw_windows  # NOQA
+
+        # désactive le rafraichissement de la fenêtre
+        pyglet.clock.unschedule(refresh_func)
+
+        if value == inf:
+            # si la valeur est infinie, rafraichi dès que possible
+            pyglet.clock.schedule(refresh_func)
+        else:
+            # sinon rafraichi à la fréquence indiquée (1 / FPS)
+            pyglet.clock.schedule_interval(refresh_func, 1 / value)
 
     # Scene Managing
 

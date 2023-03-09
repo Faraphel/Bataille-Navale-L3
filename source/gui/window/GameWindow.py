@@ -21,7 +21,7 @@ class GameWindow(Window):  # NOQA
         self._fps_enable = fps_enable
 
     @property
-    def fps_enable(self):
+    def fps_enable(self) -> bool:
         return self._fps_enable
 
     def set_fps_enabled(self, value: bool):

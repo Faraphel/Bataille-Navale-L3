@@ -6,8 +6,9 @@ A faire :
    - test avec "assert" (cahier des charges)
    - mode d'emploi (video + pdf) expliquant le fonctionnement
 
-2. Visuel :
+2. Bonus :
    - animations de fin, mettre la musique, ...
+   - sauvegarder les paramètres dans un fichier
    - Voir les TODOs
 
 3. Bug : 

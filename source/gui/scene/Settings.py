@@ -1,3 +1,5 @@
+import itertools
+from math import inf
 from typing import TYPE_CHECKING
 
 import pyglet.app
@@ -46,7 +48,7 @@ class Settings(Popup):
         )
 
         self.fullscreen.add_listener(
-            "on_click_release",
+            "on_state_change",
             lambda widget, *_: self.window.set_fullscreen(widget.state)
         )
 
@@ -72,7 +74,7 @@ class Settings(Popup):
         )
 
         self.vsync.add_listener(
-            "on_click_release",
+            "on_state_change",
             lambda widget, *_: self.window.set_vsync(widget.state)
         )
 
@@ -98,7 +100,7 @@ class Settings(Popup):
         )
 
         self.show_fps.add_listener(
-            "on_click_release",
+            "on_state_change",
             lambda widget, *_: self.window.set_fps_enabled(widget.state)
         )
 
@@ -120,26 +122,15 @@ class Settings(Popup):
 
             style=texture.Scroller.Style1,
             from_=1,
-            value=60,
+            value=fps if (fps := self.window.get_fps()) <= 240 else 250,
             to=250,
 
             text_transform=lambda value: round(value) if value <= 240 else "Illimité"
         )
 
-        def change_fps(widget):
-            pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)  # NOQA
-
-            if widget.value <= 240:
-                pyglet.clock.schedule_interval(
-                    pyglet.app.event_loop._redraw_windows,  # NOQA
-                    1 / widget.value
-                )
-            else:
-                pyglet.clock.schedule(pyglet.app.event_loop._redraw_windows)  # NOQA
-
         self.fps_limit.add_listener(
             "on_value_change",
-            change_fps
+            lambda widget, *_: self.window.set_fps(widget.value if widget.value <= 240 else inf)
         )
 
         self.add_widget(
