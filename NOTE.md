@@ -9,7 +9,6 @@ A faire :
 2. Bonus :
    - animations de fin, mettre la musique, ...
    - sauvegarder les paramètres dans un fichier
-   - Voir les TODOs
 
 3. Bug : 
    - / 

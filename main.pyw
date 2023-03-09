@@ -14,9 +14,16 @@ Label.default_kwargs["font_name"] = "Century Gothic"  # NOQA: Label à un "defau
 
 # Create a new window
 window = GameWindow(resizable=True, vsync=True, caption="Bataille Navale")
+
+try:
+    window.set_icon(
+        pyglet.image.load("./assets/image/icon/icon.png")
+    )
+except:
+    pass
+
 window.set_minimum_size(720, 480)
 window.add_scene(MainMenu)
 
 # Start the event loop
 pyglet.app.run()
-
