@@ -1,8 +1,6 @@
-import builtins
 import socket
-from typing import Type, Callable
+from typing import Type, Callable, TYPE_CHECKING
 
-from source.gui.scene import Game
 from source.network.packet.abc import Packet
 from source.network import packet
 
@@ -10,10 +8,14 @@ from source.utils import StoppableThread
 from source.utils.thread import in_pyglet_context
 
 
+if TYPE_CHECKING:
+    from source.gui.scene import Game
+
+
 def game_network(
         thread: "StoppableThread",
         connection: socket.socket,
-        game_scene: Game,
+        game_scene: "Game",
 ):
     """
     Run the networking to make the game work and react with the other player
