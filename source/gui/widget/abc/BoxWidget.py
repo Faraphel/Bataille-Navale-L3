@@ -2,7 +2,7 @@ from abc import ABC
 from typing import TYPE_CHECKING, Optional
 
 from source.gui.widget.abc import Widget
-from source.type import Distance
+from source.type import Distance, Point2D
 from source.utils import in_bbox
 
 if TYPE_CHECKING:
@@ -114,6 +114,11 @@ class BoxWidget(Widget, ABC):
     def center(self) -> tuple[float, float]:
         return self.center_x, self.center_y
 
+    # function
+
+    def in_bbox(self, point: Point2D) -> bool:
+        return in_bbox(point, self.bbox)
+
     # event
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
@@ -129,7 +134,7 @@ class BoxWidget(Widget, ABC):
         rel_x, rel_y = x - self.x, y - self.y
 
         old_hovering = self.hovering
-        self.hovering = in_bbox((x, y), self.bbox)
+        self.hovering = self.in_bbox((x, y))
 
         if old_hovering != self.hovering:  # if the hover changed
             # call the hover changed event
@@ -143,7 +148,7 @@ class BoxWidget(Widget, ABC):
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         rel_x, rel_y = x - self.x, y - self.y
 
-        self.activated = in_bbox((x, y), self.bbox)
+        self.activated = self.in_bbox((x, y))
         self.trigger_event("on_activate_change", rel_x, rel_y, button, modifiers)
 
         if self.activated:  # if the click was inside the widget
@@ -162,7 +167,7 @@ class BoxWidget(Widget, ABC):
         old_click: bool = self.clicking
         self.clicking = False  # the widget is no longer clicked
 
-        if not in_bbox((x, y), self.bbox): return  # if the release was not in the collision, ignore
+        if not self.in_bbox((x, y)): return  # if the release was not in the collision, ignore
 
         if old_click:  # if this button was the one hovered when the click was pressed
             self.trigger_event("on_click_change", rel_x, rel_y, button, modifiers)

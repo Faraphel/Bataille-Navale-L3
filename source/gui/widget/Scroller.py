@@ -4,7 +4,7 @@ from source.gui.better_pyglet import Sprite, Label
 from source.gui.texture.abc import Style
 from source.gui.widget.abc import BoxWidget
 from source.type import Distance
-from source.utils import dict_filter_prefix, in_bbox
+from source.utils import dict_filter_prefix
 
 if TYPE_CHECKING:
     from source.gui.scene.abc import Scene
@@ -128,5 +128,5 @@ class Scroller(BoxWidget):
         self._refresh()
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        if in_bbox((x, y), self.bbox):
+        if self.in_bbox((x, y)):
             self._refresh_cursor(x - self.x)
