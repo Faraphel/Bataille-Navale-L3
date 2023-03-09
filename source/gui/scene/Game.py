@@ -228,8 +228,9 @@ class Game(BaseGame):
     @property
     def history_path(self):
         return path_history / (
-            datetime.now().strftime("%Y-%m-%d_%H-%M-%S") +
+            datetime.now().strftime("%Y-%m-%d %H-%M-%S") +
             self.get_save_suffix() +
+            f" - Contre {self.name_enemy}" +
             ".bn-history"
         )
 
