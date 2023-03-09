@@ -10,7 +10,7 @@ from source.core.enums import BombState
 from source.core.error import InvalidBombPosition, PositionAlreadyShot
 from source.gui.scene import GameResult
 from source.gui.scene.abc import BaseGame
-from source.gui import widget, texture, scene, sound
+from source.gui import widget, texture, scene, media
 from source.network.packet import *
 from source.type import Point2D
 from source.utils import StoppableThread
@@ -79,7 +79,7 @@ class Game(BaseGame):
         self.button_save = self.add_widget(
             widget.Button,
 
-            x=70*vw, y=0, width=15*vw, height=10*vh,
+            x=55*vw, y=0, width=15*vw, height=10*vh,
 
             label_text="Sauvegarder",
 
@@ -294,10 +294,10 @@ class Game(BaseGame):
 
             # joue la musique associée à ce mouvement
             match bomb_state:
-                case BombState.NOTHING: sound.Game.touched.play()
-                case BombState.TOUCHED: sound.Game.missed.play()
-                case BombState.SUNKEN: sound.Game.sunken_ally.play()
-                case BombState.WON: sound.Game.loose.play()
+                case BombState.NOTHING: media.Game.touched.play()
+                case BombState.TOUCHED: media.Game.missed.play()
+                case BombState.SUNKEN: media.Game.sunken_ally.play()
+                case BombState.WON: media.Game.loose.play()
 
         # envoie le résultat à l'autre joueur
         PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(self.connection)
@@ -327,10 +327,10 @@ class Game(BaseGame):
 
         # joue la musique associée à ce mouvement
         match packet.bomb_state:
-            case BombState.NOTHING: sound.Game.missed.play()
-            case BombState.TOUCHED: sound.Game.touched.play()
-            case BombState.SUNKEN: sound.Game.sunken_enemy.play()
-            case BombState.WON: sound.Game.won.play()
+            case BombState.NOTHING: media.Game.missed.play()
+            case BombState.TOUCHED: media.Game.touched.play()
+            case BombState.SUNKEN: media.Game.sunken_enemy.play()
+            case BombState.WON: media.Game.won.play()
 
         if packet.bomb_state is BombState.WON:
             # si cette bombe a touché le dernier bateau, alors l'on a gagné

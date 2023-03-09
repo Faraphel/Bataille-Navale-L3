@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture
+from source.gui import widget, texture, scene
 from source.gui.position import right, vw, vh, vw_full, vh_full, px
 from source.gui.scene.abc import Scene
 from source.type import Point2D
@@ -105,6 +105,18 @@ class BaseGame(Scene, ABC):
             font_size=25,
             anchor_x="center", anchor_y="center"
         )
+
+        self.button_settings = self.add_widget(
+            widget.Button,
+
+            x=70 * vw, y=0, width=15 * vw, height=10 * vh,
+
+            label_text="Paramètres",
+
+            style=texture.Button.Style1
+        )
+
+        self.button_settings.add_listener("on_click_release", lambda *_: self.window.add_scene(scene.Settings))
 
         self.button_quit = self.add_widget(
             widget.Button,

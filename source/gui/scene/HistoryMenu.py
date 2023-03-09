@@ -74,9 +74,10 @@ class HistoryMenu(Scene):
             # si nous ne sommes pas à la première page, ajoute un bouton "précédent".
             self.previous = self.add_widget(
                 widget.Button,
-                x=10*vw, y=45*vh, width=10*vw, height=10*vh,
+                x=10*vw, y=45*vh, width=8*vw, height=15*vh,
 
-                label_text="Précédent",
+                label_text="<",
+                label_font_size=30,
 
                 style=texture.Button.Style1
             )
@@ -90,9 +91,10 @@ class HistoryMenu(Scene):
             # si nous ne sommes pas à la dernière page, ajoute un bouton "suivant".
             self.next = self.add_widget(
                 widget.Button,
-                x=80*vw, y=45*vh, width=10*vw, height=10*vh,
+                x=80*vw, y=45*vh, width=8*vw, height=15*vh,
 
-                label_text="Suivant",
+                label_text=">",
+                label_font_size=30,
 
                 style=texture.Button.Style1
             )

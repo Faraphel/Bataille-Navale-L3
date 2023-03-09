@@ -89,7 +89,7 @@ class Scroller(BoxWidget):
         self.label.text = str(self.text_transform(self.value))
 
     def _refresh_cursor(self, rel_x: int):
-        self.value = rel_x / self.width
+        self.value = (rel_x / self.width) * (self.to - self.from_) + self.from_
 
     # property
 

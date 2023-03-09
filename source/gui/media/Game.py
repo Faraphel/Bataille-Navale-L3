@@ -1,11 +1,11 @@
 from .type import Sound
-from .abc import SoundGroup
+from .abc import MediaGroup
 from source.path import path_sound
 
 path = path_sound / "game"
 
 
-class Game(SoundGroup):
+class Game(MediaGroup):
     touched = Sound(path / "touched.wav")
     sunken_ally = Sound(path / "sunken_ally.wav")
     won = Sound(path / "won.wav")

@@ -36,9 +36,10 @@ class HistoryGame(BaseGame):
 
         self.previous = self.add_widget(
             widget.Button,
-            x=20*vw, y=10*vh, width=20*vw, height=10*vh,
+            x=35*vw, y=10*vh, width=5*vw, height=10*vh,
 
-            label_text="Précédent",
+            label_text="<",
+            label_font_size=20,
 
             style=texture.Button.Style1
         )
@@ -47,9 +48,10 @@ class HistoryGame(BaseGame):
 
         self.next = self.add_widget(
             widget.Button,
-            x=60*vw, y=10*vh, width=20*vw, height=10*vh,
+            x=60*vw, y=10*vh, width=5*vw, height=10*vh,
 
-            label_text="Suivant",
+            label_text=">",
+            label_font_size=20,
 
             style=texture.Button.Style1
         )

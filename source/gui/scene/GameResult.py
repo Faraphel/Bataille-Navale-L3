@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pyglet.clock
 
-from source.gui import texture, widget, sound
+from source.gui import texture, widget, media
 from source.gui.position import vw_full, vh_full
 from source.gui.scene.abc.Popup import Popup
 
