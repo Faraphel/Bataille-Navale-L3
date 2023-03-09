@@ -122,7 +122,7 @@ class Game(BaseGame):
 
         self.save_cooldown: Optional[datetime] = None
 
-        media.SoundAmbient.sea.play_safe()
+        media.SoundAmbient.sea.play_safe(loop=True)
 
         self._refresh_turn_text()
         self._refresh_score_text()
