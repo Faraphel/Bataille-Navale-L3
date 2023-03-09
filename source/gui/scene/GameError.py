@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture
+from source.gui import widget, texture, media
 from source.gui.position import vw_full, vw_center, vh_center, right, px, vw, vh, vh_full
 from source.gui.scene.abc import Scene
 
@@ -46,3 +46,5 @@ class GameError(Scene):
 
         from source.gui.scene import MainMenu
         self.back.add_listener("on_click_release", lambda *_: self.window.set_scene(MainMenu))
+
+        media.SoundAmbient.menu.play_safe(loop=True)

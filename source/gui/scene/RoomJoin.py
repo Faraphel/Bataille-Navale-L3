@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 from source import network
 from source.gui.position import vw, vh, vw_full, vh_full
 from source.gui.scene.abc import Scene
-from source.gui import widget, texture, regex
+from source.gui import widget, texture, regex, media
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -91,6 +91,8 @@ class RoomJoin(Scene):
         )
 
         self.thread: Optional[network.Client] = None
+
+        media.SoundAmbient.menu.play_safe(loop=True)
 
     def button_connect(self, widget, *_):
         if not self.valid: return  # si tous les formulaires ne sont pas correctement remplis, ignore

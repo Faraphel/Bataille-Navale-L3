@@ -238,6 +238,8 @@ class GameGrid(BoxWidget):
 
         else:  # if the boat have been placed
             self.boats_length.pop(0)  # remove the boat from the list of boat to place
+
+            self.trigger_event("on_boat_placed")
             if len(self.boats_length) == 0:
                 self.trigger_event("on_all_boats_placed")
 

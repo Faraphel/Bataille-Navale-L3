@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from source.gui.position import vw, vh, top, vh_full, vw_full
 from source.path import path_history
-from source.gui import widget, texture
+from source.gui import widget, texture, media
 from source.gui.scene.abc import Scene
 from source.utils import path_ctime_str
 
@@ -112,3 +112,5 @@ class HistoryMenu(Scene):
                 "on_click_release",
                 lambda *_: self.window.set_scene(self.__class__, page=page+1)
             )
+
+        media.SoundAmbient.menu.play_safe(loop=True)

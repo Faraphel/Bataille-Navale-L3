@@ -24,3 +24,7 @@ class MediaGroup(ABC):
     @classmethod
     def set_volume(cls, value: float):
         cls.player.volume = value
+
+    @classmethod
+    def stop(cls):
+        cls.player.next_source()

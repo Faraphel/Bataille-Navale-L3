@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from source.gui.position import vw_full, vh_full, vw, vh
 from source.gui.scene.abc import Scene
-from source.gui import widget, scene, texture
+from source.gui import widget, scene, texture, media
 
 if TYPE_CHECKING:
     from source.gui.window import Window
@@ -79,3 +79,5 @@ class MainMenu(Scene):
         )
 
         self.settings.add_listener("on_click_release", lambda *_: self.window.add_scene(scene.Settings))
+
+        media.SoundAmbient.menu.play_safe(loop=True)

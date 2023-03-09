@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture
+from source.gui import widget, texture, media
 from source.gui.position import vw, vh, vw_center
 from source.gui.scene.abc import BaseGame
 
@@ -67,6 +67,8 @@ class HistoryGame(BaseGame):
             font_size=28,
         )
         self._refresh_move_text()
+
+        media.SoundAmbient.menu.play_safe(loop=True)
 
     def _refresh_move_text(self):
         self.text_move.text = f"{self.move_number} / {len(self.history)}"

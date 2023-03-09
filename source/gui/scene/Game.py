@@ -37,6 +37,7 @@ class Game(BaseGame):
             PacketBoatPlaced().send_connection(connection)
 
         self.grid_ally.add_listener("on_all_boats_placed", board_ally_ready)
+        self.grid_ally.add_listener("on_boat_placed", lambda *_: media.SoundEffect.placed.play())
 
         def board_enemy_bomb(widget, cell: Point2D):
             if not (self.boat_ready_ally and self.boat_ready_enemy): return
@@ -120,6 +121,8 @@ class Game(BaseGame):
             PacketBoatPlaced().send_connection(connection)  # indique à l'adversaire que notre planche est prête
 
         self.save_cooldown: Optional[datetime] = None
+
+        media.SoundAmbient.sea.play_safe()
 
         self._refresh_turn_text()
         self._refresh_score_text()
@@ -294,10 +297,10 @@ class Game(BaseGame):
 
             # joue la musique associée à ce mouvement
             match bomb_state:
-                case BombState.NOTHING: media.Game.touched.play()
-                case BombState.TOUCHED: media.Game.missed.play()
-                case BombState.SUNKEN: media.Game.sunken_ally.play()
-                case BombState.WON: media.Game.loose.play()
+                case BombState.NOTHING: media.SoundEffect.missed.play()
+                case BombState.TOUCHED: media.SoundEffect.touched.play()
+                case BombState.SUNKEN: media.SoundEffect.sunken.play()
+                case BombState.WON: media.SoundEffect.defeat.play()
 
         # envoie le résultat à l'autre joueur
         PacketBombState(position=packet.position, bomb_state=bomb_state).send_connection(self.connection)
@@ -327,10 +330,10 @@ class Game(BaseGame):
 
         # joue la musique associée à ce mouvement
         match packet.bomb_state:
-            case BombState.NOTHING: media.Game.missed.play()
-            case BombState.TOUCHED: media.Game.touched.play()
-            case BombState.SUNKEN: media.Game.sunken_enemy.play()
-            case BombState.WON: media.Game.won.play()
+            case BombState.NOTHING: media.SoundEffect.missed.play()
+            case BombState.TOUCHED: media.SoundEffect.touched.play()
+            case BombState.SUNKEN: media.SoundEffect.sunken.play()
+            case BombState.WON: media.SoundEffect.victory.play()
 
         if packet.bomb_state is BombState.WON:
             # si cette bombe a touché le dernier bateau, alors l'on a gagné

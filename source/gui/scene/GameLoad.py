@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture
+from source.gui import widget, texture, media
 from source.gui.position import vw_full, vw, vh, right, px, vw_center, vh_center, vh_full
 from source.gui.scene.abc import Scene
 from source.network import Host
@@ -63,6 +63,8 @@ class GameLoad(Scene):
         )
 
         self.accept.add_listener("on_click_release", lambda *_: self.response(value=True))
+
+        media.SoundAmbient.menu.play_safe(loop=True)
 
     def response(self, value: bool):
         self.thread_host.accept_load = value

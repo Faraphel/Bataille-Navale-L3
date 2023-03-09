@@ -20,12 +20,19 @@ class Media(ABC):
             cls.loaded_media[path] = media
 
             # modifie la fonction pour jouer le son en utilisant le player
-            def _play():
-                owner.player.delete()  # arrête la musique en cours s'il y en a une et vide la queue
+            def _play(loop: bool = False):
+                owner.player.next_source()  # passe à la prochaine musique
                 owner.player.queue(media)  # ajoute la musique à la queue
                 owner.player.play()  # joue la musique
+                owner.player.on_eos = (lambda: _play(loop=True)) if loop else (lambda: "pass")
 
             media.play = _play
+
+            def _play_safe(*args, **kwargs):
+                if owner.player.source is media: return
+                media.play(*args, **kwargs)  # NOQA
+
+            media.play_safe = _play_safe
 
         return media
 

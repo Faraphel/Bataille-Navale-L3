@@ -1,8 +1,5 @@
-import itertools
 from math import inf
 from typing import TYPE_CHECKING
-
-import pyglet.app
 
 from source.gui import widget, texture, media
 from source.gui.position import vw_full, vh_full, vw, vh
@@ -142,7 +139,7 @@ class Settings(Popup):
             font_size=20,
         )
 
-        # Volume
+        # Volume Effet Sonore
 
         self.volume_sfx = self.add_widget(
             widget.Scroller,
@@ -151,14 +148,14 @@ class Settings(Popup):
 
             style=texture.Scroller.Style1,
             from_=0,
-            value=media.Game.get_volume(),
+            value=media.SoundEffect.get_volume(),
             to=1,
 
             text_transform=lambda value: f"{round(value * 100)}%"
         )
 
         def change_volume_sfx(widget):
-            media.Game.set_volume(widget.value)
+            media.SoundEffect.set_volume(widget.value)
 
         self.volume_sfx.add_listener(
             "on_value_change",
@@ -171,5 +168,37 @@ class Settings(Popup):
             x=27 * vw, y=90 * vh,
 
             text="Effets Sonore",
+            font_size=20,
+        )
+
+        # Volume Ambient
+
+        self.volume_ambient = self.add_widget(
+            widget.Scroller,
+
+            x=5 * vw, y=76 * vh, width=20 * vw, height=10 * vh,
+
+            style=texture.Scroller.Style1,
+            from_=0,
+            value=media.SoundAmbient.get_volume(),
+            to=1,
+
+            text_transform=lambda value: f"{round(value * 100)}%"
+        )
+
+        def change_volume_ambient(widget):
+            media.SoundAmbient.set_volume(widget.value)
+
+        self.volume_ambient.add_listener(
+            "on_value_change",
+            change_volume_ambient
+        )
+
+        self.add_widget(
+            widget.Text,
+
+            x=27 * vw, y=79 * vh,
+
+            text="Musique Ambiante",
             font_size=20,
         )

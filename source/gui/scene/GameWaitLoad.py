@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture
+from source.gui import widget, texture, media
 from source.gui.position import vw_full, vh, vw, vh_full
 from source.gui.scene.abc import Scene
 from source.utils import path_ctime_str
@@ -37,3 +37,5 @@ class GameWaitLoad(Scene):
             multiline=True,
             font_size=28,
         )
+
+        media.SoundAmbient.menu.play_safe(loop=True)

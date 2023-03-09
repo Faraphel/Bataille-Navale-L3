@@ -5,7 +5,7 @@ import requests
 from source import network
 from source.gui.position import vw, vh, vh_full, vw_full
 from source.gui.scene.abc import Scene
-from source.gui import widget, texture
+from source.gui import widget, texture, media
 from source.utils.thread import in_pyglet_context, StoppableThread
 
 if TYPE_CHECKING:
@@ -71,6 +71,8 @@ class RoomHost(Scene):
 
         self.thread_ip = StoppableThread(target=self._refresh_ip)  # NOQA
         self.thread_ip.start()
+
+        media.SoundAmbient.menu.play_safe(loop=True)
 
     def _refresh_ip(self):
         while True:

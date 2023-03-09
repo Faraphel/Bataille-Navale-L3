@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture, regex
+from source.gui import widget, texture, regex, media
 from source.gui.position import vw, vh, right, px, vw_full, vh_full
 from source.gui.scene import RoomHost
 from source.gui.scene.abc import Scene
@@ -255,6 +255,8 @@ class RoomCreate(Scene):
         )
 
         self.start.add_listener("on_click_release", lambda *_: self.confirm())
+
+        media.SoundAmbient.menu.play_safe(loop=True)
 
     def confirm(self):
         if not self.valid: return  # si tous les formulaires ne sont pas correctement remplis, ignore
