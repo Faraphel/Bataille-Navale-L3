@@ -24,7 +24,5 @@ class GameResult(Popup):
             image=texture.Result.Style1.get("victory" if won else "defeat")
         )
 
-        # TODO: rendre l'image transparente si possible
-
         from source.gui.scene import MainMenu
         pyglet.clock.schedule_once(lambda dt: self.window.set_scene(MainMenu), 5.0)
