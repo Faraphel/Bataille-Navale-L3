@@ -10,7 +10,7 @@ from source.network.packet.abc import Packet
 @dataclass
 class PacketBoatsData(Packet):
 
-    boats: np.ndarray = field()
+    boats: np.array = field()
 
     packet_format: str = ">II"
 

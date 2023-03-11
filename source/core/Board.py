@@ -162,16 +162,3 @@ class Board:
             boats=self.boats.copy(),
             bombs=self.bombs.copy(),
         )
-
-
-if __name__ == "__main__":
-    board = Board(5, 10)
-    board.add_boat(Boat(3, Orientation.VERTICAL), (4, 0))
-    board.add_boat(Boat(4, Orientation.HORIZONTAL), (1, 4))
-    print(board.bomb((4, 1)))
-    print(board.bomb((4, 2)))
-    print(board.bomb((4, 3)))
-    print(board.bomb((4, 4)))
-    print(board)
-
-    print(board.to_json())
