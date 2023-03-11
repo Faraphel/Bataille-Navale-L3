@@ -1,2 +1,2 @@
-from .orientation import Orientation
-from .bomb import BombState
+from .Orientation import Orientation
+from .BombState import BombState
