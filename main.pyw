@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pyglet
 
-from source.gui import media
 from source.gui.scene import MainMenu
 from source.gui.window import GameWindow
 
@@ -14,10 +13,6 @@ from source.gui.better_pyglet import Label
 # Change la police par défaut utilisé pour le Century Gothic
 pyglet.font.add_directory(path_font)
 Label.default_kwargs["font_name"] = "Century Gothic"  # NOQA: Label à un "default_kwargs" avec la metaclass
-
-# Change le volume sonore
-media.SoundAmbient.set_volume(0.1)
-media.SoundEffect.set_volume(0.1)
 
 # Créer une nouvelle fenêtre
 window = GameWindow(
