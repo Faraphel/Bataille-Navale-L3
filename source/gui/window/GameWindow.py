@@ -23,25 +23,19 @@ class GameWindow(Window):  # NOQA
         super().__init__(*args, **kwargs)
 
         self._fps_counter = pyglet.window.FPSDisplay(self, color=fps_color)
-        self._fps_enable = fps_enable
+        self.fps_enable = fps_enable
 
         self.option = None
+        self.option_path = option_path
 
+    def load_option(self):
         try:
-            if option_path.exists():
-                self.option = Option.load(self, option_path)
+            if self.option_path.exists():
+                self.option = Option.load(self, self.option_path)
         except Exception:  # NOQA
             pass
 
-        if self.option is None:
-            self.option = Option(window=self)
-
-    @property
-    def fps_enable(self) -> bool:
-        return self._fps_enable
-
-    def set_fps_enabled(self, value: bool):
-        self._fps_enable = value
+        if self.option is None: self.option = Option(window=self)
 
     def on_draw_after(self):
-        if self._fps_enable: self._fps_counter.draw()
+        if self.fps_enable: self._fps_counter.draw()

@@ -27,5 +27,9 @@ except: pass  # NOQA E722
 window.set_minimum_size(720, 480)
 window.add_scene(MainMenu)
 
-# Start the event loop
+# Créer un événement juste après le debut de la boucle pour charger les options.
+# Puisque pyglet.app.run va limiter les FPS à 60, les options doivent être chargées juste après
+# afin que les anciens paramètres de FPS soient appliqués.
+pyglet.clock.schedule_once(lambda *_: window.load_option(), 0)
+# Démarre la boucle d'événement
 pyglet.app.run()

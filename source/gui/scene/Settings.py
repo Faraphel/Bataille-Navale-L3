@@ -72,12 +72,12 @@ class Settings(Popup):
 
             style=texture.Checkbox.Style1,
 
-            state=self.window.vsync
+            state=self.window.option.get_vsync()
         )
 
         self.vsync.add_listener(
             "on_state_change",
-            lambda widget, *_: self.window.set_vsync(widget.state)
+            lambda widget, *_: self.window.option.set_vsync(widget.state)
         )
 
         self.add_widget(
@@ -98,12 +98,12 @@ class Settings(Popup):
 
             style=texture.Checkbox.Style1,
 
-            state=self.window.fps_enable
+            state=self.window.option.get_fps_show()
         )
 
         self.show_fps.add_listener(
             "on_state_change",
-            lambda widget, *_: self.window.set_fps_enabled(widget.state)
+            lambda widget, *_: self.window.option.set_fps_show(widget.state)
         )
 
         self.add_widget(
@@ -124,7 +124,7 @@ class Settings(Popup):
 
             style=texture.Scroller.Style1,
             from_=1,
-            value=fps if (fps := self.window.get_fps()) <= 240 else 250,
+            value=fps if (fps := self.window.option.get_fps_limit()) <= 240 else 250,
             to=250,
 
             text_transform=lambda value: round(value) if value <= 240 else "Illimité"
@@ -132,7 +132,7 @@ class Settings(Popup):
 
         self.fps_limit.add_listener(
             "on_value_change",
-            lambda widget, *_: self.window.set_fps(widget.value if widget.value <= 240 else inf)
+            lambda widget, *_: self.window.option.set_fps_limit(widget.value if widget.value <= 240 else inf)
         )
 
         self.add_widget(
@@ -153,18 +153,15 @@ class Settings(Popup):
 
             style=texture.Scroller.Style1,
             from_=0,
-            value=media.SoundEffect.get_volume(),
+            value=self.window.option.get_volume_fx(),
             to=1,
 
             text_transform=lambda value: f"{round(value * 100)}%"
         )
 
-        def change_volume_sfx(widget):
-            media.SoundEffect.set_volume(widget.value)
-
         self.volume_sfx.add_listener(
             "on_value_change",
-            change_volume_sfx
+            lambda widget, *_: self.window.option.set_volume_fx(widget.value)
         )
 
         self.add_widget(
@@ -185,18 +182,15 @@ class Settings(Popup):
 
             style=texture.Scroller.Style1,
             from_=0,
-            value=media.SoundAmbient.get_volume(),
+            value=self.window.option.get_volume_ambient(),
             to=1,
 
             text_transform=lambda value: f"{round(value * 100)}%"
         )
 
-        def change_volume_ambient(widget):
-            media.SoundAmbient.set_volume(widget.value)
-
         self.volume_ambient.add_listener(
             "on_value_change",
-            change_volume_ambient
+            lambda widget, *_: self.window.option.set_volume_ambient(widget.value)
         )
 
         self.add_widget(

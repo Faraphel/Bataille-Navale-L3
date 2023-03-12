@@ -17,63 +17,43 @@ class Option:
                  vsync: bool = True
                  ):
         self.window = window
-        self.volume_ambient = volume_ambient
-        self.volume_fx = volume_fx
-        self.fps_show = fps_show
-        self.fps_limit = fps_limit
-        self.vsync = vsync
+
+        self.set_volume_ambient(volume_ambient)
+        self.set_volume_fx(volume_fx)
+        self.set_fps_show(fps_show)
+        self.set_fps_limit(fps_limit)
+        self.set_vsync(vsync)
 
     # propriété
 
-    @property
-    def volume_ambient(self) -> float:
-        return media.SoundAmbient.get_volume()
+    @staticmethod
+    def get_volume_ambient() -> float: return media.SoundAmbient.get_volume()
+    @staticmethod
+    def set_volume_ambient(value: float): media.SoundAmbient.set_volume(value)
 
-    @volume_ambient.setter
-    def volume_ambient(self, value: float):
-        media.SoundAmbient.set_volume(value)
+    @staticmethod
+    def get_volume_fx() -> float: return media.SoundEffect.get_volume()
+    @staticmethod
+    def set_volume_fx(value: float): media.SoundEffect.set_volume(value)
 
-    @property
-    def volume_fx(self) -> float:
-        return media.SoundEffect.get_volume()
+    def get_fps_show(self): return self.window.fps_enable
+    def set_fps_show(self, value: bool): self.window.fps_enable = value
 
-    @volume_fx.setter
-    def volume_fx(self, value: float):
-        media.SoundEffect.set_volume(value)
+    def get_fps_limit(self): return self.window.get_fps()
+    def set_fps_limit(self, value: float): self.window.set_fps(value)
 
-    @property
-    def fps_show(self):
-        return self.window.fps_enable
-
-    @fps_show.setter
-    def fps_show(self, value: bool):
-        self.window.set_fps_enabled(value)
-
-    @property
-    def fps_limit(self):
-        return self.window.get_fps()
-
-    @fps_limit.setter
-    def fps_limit(self, value: float):
-        self.window.set_fps(value)
-
-    @property
-    def vsync(self):
-        return self.window.vsync
-
-    @vsync.setter
-    def vsync(self, value: bool):
-        self.window.set_vsync(value)
+    def get_vsync(self): return self.window.vsync
+    def set_vsync(self, value: bool): self.window.set_vsync(value)
 
     # chargement et sauvegarde
 
     def to_json(self) -> dict:
         return {
-            "volume_ambient": self.volume_ambient,
-            "volume_fx": self.volume_fx,
-            "fps_show": self.fps_show,
-            "fps_limit": self.fps_limit,
-            "vsync": self.vsync,
+            "volume_ambient": self.get_volume_ambient(),
+            "volume_fx": self.get_volume_fx(),
+            "fps_show": self.get_fps_show(),
+            "fps_limit": self.get_fps_limit(),
+            "vsync": self.get_vsync(),
         }
 
     @classmethod
