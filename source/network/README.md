@@ -1,0 +1,1 @@
+Ce module s'occupe de toute la gestion du réseau et de l'envoie de donnée entre tous les joueurs.

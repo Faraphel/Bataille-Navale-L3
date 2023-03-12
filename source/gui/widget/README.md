@@ -1,0 +1,1 @@
+Ce module implémente les widgets, qui peuvent être placé sur une scène.

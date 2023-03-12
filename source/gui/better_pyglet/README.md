@@ -1,0 +1,1 @@
+Ce module améliore certain objet déjà disponible dans Pyglet afin de les rendre plus pratique.

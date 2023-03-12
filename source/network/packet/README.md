@@ -1,0 +1,1 @@
+Ce module implémente des "Packet" qui peuvent être plus facilement envoyé et reçu sur le réseau.
