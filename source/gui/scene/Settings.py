@@ -1,4 +1,5 @@
 from math import inf
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from source.gui import widget, texture, media
@@ -30,7 +31,11 @@ class Settings(Popup):
             style=texture.Button.Style1
         )
 
-        self.back.add_listener("on_click_release", lambda *_: self.window.remove_scene(self))
+        def callback_back():
+            self.window.option.save(Path("./option.json"))
+            self.window.remove_scene(self)
+
+        self.back.add_listener("on_click_release", lambda *_: callback_back())
 
         # Plein écran
 

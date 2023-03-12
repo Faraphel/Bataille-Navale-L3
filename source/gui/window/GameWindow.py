@@ -1,6 +1,9 @@
+from pathlib import Path
+
 import pyglet.window
 
 from source.gui.window import Window
+from source.option import Option
 from source.type import ColorRGBA
 
 
@@ -11,6 +14,8 @@ class GameWindow(Window):  # NOQA
 
     def __init__(self,
 
+                 option_path: Path = None,
+
                  fps_color: ColorRGBA = (255, 255, 255, 200),
                  fps_enable: bool = False,
 
@@ -19,6 +24,17 @@ class GameWindow(Window):  # NOQA
 
         self._fps_counter = pyglet.window.FPSDisplay(self, color=fps_color)
         self._fps_enable = fps_enable
+
+        self.option = None
+
+        try:
+            if option_path.exists():
+                self.option = Option.load(self, option_path)
+        except Exception:  # NOQA
+            pass
+
+        if self.option is None:
+            self.option = Option(window=self)
 
     @property
     def fps_enable(self) -> bool:
