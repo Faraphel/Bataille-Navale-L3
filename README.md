@@ -19,8 +19,8 @@ Ce projet est compatible avec Windows et Linux.
 
 ### Manuel
 - Installer [Python 3.11](https://www.python.org/downloads/windows/) (ou ultérieur)
-- Installer les dépendances avec `pip install -r requirements.txt`
-- Lancer le jeu avec `python3 main.pyw`
+- Installer les dépendances avec `pip3.11 install -r requirements.txt`
+- Lancer le jeu avec `python3.11 main.pyw`
 
 </details>
 
@@ -29,7 +29,7 @@ Ce projet est compatible avec Windows et Linux.
 <details>
 
 - Installer Python 3.11 avec les commandes `sudo apt update && sudo apt install python3.11`
-- Installer les dépendances avec `pip install -r requirements.txt`
-- Lancer le jeu avec `python3 main.pyw`
+- Installer les dépendances avec `pip3.11 install -r requirements.txt`
+- Lancer le jeu avec `python3.11 main.pyw`
 
 </details>
