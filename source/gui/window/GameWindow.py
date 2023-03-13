@@ -28,6 +28,11 @@ class GameWindow(Window):  # NOQA
         self.option = None
         self.option_path = option_path
 
+        # Créer un événement juste après le debut de la boucle pour charger les options.
+        # Puisque pyglet.app.run va limiter les FPS à 60, les options doivent être chargées juste après
+        # afin que les anciens paramètres de FPS soient appliqués.
+        pyglet.clock.schedule_once(lambda *_: self.load_option(), 0)
+
     def load_option(self):
         try:
             if self.option_path.exists():
