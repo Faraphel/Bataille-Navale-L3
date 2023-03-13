@@ -1,7 +1,7 @@
 import numpy as np
 
 from source.core import Boat
-from source.core.enums import Orientation, BombState
+from source.core.enums import BombState
 from source.core.error import InvalidBoatPosition, PositionAlreadyShot, InvalidBombPosition
 from source.type import Point2D
 from source.utils import copy_array_offset
@@ -9,8 +9,8 @@ from source.utils import copy_array_offset
 
 class Board:
     """
-    Represent a board for the game.
-    Boat can be added and bomb can be placed.
+    Représente la planche de jeu.
+    Des bateaux et des bombes peuvent y être placé.
     """
 
     __slots__ = ("width", "height", "boats", "bombs")
@@ -41,76 +41,76 @@ class Board:
 
     def add_boat(self, boat: Boat, position: Point2D) -> None:
         """
-        Add a boat to the board. Check before if the position is valid.
-        :boat: the boat to add
-        :position: the position where to add the boat
-        :raise: InvalidBoatPosition if the boat position is not valid
+        Ajoute un bateau à la planche. Vérifie avant si la position est valide.
+        :param boat: le bateau a placé
+        :param position: la position du bateau sur la planche
+        :raise: InvalidBoatPosition si la position du bateau est invalide
         """
 
-        # get the old board matrice sum
+        # récupère l'ancienne somme total de la grille matriciel
         board_matrice = self.boats.copy()
         board_matrice_sum_old: int = board_matrice.sum()
         board_matrice_max = np.max(board_matrice)
 
-        # get the sum of the boat
+        # récupère la somme du bateau matriciel
         boat_matrice: np.array = boat.get_matrice(board_matrice_max+1)
         boat_matrice_sum: int = boat_matrice.sum()
 
-        # add the boat to the board matrice
+        # ajoute la matrice du bateau à la matrice de la grille
         try:
             copy_array_offset(boat_matrice, board_matrice, offset=position)
         except ValueError:
             raise InvalidBoatPosition(boat, position)
 
-        #  get the new board matrice sum
+        # récupère la nouvelle somme de la grille matricielle
         board_matrice_sum_new: int = board_matrice.sum()
 
-        # if the sum of the old board plus the boat sum is different from the new board sum,
-        # then the boat have been incorrectly placed (overlapping, outside of bounds, ...)
+        # si la somme de l'ancienne planche et de la matrice du bateau n'est pas égal à celle de la nouvelle grille,
+        # alors le bateau n'est pas correctement placé (hors de la grille, par dessus un autre bateau, ...)
         if board_matrice_sum_old + boat_matrice_sum != board_matrice_sum_new:
             raise InvalidBoatPosition(boat, position)
 
-        # otherwise accept the boat in the boats dict
+        # sinon remplace l'ancienne matrice par la nouvelle
         self.boats = board_matrice
 
     def bomb(self, position: Point2D) -> BombState:
         """
-        Hit a position on the board
-        :position: the position where to shoot
-        :raise: PositionAlreadyShot if the position have already been shot before
+        Place une bombe sur la grille
+        :position: la position de la bombe
+        :raise: PositionAlreadyShot si la bombe a déjà été placé ici, InvalidBombPosition si la position est invalide.
         """
 
-        # if the bomb is inside the board
+        # si la bombe est bien dans les limites de la grille
         x, y = position
         if x >= self.width or y >= self.height: raise InvalidBombPosition(position)
 
-        # if this position have already been shot
+        # si une bombe a déjà été placé ici
         if not self.bombs[y, x]: raise PositionAlreadyShot(position)
 
-        # get the old board matrice
+        # récupère l'ancienne somme de la matrice de la grille
         board_mat_old_sum = self.get_matrice().sum()
 
-        # place the bomb (setting the position to False cause the matrice multiplication to remove the boat if any)
+        # place la bombe dessus (False équivaut à placer une bombe)
         self.bombs[y, x] = False
 
-        # get the new board matrice
+        # récupère la nouvelle somme de la matrice de la grille
         board_mat_new = self.get_matrice()
         board_mat_new_sum = board_mat_new.sum()
 
-        # if the board sum is 0, then there is no boat left on the board
+        # si la somme de la grille matricielle est 0, alors il n'y a plus de bateau sur la grille
         if board_mat_new_sum == 0: return BombState.WON
 
-        # get the difference between the old and new board sum.
-        # if the board sum changed, then the difference is the number of the boat that have been hit
+        # récupère la différence entre l'ancienne et la nouvelle somme de la grille
+        # si la somme a changé, alors un bateau a été touché.
         boat_touched: int = board_mat_old_sum - board_mat_new_sum
 
-        # if no boat have been touched, ignore
+        # si aucun bateau n'a été touché, ignore
         if boat_touched == 0: return BombState.NOTHING
 
-        # if the boat have sinked (no more tile with the boat on it)
+        # si le bateau a coulé (il n'y a plus de case correspondant à ce bateau)
         if not np.isin(boat_touched, board_mat_new): return BombState.SUNKEN
 
-        # if the boat have been touched, but without sinking
+        # si le bateau a été touché partiellement
         return BombState.TOUCHED
 
     def remove_bomb(self, cell: Point2D):
@@ -129,10 +129,12 @@ class Board:
 
     def get_matrice(self) -> np.array:
         """
-        :return: the boats and bombs represented as a matrice
+        :return: les bateaux et les bombes représentés sur une même matrice
         """
 
-        return self.boats * self.bombs  # Remove the position that have been bombed
+        # En multipliant la matrice des bombes par la matrice des bateaux,
+        # tous les bateaux avec une bombe dessus seront mis à 0 puisqu'une bombe placée vaut "False".
+        return self.boats * self.bombs
 
     def get_score(self) -> int:
         """
@@ -145,6 +147,7 @@ class Board:
         return boat_total - boat_left
 
     def to_json(self) -> dict:
+        # converti en json les données
         return {
             "boats": self.boats.tolist(),
             "bombs": self.bombs.tolist()
@@ -152,12 +155,14 @@ class Board:
 
     @classmethod
     def from_json(cls, json_: dict) -> "Board":
+        # charge à partir de json les données
         return Board(
             boats=np.array(json_["boats"], dtype=np.ushort),
             bombs=np.array(json_["bombs"], dtype=np.bool_)
         )
 
     def __copy__(self):
+        # fait une copie de la grille
         return self.__class__(
             boats=self.boats.copy(),
             bombs=self.bombs.copy(),

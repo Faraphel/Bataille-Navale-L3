@@ -3,7 +3,7 @@ from enum import Enum
 
 class Orientation(Enum):
     """
-    Represent the orientation of a boat.
+    Les possibles orientations pour un bateau
     """
 
     HORIZONTAL = "H"

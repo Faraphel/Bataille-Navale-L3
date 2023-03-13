@@ -5,7 +5,15 @@ from source.utils import dict_filter, dict_filter_prefix, dict_add_prefix, copy_
 
 
 class TestDict(unittest.TestCase):
+    """
+    Unité de test des fonctionnalités utilitaire pour dictionnaire
+    """
+
     def test_dict_filter(self):
+        """
+        Test du filtre de dictionnaire
+        """
+
         self.assertEqual(
             dict_filter(
                 lambda key, value: key.startswith("valeur"),
@@ -31,6 +39,10 @@ class TestDict(unittest.TestCase):
         )
 
     def test_dict_filter_prefix(self):
+        """
+        Test du filtre de dictionnaire par prefix
+        """
+
         self.assertEqual(
             dict_filter_prefix(
                 "valeur",
@@ -56,6 +68,10 @@ class TestDict(unittest.TestCase):
         )
 
     def test_dict_add_prefix(self):
+        """
+        Test de l'ajout de prefix dans un dictionnaire
+        """
+
         self.assertEqual(
             dict_add_prefix(
                 "valeur",
@@ -82,7 +98,15 @@ class TestDict(unittest.TestCase):
 
 
 class TestMatrice(unittest.TestCase):
+    """
+    Unité de test des fonctionnalités utilitaire pour matrice
+    """
+
     def test_copy_array_offset(self):
+        """
+        Test de la copie d'une matrice dans une autre avec décalage
+        """
+
         src = np.array([
             [1, 2, 3, 4],
             [5, 6, 7, 8]

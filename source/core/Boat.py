@@ -5,8 +5,8 @@ from source.core.enums import Orientation
 
 class Boat:
     """
-    Represent a boat.
-    It can be added to a board.
+    Représente un bateau.
+    Il peut être ajouté à une grille.
     """
 
     __slots__ = ("orientation", "length")
@@ -20,7 +20,8 @@ class Boat:
 
     def get_matrice(self, value: int = 1) -> np.array:
         """
-        :return: the boat represented as a matrice
+        Représente le bateau sous la forme d'une matrice
+        :return: le bateau sous la forme d'une matrice
         """
         return np.full(
             (1, self.length) if self.orientation == Orientation.HORIZONTAL else
@@ -30,6 +31,7 @@ class Boat:
         )
 
     def to_json(self) -> dict:
+        # converti le bateau en json
         return {
             "length": self.length,
             "orientation": self.orientation.to_json(),
@@ -37,6 +39,7 @@ class Boat:
 
     @classmethod
     def from_json(cls, json_: dict) -> "Boat":
+        # charge le bateau à partir de json
         return Boat(
             length=json_["length"],
             orientation=Orientation.from_json(json_["orientation"]),

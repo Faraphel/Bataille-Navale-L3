@@ -8,8 +8,15 @@ from source.core.error import InvalidBoatPosition, InvalidBombPosition, Position
 
 
 class TestCore(unittest.TestCase):
+    """
+    Unité de test pour tester l'implémentation du jeu.
+    """
 
     def test_boats(self):
+        """
+        Test pour le placement des bateaux
+        """
+
         board = Board(width=5, height=5)
         board.add_boat(Boat(5, Orientation.HORIZONTAL), (0, 0))
 
@@ -46,6 +53,10 @@ class TestCore(unittest.TestCase):
         )
 
     def test_bombs(self):
+        """
+        Test pour le placement des bombes
+        """
+
         board = Board(width=5, height=5)
         board.add_boat(Boat(5, Orientation.HORIZONTAL), (0, 0))
         board.add_boat(Boat(4, Orientation.VERTICAL), (1, 1))

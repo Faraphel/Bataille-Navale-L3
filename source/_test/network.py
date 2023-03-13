@@ -8,13 +8,15 @@ from typing import Optional
 import numpy as np
 
 from source.core.enums import BombState
-from source.network.packet import PacketChat, PacketUsername, PacketQuit, PacketAskSave, PacketBoatPlaced, \
-    PacketLoadOldSave, PacketResponseSave, PacketHaveSaveBeenFound, PacketBombPlaced, PacketBombState, PacketSettings, \
-    PacketBoatsData
+from source.network.packet import *
 from source.network.packet.abc import Packet
 
 
 class TestNetwork(unittest.TestCase):
+    """
+    Unité de test pour le réseau
+    """
+
     PORT: int = 54200
 
     def __init__(self, *args, **kwargs):
@@ -39,11 +41,11 @@ class TestNetwork(unittest.TestCase):
         thread_client.join()
 
     def __del__(self):
+        # ferme les connexions lorsque l'objet est supprimé
         self.co_client.close()
         self.so_server.close()
 
-    # tous les tests de packet sont réunis dans la même fonction pour éviter de réouvrir des sockets sur le mêmes
-    # ports encore et encore
+    # tous les tests de packet sont réunis dans la même fonction pour éviter de rouvrir des sockets sur le même port
     def test_packet(self):
         # PacketChat
         for _ in range(100):
@@ -161,7 +163,7 @@ class TestNetwork(unittest.TestCase):
 
         # Packet Générique
         for _ in range(100):
-            # prend un packet signal aléatoire (sont plus simples a initialisé)
+            # prend un packet "signal" ou "variable lengh" aléatoire (sont les plus simples a initialisé)
             packet_sent_type = random.choice([PacketQuit, PacketAskSave, PacketBoatPlaced, PacketUsername, PacketChat])
 
             if packet_sent_type in [PacketUsername, PacketChat]:
