@@ -6,6 +6,10 @@ from source.gui.texture.type.abc import TextureType
 
 
 class Texture(TextureType):
+    """
+    Représente une simple texture
+    """
+
     def __init__(self, path: Path):
         self.path = path
 

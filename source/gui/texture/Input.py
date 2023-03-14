@@ -6,6 +6,10 @@ path = path_image / "input"
 
 
 class Input:
+    """
+    Regroupe les textures des entrées de texte.
+    """
+
     class Style1(Style):
         normal = Texture(path / "normal.png")
         active = Texture(path / "active.png")

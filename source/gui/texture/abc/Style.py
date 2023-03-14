@@ -3,7 +3,7 @@ from abc import ABC
 
 class Style(ABC):
     """
-    This class represent a style that can be attached to a widget.
+    Cette classe représente un style pouvant être appliqué sur un widget.
     """
 
     @classmethod

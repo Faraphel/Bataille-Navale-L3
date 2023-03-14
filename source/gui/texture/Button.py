@@ -6,6 +6,10 @@ path = path_image / "button"
 
 
 class Button:
+    """
+    Regroupe les textures de bouton
+    """
+
     class Style1(Style):
         normal = Texture(path / "normal.png")
         click = Texture(path / "clicking.png")

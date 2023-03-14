@@ -7,6 +7,10 @@ path_boat = path / "boat"
 
 
 class Grid:
+    """
+    Regroupe les textures des grilles du jeu
+    """
+
     class Style1(Style):
         background = Texture(path / "background.png")
 
