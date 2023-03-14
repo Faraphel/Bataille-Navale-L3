@@ -9,9 +9,9 @@ if TYPE_CHECKING:
 
 class Widget(Listener, ABC):
     """
-    A Widget that can be attached to a scene.
+    Un widget pouvant être attaché à une scène.
 
-    It can react to any "on_" event from the scene.
+    Il peut réagir à n'importe quel événement "on_" de la scène.
     """
 
     def __init__(self, scene: "Scene", **kwargs):

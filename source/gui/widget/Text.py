@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class Text(BoxWidget):
     """
-    A widget that display a text
+    Un widget qui affiche du texte
     """
 
     def __init__(self, scene: "Scene",

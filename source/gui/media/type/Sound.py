@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class Sound(Media):
+    """
+    Représente un son pouvant être joué par le lecteur.
+    """
+
     def __init__(self, path: Path):
         self.path = path
 

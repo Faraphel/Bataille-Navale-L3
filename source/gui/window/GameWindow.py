@@ -9,7 +9,7 @@ from source.type import ColorRGBA
 
 class GameWindow(Window):  # NOQA
     """
-    Similar to the normal Window, but add small feature useful for a game like a fps counter.
+    Similaire à la classe Window, mais ajoute quelque fonctionnalités pratique pour un jeu. (Option, FPS, etc.)
     """
 
     def __init__(self,
@@ -34,6 +34,10 @@ class GameWindow(Window):  # NOQA
         pyglet.clock.schedule_once(lambda *_: self.load_option(), 0)
 
     def load_option(self):
+        """
+        Charge les options depuis le fichier self.option_path.
+        """
+
         try:
             if self.option_path.exists():
                 self.option = Option.load(self, self.option_path)
@@ -43,4 +47,5 @@ class GameWindow(Window):  # NOQA
         if self.option is None: self.option = Option(window=self)
 
     def on_draw_after(self):
+        # après que tous les éléments ont été dessinés, dessiner le compteur de FPS s'il est activé.
         if self.fps_enable: self._fps_counter.draw()

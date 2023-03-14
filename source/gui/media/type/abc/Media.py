@@ -10,10 +10,21 @@ if TYPE_CHECKING:
 
 
 class Media(ABC):
-    loaded_media: dict[Path, pyglet.media.Source] = {}
+    """
+    Représente un type de média
+    """
+
+    loaded_media: dict[Path, pyglet.media.Source] = {}  # cache des médias chargés
 
     @classmethod
     def get_media(cls, path: Path, owner: "MediaGroup") -> pyglet.media.Source:
+        """
+        Renvoie le média correspondant au chemin donné
+        :param path: le chemin du media
+        :param owner: la classe qui a appelé la fonction
+        :return: le média
+        """
+
         if (media := cls.loaded_media.get(path)) is None:
             # charge le son
             media = pyglet.media.load(path)
@@ -38,4 +49,10 @@ class Media(ABC):
 
     @abstractmethod
     def __get__(self, instance, owner) -> pyglet.media.Source:
+        """
+        Renvoie le média correspondant à l'instance donnée
+        :param instance: instance de la classe qui a appelé la fonction
+        :param owner: classe ayant appelé la fonction
+        :return: le media
+        """
         pass

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class Checkbox(BoxWidget):
     """
-    A checkbox widget with a background texture that change depending on if it is checked or unchecked.
+    Un widget de checkbox avec une texture d'arrière-plan qui change en fonction de si elle est cochée ou non.
     """
 
     def __init__(self, scene: "Scene",
@@ -43,7 +43,7 @@ class Checkbox(BoxWidget):
 
         self._refresh_size()
 
-    # refreshing
+    # rafraichissement
 
     @property
     def tick_texture(self):
@@ -56,7 +56,7 @@ class Checkbox(BoxWidget):
         self.tick.x, self.tick.y = self.xy
         self.tick.width, self.tick.height = self.size
 
-    # property
+    # propriétés
 
     @property
     def state(self):

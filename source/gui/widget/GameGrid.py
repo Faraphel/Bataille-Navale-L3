@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 class GameGrid(BoxWidget):
     """
-    A widget that represent a game grid.
+    Un widget représentant la grille du jeu
     """
 
     def __init__(self, scene: "Scene",
@@ -49,7 +49,7 @@ class GameGrid(BoxWidget):
         self.group_cursor = pyglet.graphics.Group(order=1)
         self.group_line = pyglet.graphics.Group(order=2)
 
-        # the list of the size of the boats to place
+        # la liste des tailles des bateaux a placé sur la grille
         self.boats_length = [] if boats_length is None else sorted(boats_length, reverse=True)
 
         # créer la planche du jeu
@@ -104,13 +104,13 @@ class GameGrid(BoxWidget):
             int((rel_y-1) / self.cell_height)
         )
 
-    # refresh
+    # rafraichissement
 
     def _refresh_size(self):
         self.background.x, self.background.y = self.xy
         self.background.width, self.background.height = self.size
 
-        # lines
+        # lignes
 
         for column, line in enumerate(self.lines[:self.columns - 1], start=1):
             line.x = self.x + self.cell_width * column
@@ -149,7 +149,7 @@ class GameGrid(BoxWidget):
         self.cursor.y = self.y + cell_y * self.height / self.rows
         self.cursor.width, self.cursor.height = self.cell_size
 
-        self.preview_boat((cell_x, cell_y))  # display the preview of the boat on this cell
+        self.preview_boat((cell_x, cell_y))  # affiche la grille du jeu en prévisualisant cette cellule
 
     # function
 
@@ -161,7 +161,11 @@ class GameGrid(BoxWidget):
         self.display_board(self.board)
 
     def display_board(self, board: Board, preview: bool = False):
-        # remplacer par l'utilisation de board.boats ?
+        """
+        Affiche la grille du jeu.
+        :param board: la grille du jeu à afficher
+        :param preview: la prévisualisation du dernier bateau est-elle activée ?
+        """
 
         matrice = board.boats
         max_boat: int = np.max(matrice)
@@ -220,12 +224,21 @@ class GameGrid(BoxWidget):
         self._refresh_size()
 
     def swap_orientation(self):
+        """
+        Inverse l'orientation du bateau en cours de placement.
+        """
+
         self.orientation = (
             Orientation.HORIZONTAL if self.orientation is Orientation.VERTICAL else
             Orientation.VERTICAL
         )
 
     def place_boat(self, cell: Point2D):
+        """
+        Place un bateau sur la grille du jeu.
+        :param cell: position sur laquelle placer le bateau
+        """
+
         if len(self.boats_length) == 0: return
 
         try:
@@ -234,10 +247,10 @@ class GameGrid(BoxWidget):
                 cell
             )
         except InvalidBoatPosition:
-            pass  # if the boat can't be placed, ignore
+            pass  # si le bateau n'a pas pu être placé, ignore
 
-        else:  # if the boat have been placed
-            self.boats_length.pop(0)  # remove the boat from the list of boat to place
+        else:  # si le bateau a bien été placé
+            self.boats_length.pop(0)  # retire la taille du bateau de la liste des bateaux à placer
 
             self.trigger_event("on_boat_placed")
             if len(self.boats_length) == 0:
@@ -246,6 +259,11 @@ class GameGrid(BoxWidget):
         self.refresh_board()  # rafraichi l'affichage
 
     def preview_boat(self, cell: Point2D):
+        """
+        Prévisualise le prochain bateau à placer.
+        :param cell: position où visualiser le bateau
+        """
+
         if len(self.boats_length) == 0: return
 
         try:
@@ -260,6 +278,13 @@ class GameGrid(BoxWidget):
         else: self.display_board(preview_board, preview=True)
 
     def place_bomb(self, cell: Point2D, force_touched: bool = None) -> BombState:
+        """
+        Place une bombe sur la grille du jeu.
+        :param cell: cellule sur laquelle placer la bombe
+        :param force_touched: la cellule doit-elle forcer l'affichage comment étant manqué ou touché ?
+        :return: l'état de la bombe
+        """
+
         bomb_state = self.board.bomb(cell)
 
         if force_touched is not None:
@@ -270,7 +295,10 @@ class GameGrid(BoxWidget):
         return bomb_state
 
     def remove_bomb(self, cell: Point2D):
-        # retire une bombe de la planche
+        """
+        Retire une bombe de la grille du jeu.
+        :param cell: cellule de la bombe à retirer
+        """
         self.board.remove_bomb(cell)
         self.refresh_board()
 
@@ -278,29 +306,27 @@ class GameGrid(BoxWidget):
         cell = self.get_cell_from_rel(rel_x, rel_y)
 
         match button:
+            # si le joueur fait un clic droit, inverse l'orientation du bateau en cours de placement
             case pyglet.window.mouse.RIGHT:
                 self.swap_orientation()
                 self.preview_boat(cell)
 
+            # si le joueur fait un clic gauche, place un bateau ou une bombe
             case pyglet.window.mouse.LEFT:
                 self.place_boat(cell)
                 self.trigger_event("on_request_place_bomb", cell)
 
-    # property
+    # propriétés
 
     @property
-    def cell_width(self) -> float:
-        return self.width / self.columns
+    def cell_width(self) -> float: return self.width / self.columns
 
     @property
-    def cell_height(self) -> float:
-        return self.height / self.rows
+    def cell_height(self) -> float: return self.height / self.rows
 
     @property
-    def cell_size(self) -> tuple[float, float]:
-        return self.cell_width, self.cell_height
+    def cell_size(self) -> tuple[float, float]: return self.cell_width, self.cell_height
 
-    # event
+    # événements
 
-    def on_resize(self, width: int, height: int):
-        self._refresh_size()
+    def on_resize(self, width: int, height: int): self._refresh_size()

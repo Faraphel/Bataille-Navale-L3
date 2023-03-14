@@ -5,7 +5,7 @@ import pyglet
 
 class MediaGroup(ABC):
     """
-    This class represent a music group that can be played.
+    Cette classe représente un groupe de musique pouvant être joué.
     """
 
     player: pyglet.media.Player

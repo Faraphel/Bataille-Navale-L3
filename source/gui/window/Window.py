@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 
 class Window(pyglet.window.Window, EventPropagationMixin):  # NOQA
     """
-    A window. Based on the pyglet window object.
-    Scene can be added to the window
+    Une fenêtre basée sur l'objet Window de pyglet.
+    Des scènes peuvent y être placé.
     """
 
     def __init__(self, *args, **kwargs):
@@ -24,12 +24,21 @@ class Window(pyglet.window.Window, EventPropagationMixin):  # NOQA
 
     @property
     def childs(self):
+        """
+        Renvoie les scènes de la fenêtre. Utilisé pour la propagation d'événements.
+        :return: les scènes de la fenêtre.
+        """
         return self._scenes
 
     # FPS
 
     @staticmethod
     def get_fps() -> float:
+        """
+        Renvoie le nombre de FPS actuel de la fenêtre.
+        :return: le nombre de FPS actuel de la fenêtre.
+        """
+
         # on récupère la fonction responsable du rafraichissement de la fenêtre
         refresh_func = pyglet.app.event_loop._redraw_windows  # NOQA
 
@@ -47,6 +56,11 @@ class Window(pyglet.window.Window, EventPropagationMixin):  # NOQA
 
     @staticmethod
     def set_fps(value: float):
+        """
+        Définit le nombre de FPS de la fenêtre.
+        :param value: nombre de FPS souhaité
+        """
+
         # on récupère la fonction responsable du rafraichissement de la fenêtre
         refresh_func = pyglet.app.event_loop._redraw_windows  # NOQA
 
@@ -62,24 +76,23 @@ class Window(pyglet.window.Window, EventPropagationMixin):  # NOQA
 
     # Scene Managing
 
-    def set_scene(self, scene_class: Type["Scene"], *scene_args, **scene_kwargs) -> "Scene":
+    def set_scene(self, scene_class: Type["Scene"], **scene_kwargs) -> "Scene":
         """
-        Set the scene of the window.
-        :scene_class: the class of the scene to add.
-        :scene_args: args for the creation of the scene object.
-        :scene_kwargs: kwargs for the creation of the scene object.
-        :return: the new created scene.
+        Défini la scène actuelle pour la fenêtre.
+        :scene_class: la classe de la scène à ajouter
+        :scene_kwargs: les arguments clés de la scène
+        :return: la nouvelle scène créée
         """
 
         self.clear_scene()
-        return self.add_scene(scene_class, *scene_args, **scene_kwargs)
+        return self.add_scene(scene_class, **scene_kwargs)
 
     def add_scene(self, scene_class: Type["Scene"], priority: int = 0, **scene_kwargs) -> "Scene":
         """
-        Add a scene of the window.
-        :scene_class: the class of the scene to add.
-        :scene_kwargs: kwargs for the creation of the scene object.
-        :return: the new created scene.
+        Ajoute une scène à la fenêtre.
+        :scene_class: la classe de la scène à ajouter
+        :scene_kwargs: les arguments clés de la scène
+        :return: la nouvelle scène créée
         """
 
         scene: "Scene" = scene_class(window=self, **scene_kwargs)
@@ -88,15 +101,15 @@ class Window(pyglet.window.Window, EventPropagationMixin):  # NOQA
 
     def remove_scene(self, scene: "Scene") -> None:
         """
-        Remove a scene from the window.
-        :scene: the scene to remove.
+        Retire une scène spécifique de la fenêtre
+        :scene: la scène à retirer
         """
 
         self._scenes.remove(scene)
 
     def clear_scene(self) -> None:
         """
-        Clear the window from all the scenes.
+        Retire toutes les scènes de la fenêtre.
         """
 
         self._scenes.clear()

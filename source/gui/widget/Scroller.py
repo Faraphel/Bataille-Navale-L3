@@ -12,8 +12,7 @@ if TYPE_CHECKING:
 
 class Scroller(BoxWidget):
     """
-    A scroller widget with a background texture, a scroller and a label.
-    The cursor can be moved between the "from" and the "to" value
+    Un widget qui affiche un curseur qui peut être déplacé entre deux valeurs.
     """
 
     def __init__(self, scene: "Scene",
@@ -64,7 +63,7 @@ class Scroller(BoxWidget):
         self._to = to
         self.value = value
 
-    # refresh
+    # rafraichissement
 
     def _refresh(self):
         # background
@@ -91,7 +90,7 @@ class Scroller(BoxWidget):
     def _refresh_cursor(self, rel_x: int):
         self.value = (rel_x / self.width) * (self.to - self.from_) + self.from_
 
-    # property
+    # propriétés
 
     @property
     def value(self):
@@ -122,7 +121,7 @@ class Scroller(BoxWidget):
         self._to = to
         self._refresh()
 
-    # event
+    # événements
 
     def on_resize(self, width: int, height: int):
         self._refresh()

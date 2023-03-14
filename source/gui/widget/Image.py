@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class Image(BoxWidget):
     """
-    An image widget with a texture.
+    Un widget d'image avec une texture.
     """
 
     def __init__(self, scene: "Scene",

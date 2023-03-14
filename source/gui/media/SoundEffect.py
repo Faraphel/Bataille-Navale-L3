@@ -6,6 +6,10 @@ path = path_sound / "effect"
 
 
 class SoundEffect(MediaGroup):
+    """
+    Groupe contenant les effets sonores du jeu.
+    """
+
     placed = Sound(path / "placed.wav")
     touched = Sound(path / "touched.wav")
     missed = Sound(path / "missed.wav")

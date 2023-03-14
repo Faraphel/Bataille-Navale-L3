@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class Input(BoxWidget):
     """
-    An input widget with a background texture and a label. A regex pattern can be added to validate the input.
+    Un widget d'entrée avec une texture de fond et un label. Des paternes regex peut être ajouté pour valider l'entrée.
     """
 
     def __init__(self, scene: "Scene",
@@ -64,18 +64,19 @@ class Input(BoxWidget):
     @property
     def background_texture(self) -> pyglet.image.AbstractImage:
         """
-        Return the correct texture for the background.
-        The clicking texture per default, if hover the hovered texture (if it exists)
-        and if click the clicking texture (if it exists)
-        :return: the corresponding texture
+        Renvoie la texture de fond correspondante.
+        Si le widget est activé, renvoie la texture active (si elle existe),
+        la texture de clic (si elle existe) sinon la texture normale
+        :return: la texture de fond correspondante
         """
+
         return (
             texture if self.activated and (texture := self.style.get("active")) is not None else  # NOQA
             texture if not self.valid and (texture := self.style.get("error")) is not None else
             self.style.get("normal")
         )
 
-    # refresh
+    # rafraichissement
 
     def _refresh_background(self) -> None:
         self.background.image = self.background_texture
@@ -94,8 +95,7 @@ class Input(BoxWidget):
     # property
 
     @property
-    def valid(self):
-        return self._valid
+    def valid(self): return self._valid
 
     @valid.setter
     def valid(self, valid: bool):
@@ -103,14 +103,12 @@ class Input(BoxWidget):
         self._refresh_background()
 
     @property
-    def text(self):
-        return self.label.text
+    def text(self): return self.label.text
 
     @text.setter
-    def text(self, text: str):
-        self.label.text = text
+    def text(self, text: str): self.label.text = text
 
-    # event
+    # événements
 
     def on_key_press(self, symbol: int, modifiers: int):
         if not self.activated: return  # ignore si ce widget est désactivé / non sélectionné

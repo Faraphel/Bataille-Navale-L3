@@ -14,8 +14,9 @@ if TYPE_CHECKING:
 
 class Button(BoxWidget):
     """
-    A button widget with a background texture that change depending on if it is clicked or hovered, and a label.
-    You can pass parameter to the background and label by adding "background_" and "label_" before the parameter.
+    Un bouton avec une texture de fond qui change en fonction de s'il est cliqué ou survolé et un label.
+    Vous pouvez passer des paramètres pour le background et au label en ajoutant "background_" et "label_"
+    devant le paramètre.
     """
 
     def __init__(self, scene: "Scene",
@@ -48,17 +49,17 @@ class Button(BoxWidget):
         self.add_listener("on_hover_change", lambda *_: self._refresh_background())
         self.add_listener("on_click_change", lambda *_: self._refresh_background())
 
-        self._refresh_size()  # refresh the size and position for the background and label
+        self._refresh_size()  # rafraîchit la taille et la position du background et du label
 
     # background
 
     @property
     def background_texture(self) -> pyglet.image.AbstractImage:
         """
-        Return the correct texture for the background.
-        The clicking texture per default, if hover the hovered texture (if it exists)
-        and if click the clicking texture (if it exists)
-        :return: the corresponding texture
+        Renvoie la bonne texture pour le fond.
+        Utilise la texture normale par défaut, si survolé la texture de survol (si elle existe)
+        et la texture de clic (si elle existe) si cliqué
+        :return: la texture correspondante
         """
 
         return (
