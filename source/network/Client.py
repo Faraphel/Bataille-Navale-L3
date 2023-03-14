@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class Client(StoppableThread):
     """
-    The thread executed on the person who join a room.
+    Ce thread est utilisé pour la personne qui rejoint la salle.
     """
 
     def __init__(self, window: "Window",
@@ -39,9 +39,10 @@ class Client(StoppableThread):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:
                 try:
+                    # Se connecte à l'opposant
                     connection.connect((self.ip_address, self.port))
                 except ConnectionRefusedError:
-                    # Appelle l'événement lorsque la connexion échoue
+                    # Appelle la fonction prévue lorsque la connexion échoue
                     if self.on_connexion_refused is not None:
                         in_pyglet_context(self.on_connexion_refused)
                     return
@@ -91,13 +92,14 @@ class Client(StoppableThread):
                             with open(path_old_save, "r", encoding="utf-8") as file:
                                 save_data = json.load(file)
 
-                # paramètres & jeu
+                # paramètres et jeu
 
                 settings = PacketSettings.from_connection(connection)
                 PacketUsername(username=self.username).send_data_connection(connection)
                 enemy_username = PacketUsername.from_connection(connection).username
 
                 if load_old_save:
+                    # si les joueurs utilise une ancienne sauvegarde, créer la scène du jeu à partir des données
                     game_scene = in_pyglet_context(
                         self.window.set_scene,
                         scene.Game.from_json,  # depuis le fichier json
@@ -109,6 +111,7 @@ class Client(StoppableThread):
                     )
 
                 else:
+                    # s'il n'y a pas de sauvegarde à utiliser, initialise une nouvelle scène
                     game_scene = in_pyglet_context(
                         self.window.set_scene,
                         scene.Game,
@@ -124,6 +127,7 @@ class Client(StoppableThread):
                         my_turn=not settings.host_start
                     )
 
+                # commence la partie réseau du jeu
                 game_network(
                     thread=self,
                     connection=connection,

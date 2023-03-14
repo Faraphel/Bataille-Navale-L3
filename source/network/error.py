@@ -9,8 +9,15 @@ if TYPE_CHECKING:
 
 
 def handle_error(window: "Window", exception: Exception):
+    """
+    Fonction permettant d'afficher le bon message d'erreur du au réseau.
+    :param window: la fenêtre du jeu
+    :param exception: l'erreur qui s'est produite
+    """
+
     message: str = "Erreur :\n"
 
+    # récupère le message d'erreur selon le type de l'erreur
     match type(exception):
         case builtins.ConnectionResetError:
             message += "Perte de connexion avec l'adversaire."

@@ -9,6 +9,9 @@ from source.network.packet.abc import Packet
 
 @dataclass
 class PacketBoatsData(Packet):
+    """
+    Un packet contenant les données de la position de tous les bateaux
+    """
 
     boats: np.array = field()
 

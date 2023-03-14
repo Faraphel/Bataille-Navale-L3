@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 class Host(StoppableThread):
     """
-    The thread executed on the person who create a room.
+    Le thread utilisé lorsqu'un joueur créer une salle
     """
 
     def __init__(self, window: "Window", port: int, username: str, settings: "PacketSettings", **kw):
@@ -29,6 +29,7 @@ class Host(StoppableThread):
         self.settings = settings
         self.port = port
 
+        # condition utilisée lorsque l'on attend la décision de charger une partie ou non
         self.condition_load = Condition()
         self.accept_load: bool = False
 
@@ -54,7 +55,7 @@ class Host(StoppableThread):
 
                 path_old_save: Optional[Path] = None
 
-                for file in path_save.iterdir():  # cherche une ancienne sauvegarde correspondant à l'ip de l'adversaire
+                for file in path_save.iterdir():  # cherche une ancienne sauvegarde correspondant à l'IP de l'adversaire
                     if file.stem.startswith(ip_address):
                         path_old_save = file
                         break
@@ -72,7 +73,8 @@ class Host(StoppableThread):
                         from source.gui.scene import GameLoad
                         in_pyglet_context(self.window.set_scene, GameLoad, path=path_old_save, thread_host=self)
 
-                        with self.condition_load: self.condition_load.wait()  # attend que l'utilisateur choisisse l'option
+                        # attend que l'utilisateur choisisse l'option
+                        with self.condition_load: self.condition_load.wait()
 
                         PacketLoadOldSave(value=self.accept_load).send_data_connection(connection)
 
@@ -89,6 +91,7 @@ class Host(StoppableThread):
                 PacketUsername(username=self.username).send_data_connection(connection)
 
                 if self.accept_load:
+                    # si une sauvegarde doit être chargée
                     game_scene = in_pyglet_context(
                         self.window.set_scene,
                         scene.Game.from_json,  # depuis le fichier json
@@ -100,6 +103,7 @@ class Host(StoppableThread):
                     )
 
                 else:
+                    # s'il n'y a pas de sauvegarde à charger
                     game_scene = in_pyglet_context(
                         self.window.set_scene,
                         scene.Game,
@@ -115,6 +119,7 @@ class Host(StoppableThread):
                         my_turn=self.settings.host_start
                     )
 
+                # commence la partie réseau du jeu
                 game_network(
                     thread=self,
                     connection=connection,

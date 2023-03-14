@@ -7,7 +7,7 @@ from source.network.packet.abc import SimplePacket
 @dataclass
 class PacketLoadOldSave(SimplePacket):
     """
-    A packet that is sent when the player accept or refuse a requested save.
+    Un packet qui est envoyé lorsque l'hôte accepte ou refuse de charger une ancienne sauvegarde
     """
 
     value: bool = field()  # True si requête accepter, sinon False

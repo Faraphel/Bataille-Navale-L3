@@ -7,6 +7,10 @@ from source.network.packet.abc import Packet
 
 @dataclass
 class PacketSettings(Packet):
+    """
+    Un packet contenant tous les paramètres de la partie
+    """
+
     grid_width: int = field()
     grid_height: int = field()
     host_start: bool = field()

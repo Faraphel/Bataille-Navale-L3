@@ -11,8 +11,8 @@ T = TypeVar("T", bound="SimplePacket")
 
 class SimplePacket(Packet, ABC):
     """
-    A packet with a simple packet format.
-    Only the from_bytes and to_bytes method need to be implemented.
+    Un packet avec un format plus simple.
+    Se base sur le "packet_format" pour envoyé et reservoir les données.
     """
 
     packet_format: str = ">"
@@ -21,9 +21,9 @@ class SimplePacket(Packet, ABC):
     @abstractmethod
     def from_bytes(cls, data: bytes) -> T:
         """
-        Convert a bytes object into a packet.
-        :param data: the data to convert into a packet. Should be "packet_size" long.
-        :return: a packet corresponding to the bytes.
+        Convertie un objet bytes en un SimplePacket
+        :param data: les données à charger, doit être "packet_size" de long
+        :return: un SimplePacket correspondant à ces données
         """
         pass
 

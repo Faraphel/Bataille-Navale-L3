@@ -18,12 +18,13 @@ def game_network(
         game_scene: "Game",
 ):
     """
-    Run the networking to make the game work and react with the other player
-    :param game_scene: the scene of the game
-    :param thread: the thread where this function is called.
-    :param connection: the connection with the other player
+    Partie réseau permettant au jeu de fonctionner et de réagir avec l'autre joueur
+    :param game_scene: la scène du jeu
+    :param thread: le thread dans lequel la fonction est appelé
+    :param connection: la connexion avec l'autre joueur
     """
 
+    # associe le type de packet avec la fonction correspondante
     game_methods: dict[Type["Packet"], Callable] = {
         packet.PacketChat: game_scene.network_on_chat,
         packet.PacketBoatPlaced: game_scene.network_on_boat_placed,
@@ -35,16 +36,19 @@ def game_network(
     }
 
     while True:
+        # récupère le type de packet reçu
         data_type = Packet.type_from_connection(connection)
 
         if data_type is None:
-            if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter
+            # s'il n'y a pas de donnée reçue, vérifie si le thread devrait s'arrêter, sinon ignore
+            if thread.stopped: return
             continue
 
+        # récupère les données du packet
         data = data_type.from_connection(connection)
 
         in_pyglet_context(
-            game_methods[data_type], data  # récupère la methode relié ce type de donnée
+            game_methods[data_type], data  # récupère la methode relié à ce type de donnée
         )  # Appelle la méthode.
 
         if thread.stopped: return  # vérifie si le thread n'est pas censé s'arrêter

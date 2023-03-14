@@ -3,10 +3,10 @@ from source.type import Point2D, BBox
 
 def in_bbox(point: Point2D, bbox: BBox) -> bool:
     """
-    Return true if a point is inside a bounding box
-    :param point: the point to check
-    :param bbox: the bbox where to check the point
-    :return: True if the point is inside the bbox, False otherwise
+    Indique si un point est dans un rectangle
+    :param point: le point à vérifier
+    :param bbox: la bbox à vérifier
+    :return: True si le point est dans la bbox, sinon Faux
     """
 
     point_x, point_y = point

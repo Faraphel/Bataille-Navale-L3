@@ -1,8 +1,5 @@
-A faire :
-
-
 1. Principal :
-   - Documenter (Docstring, README, ...)
+   - Documenter (Docstring, ...)
    - mode d'emploi (video + pdf) expliquant le fonctionnement
 
 2. Bonus :

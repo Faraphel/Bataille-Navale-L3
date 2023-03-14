@@ -6,13 +6,13 @@ from source.gui.scene import MainMenu
 from source.gui.window import GameWindow
 
 
-from source.path import path_font
+from source.path import path_font, path_image
 from source.gui.better_pyglet import Label
 
 
 # Change la police par défaut utilisé pour le Century Gothic
 pyglet.font.add_directory(path_font)
-Label.default_kwargs["font_name"] = "Century Gothic"  # NOQA: Label à un "default_kwargs" avec la metaclass
+Label.default_kwargs["font_name"] = "Century Gothic"
 
 # Créer une nouvelle fenêtre
 window = GameWindow(
@@ -21,7 +21,8 @@ window = GameWindow(
     option_path=Path("./option.json")
 )
 
-try: window.set_icon(pyglet.image.load("./assets/image/icon/icon.png"))
+# Change l'icône de cette fenêtre
+try: window.set_icon(pyglet.image.load(path_image / "/icon/icon.png"))
 except: pass  # NOQA E722
 
 window.set_minimum_size(720, 480)

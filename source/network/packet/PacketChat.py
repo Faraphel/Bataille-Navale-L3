@@ -6,7 +6,7 @@ from source.network.packet.abc import VariableLengthPacket
 @dataclass
 class PacketChat(VariableLengthPacket):
     """
-    A packet that represent a message from the chat
+    Un packet qui représente un message du chat
     """
 
     message: str = field()

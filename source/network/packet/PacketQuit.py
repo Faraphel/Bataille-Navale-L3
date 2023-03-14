@@ -6,5 +6,5 @@ from source.network.packet.abc import SignalPacket
 @dataclass
 class PacketQuit(SignalPacket):
     """
-    A packet that is sent when the player wish to quit a game.
+    Un packet envoyé lorsque le joueur souhaite quitter la partie
     """

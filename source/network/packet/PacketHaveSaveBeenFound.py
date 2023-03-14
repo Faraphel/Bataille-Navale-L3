@@ -7,7 +7,7 @@ from source.network.packet.abc import SimplePacket
 @dataclass
 class PacketHaveSaveBeenFound(SimplePacket):
     """
-    A packet that is sent when the player accept or refuse a requested save.
+    Un packet indiquant si le joueur à trouvé un ancien fichier de sauvegarde avec l'opposant
     """
 
     value: bool = field()  # True si requête accepter, sinon False

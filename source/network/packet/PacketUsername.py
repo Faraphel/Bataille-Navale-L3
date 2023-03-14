@@ -5,6 +5,10 @@ from source.network.packet.abc import VariableLengthPacket
 
 @dataclass
 class PacketUsername(VariableLengthPacket):
+    """
+    Un packet contenant le nom d'utilisateur de l'opposant
+    """
+
     username: str = field()
 
     @property

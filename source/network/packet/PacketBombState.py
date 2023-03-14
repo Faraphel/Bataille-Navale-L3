@@ -9,7 +9,7 @@ from source.type import Point2D
 @dataclass
 class PacketBombState(SimplePacket):
     """
-    A packet that signal how a bomb exploded on the board
+    Un packet qui signale qu'une bombe à explosé sur la grille
     """
 
     position: Point2D = field()

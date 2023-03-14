@@ -3,35 +3,36 @@ from typing import Callable
 
 class Listener:
     """
-    The Listener can be subclassed to allow the subclass to add, remove and call event easily.
+    Les classes héritant de Listener permettent d'ajouter, retirer et appeler facilement des événements.
     """
 
     def __init__(self):
+        # dictionnaire des événements et de leurs fonctions associées
         self._events_listener: dict[str, set[Callable]] = {}
 
     def add_listener(self, name: str, callback: Callable):
         """
-        Add a function to an event name
-        :param name: the name of the event to react
-        :param callback: the function to call
+        Ajoute une fonction à un événement
+        :param name: le nom de l'événement
+        :param callback: la fonction à appeler
         """
         if name not in self._events_listener: self._events_listener[name] = set()
         self._events_listener[name].add(callback)
 
     def remove_listener(self, name: str, callback: Callable):
         """
-        Remove a function from an event name
-        :param name: the event name where to remove the callback
-        :param callback: the callback function to remove
+        Retire une fonction d'un événement
+        :param name: le nom de l'événement
+        :param callback: la fonction à retirer
         """
         self._events_listener[name].remove(callback)
 
     def trigger_event(self, name: str, *args, **kwargs):
         """
-        Call all the callback attached to an event
-        :param name: the name of the event to call
-        :param args: the args of the callbacks
-        :param kwargs: the kwargs of the callbacks
+        Appelle les fonctions associées à un événement
+        :param name: le nom de l'événement
+        :param args: les arguments des fonctions
+        :param kwargs: les arguments à clé des fonctions
         """
 
         # .copy() pour que si le listener supprime un de ses événements, la liste de la boucle de change pas de taille

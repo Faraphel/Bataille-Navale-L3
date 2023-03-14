@@ -1,5 +1,7 @@
 from cx_Freeze import setup, Executable
 
+from source.path import path_image, path_assets
+
 setup(
     name='Bataille Navale',
     description='Bataille Navale',
@@ -8,7 +10,7 @@ setup(
 
     options={
         "build_exe": {
-            "include_files": ["./assets"],
+            "include_files": [path_assets],
         }
     },
 
@@ -17,7 +19,7 @@ setup(
     executables=[
         Executable(
             "main.pyw",
-            icon="./assets/image/icon/icon.ico",
+            icon=path_image / "/icon/icon.ico",
             base="win32gui",
             target_name="Bataille Navale.exe",
             shortcut_name="Bataille Navale",

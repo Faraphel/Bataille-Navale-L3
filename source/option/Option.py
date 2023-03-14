@@ -9,6 +9,10 @@ if TYPE_CHECKING:
 
 
 class Option:
+    """
+    Cette classe permet de modifier, sauvegarder et charger les options.
+    """
+
     def __init__(self, window: "GameWindow",
                  volume_ambient: float = 0.1,
                  volume_fx: float = 0.1,
@@ -24,7 +28,7 @@ class Option:
         self.set_fps_limit(fps_limit)
         self.set_vsync(vsync)
 
-    # propriété
+    # propriétés
 
     @staticmethod
     def get_volume_ambient() -> float: return media.SoundAmbient.get_volume()

@@ -7,7 +7,7 @@ from source.network.packet.abc import SimplePacket
 @dataclass
 class PacketResponseSave(SimplePacket):
     """
-    A packet that is sent when the player accept or refuse a requested save.
+    Un packet qui est envoyé lorsque le joueur accepte ou refuse une demande de sauvegarde
     """
 
     value: bool = field()  # True si requête accepter, sinon False

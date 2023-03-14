@@ -5,10 +5,10 @@ from source.type import Point2D
 
 def copy_array_offset(src: np.array, dst: np.array, offset: Point2D) -> None:
     """
-    Copy a numpy array into another one with an offset
-    :param src: source array
-    :param dst: destination array
-    :param offset: the offset where to copy the array
+    Copie une matrice dans une autre matrice avec un décalage.
+    :param src: la matrice source
+    :param dst: la matrice de destination
+    :param offset: le décalage avec lequel copier la matrice
     """
     column, row = offset
     width, height = src.shape

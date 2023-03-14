@@ -1,10 +1,10 @@
 from typing import Union, Callable
 
 
-Point2D = tuple[int, int]  # a 2D point
-BBox = tuple[int, int, int, int]  # a boundary box
-ColorRGB = tuple[int, int, int]  # a RGB Color
-ColorRGBA = tuple[int, int, int, int]  # a RGBA Color
+Point2D = tuple[int, int]  # un point 2D
+BBox = tuple[int, int, int, int]  # une boîte de collision
+ColorRGB = tuple[int, int, int]  # une couleur RGB
+ColorRGBA = tuple[int, int, int, int]  # une couleur RGBA
 
-DistanceFunc = Callable[["BoxWidget"], int]  # a function that return a position / distance
-Distance = Union[int, DistanceFunc]  # a position / distance, represented by a number or a function
+DistanceFunc = Callable[["BoxWidget"], int]  # une fonction renvoyant une position / distance
+Distance = Union[int, DistanceFunc]  # une position / distance sous la forme d'un nombre ou d'une fonction

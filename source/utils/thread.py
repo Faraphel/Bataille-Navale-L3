@@ -7,8 +7,9 @@ import pyglet
 
 class StoppableThread(Thread):
     """
-    A thread that can be stopped.
-    The run method need to check for the "self._stop" variable and return manually if it is true.
+    Un thread pouvant être arrêté.
+    La méthode "run" doit souvent vérifier la variable self.stopped et faire un return manuellement si cette variable
+    est vrai.
     """
 
     def __init__(self, *args, **kwargs):
@@ -16,17 +17,18 @@ class StoppableThread(Thread):
         self.stopped = False
 
     def stop(self) -> None:
+        # indique que le thread devrait s'arrêter dès que possible
         self.stopped = True
 
 
 def in_pyglet_context(func: Callable, *args, **kwargs) -> Any:
     """
-    This function can be call in a thread. It will call the "func" in the pyglet event loop, avoiding
-    some operation that are not allowed outside of the pyglet context, and return its result
-    :param func: the function to call in the pyglet context
-    :param args: the args of the function
-    :param kwargs: the kwargs of the function
-    :return: the result of the function
+    Cette fonction doit être appelée dans un thread. Elle appellera une fonction dans la boucle d'événement de pyglet,
+    ce qui permet d'éviter certaines opérations illégales en dehors de ce contexte et renvoie le résultat.
+    :param func: la fonction à appeler
+    :param args: les arguments de la fonction
+    :param kwargs: les arguments à clé de la fonction
+    :return: le résultat de la fonction
     """
 
     queue = Queue()

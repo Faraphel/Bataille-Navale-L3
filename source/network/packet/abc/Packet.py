@@ -9,10 +9,8 @@ T = TypeVar("T", bound="Packet")
 
 class Packet(ABC):
     """
-    A packet that can be sent on a socket.
-    Multiple subtype of packet can be sent and received in an easier way.
-
-    The to_bytes and from_connection method need to be defined.
+    Un packet pouvant être envoyé dans un socket.
+    Permet aux sous-classes de ce packet d'être envoyé et reçu d'une manière beaucoup plus simple.
     """
 
     packet_types: set[T] = set()

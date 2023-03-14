@@ -9,7 +9,7 @@ from source.type import Point2D
 @dataclass
 class PacketBombPlaced(SimplePacket):
     """
-    A packet that signal that a bomb have been placed on the board
+    Un packet qui signale qu'une bombe à été placé sur la grille
     """
 
     position: Point2D = field()

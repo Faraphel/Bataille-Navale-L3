@@ -11,8 +11,7 @@ T = TypeVar("T", bound="VariableLengthPacket")
 
 class VariableLengthPacket(Packet, ABC):
     """
-    A Packet that represent a single value that can be encoded with a variable length.
-    The property "data" and the method "from_bytes" need to be defined.
+    Un packet représentant une seule valeur avec une longueur variable qui peut être encodé, comme une chaîne.
     """
 
     packet_format: str = ">I"
@@ -20,6 +19,11 @@ class VariableLengthPacket(Packet, ABC):
     @property
     @abstractmethod
     def data(self) -> bytes:
+        """
+        Donnée à envoyer sur le réseau
+        :return: la donnée sous la forme d'un objet bytes
+        """
+
         pass
 
     def to_bytes(self) -> bytes:

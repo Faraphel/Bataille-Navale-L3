@@ -3,17 +3,15 @@ from typing import Callable, Any
 
 def dict_filter(filter_func: Callable[[Any, Any], bool], dictionary: dict[Any, Any]) -> dict[Any, Any]:
     """
-    Filter a dict object with the filter function given.
-    :param filter_func: the function to filter with
-    :param dictionary: the dictionary to filter
-    :return: the filtered dictionary
+    Filtre les objets d'un dictionnaire avec la fonction de filtre donnée.
+    :param filter_func: La fonction utilisée pour le filtre. Reçois l'argument clé et valeur
+    :param dictionary: Le dictionnaire à filtrer
+    :return: Le dictionnaire filtrer
 
-    Example :
+    Exemple :
     filter_func = lambda key, value: key.startswith("valeur")
     dictionary = {"valeur1": 1, "valeur2": 2, "clé1": None}
-
-    result = {"valeur1": 1, "valeur2": 2}
-
+    -> {"valeur1": 1, "valeur2": 2}
     """
 
     return {
@@ -26,16 +24,15 @@ def dict_filter(filter_func: Callable[[Any, Any], bool], dictionary: dict[Any, A
 
 def dict_filter_prefix(prefix: str, dictionary: dict[str, Any]) -> dict[str, Any]:
     """
-    Take only the keys that start with the prefix, and remove this prefix from the keys.
-    :param prefix: the prefix to use
-    :param dictionary: the dictionary to filter
-    :return: the dictionary with the prefix
+    Ne garde que les clés qui commencent avec ce préfixe dans le dictionnaire et retire leur préfixe.
+    :param prefix: le préfixe à utiliser
+    :param dictionary: le dictionnaire à filtrer
+    :return: le dictionnaire avec le préfixe
 
-    Example:
+    Exemple :
     prefix = "button"
     dictionary = {"button1": 1, "button2": 2, "label1": None}
-
-    result = {"1": 1, "2": 2}
+    -> {"1": 1, "2": 2}
     """
 
     return {
@@ -48,10 +45,10 @@ def dict_filter_prefix(prefix: str, dictionary: dict[str, Any]) -> dict[str, Any
 
 def dict_add_prefix(prefix: str, dictionary: dict[str, Any]) -> dict[str, Any]:
     """
-    Add a prefix to every key of the dictionary
-    :param prefix: the prefix to add
-    :param dictionary: the dictionary to modify
-    :return: the dictionary with the prefix at the start of the keys
+    Ajoute un préfixe à toute les clés d'un dictionnaire
+    :param prefix: le préfixe à ajouter
+    :param dictionary: le dictionnaire à modifier
+    :return: le dictionnaire avec le préfixe à chaque clé
     """
 
     return {
