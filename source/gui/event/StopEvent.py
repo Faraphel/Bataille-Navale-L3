@@ -1,5 +1,5 @@
 class StopEvent(Exception):
     """
-    This error can be raised to prevent an event to propagate to further element.
+    Cette erreur peut être levée pour arrêter la propagation de l'événement aux autres éléments
     """
     pass

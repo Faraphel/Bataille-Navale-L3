@@ -2,6 +2,13 @@ from math import inf
 
 
 def number(min_length: int = 0, max_length: int = inf) -> str:
+    """
+    Renvoie le regex correspondant à une suite de nombre.
+    :param min_length: la longueur minimum du nombre
+    :param max_length: la longueur maximum du nombre
+    :return: le regex correspondant
+    """
+
     return r"\d{%s,%s}" % (min_length, max_length if max_length < inf else "")
 
 

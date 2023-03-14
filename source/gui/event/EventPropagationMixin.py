@@ -7,13 +7,17 @@ from source.gui.event import StopEvent
 
 class EventPropagationMixin:
     """
-    This class can be subclassed to allow the subclass to propagate all the call to the method that start by
-    "on_" to the object in the "childs" property.
+    Les classes héritant de cette classe peuvent propager tous les appels des méthodes qui commençent par "on_" aux
+    objets présents dans la propriété "childs"
     """
 
     @property
     @abstractmethod
-    def childs(self):
+    def childs(self) -> list:
+        """
+        Renvoie la liste des objets auquel propagé les événements
+        :return: la liste des objets auquel propagé les événements
+        """
         pass
 
     @lru_cache
@@ -24,19 +28,19 @@ class EventPropagationMixin:
         :return: une fonction appelant l'événement original ainsi que ceux des scènes.
         """
 
-        # if the event is the drawing of the objects, reverse the order of the scenes
-        # so that the last drawn are the one on top
+        # Si l'événement est à propos de dessiner les objets,
+        # inverse l'ordre pour que les derniers objets dessinés soit au-dessus des autres.
         child_transform = (
             (lambda child: reversed(child)) if item == "on_draw" else
             (lambda child: child)
         )
 
-        # try to get the original function
+        # essaye de récupérer la fonction originale
         func = None
         try: func = super().__getattribute__(item)
         except AttributeError: pass
 
-        # try to get a function that would get executed after everything else
+        # essaye de récupérer une fonction qui devrait s'exécuter après les autres
         func_after = None
         try: func_after = super().__getattribute__(item + "_after")
         except AttributeError: pass
@@ -46,7 +50,7 @@ class EventPropagationMixin:
 
             for child in child_transform(self.childs):
                 try: getattr(child, item, lambda *_, **__: "pass")(*args, **kwargs)
-                # si l'erreur StopEventScene est détecté, les autres scènes ne recevront pas l'event
+                # si l'erreur StopEventScene est détecté, les autres scènes ne recevront pas l'événement
                 except StopEvent: break
 
             if func_after is not None: func_after(*args, **kwargs)
@@ -55,9 +59,9 @@ class EventPropagationMixin:
 
     def __getattribute__(self, item: str) -> Any:
         """
-        Fonction appelée dès que l'on essaye d'accéder à l'un des attributs de l'objet.
+        Fonction appelée dès que l'on essaye d'accéder à l'un des attributs de l'objet
         :param item: nom de l'attribut recherché
-        :return: l'attribut de l'objet correspondant.
+        :return: l'attribut de l'objet correspondant
         """
 
         # si l'attribut est un événement (commence par "on_"), alors renvoie le dans un wrapper

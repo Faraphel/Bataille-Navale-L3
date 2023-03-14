@@ -5,7 +5,8 @@ from source.gui.better_pyglet.abc import Element
 
 class Sprite(Element, pyglet.sprite.Sprite):
     """
-    Same as the pyglet sprite, but allow to set a width and height easier
+    Similaire au Sprite de base de pyglet, mais permet de changer la hauteur et largeur plus simplement.
+    Supporte les arguments par défaut également
     """
 
     def __init__(self, width: int = None, height: int = None, *args, **kwargs):
