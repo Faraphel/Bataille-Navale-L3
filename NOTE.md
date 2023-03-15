@@ -6,8 +6,7 @@
    - /
 
 3. Bug : 
-   - Impossible de changer le volume sur linux
-   - Cliquer trop vite coupe le son
+   - /
 
 4. Vérification :
    - Tester sur Linux

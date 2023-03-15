@@ -10,6 +10,16 @@ from source.path import path_font, path_image
 from source.gui.better_pyglet import Label
 
 
+# Change le driver audio par défaut
+pyglet.options["audio"] = (
+    'openal',  # privilégie OpenAL pour le cross platform et moins de problème
+    'xaudio2',
+    'directsound',
+    # 'pulse', # ne propose pas pulse qui a des problèmes de crash
+    'silent'
+)
+
+
 # Change la police par défaut utilisé pour le Century Gothic
 pyglet.font.add_directory(path_font)
 Label.default_kwargs["font_name"] = "Century Gothic"
