@@ -29,6 +29,7 @@ Ce projet est compatible avec Windows et Linux.
 <details>
 
 - Installer Python 3.11 avec les commandes `sudo apt update && sudo apt install python3.11 python3-pip`
+- Installer les librairies audio avec `sudo apt install libopenal-dev libalut-dev`
 - Installer les dépendances avec `python3.11 -m pip install -r requirements.txt`
 - Lancer le jeu avec `python3.11 main.pyw`
 
