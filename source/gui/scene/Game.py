@@ -281,6 +281,9 @@ class Game(BaseGame):
         self.boat_ready_enemy = True
 
     def network_on_bomb_placed(self, packet: PacketBombPlaced):
+        # lorsque l'opposant pose une bombe
+        if self.my_turn: return  # l'opposant ne peut pas jouer si c'est notre tour
+
         try:
             # essaye de poser la bombe sur la grille alliée
             bomb_state = self.grid_ally.place_bomb(packet.position)
