@@ -10,6 +10,10 @@ if TYPE_CHECKING:
 
 
 class GameError(Scene):
+    """
+    Cette scène affiche une erreur
+    """
+
     def __init__(self, window: "Window", text: str, **kwargs):
         super().__init__(window, **kwargs)
 

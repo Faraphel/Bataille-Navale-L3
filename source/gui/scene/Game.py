@@ -20,6 +20,10 @@ if TYPE_CHECKING:
 
 
 class Game(BaseGame):
+    """
+    Scène sur laquelle deux joueurs s'affrontent en réseau
+    """
+
     def __init__(self, window: "Window",
                  thread: StoppableThread,
                  connection: socket.socket,
@@ -112,9 +116,9 @@ class Game(BaseGame):
             font_size=20
         )
 
-        self._my_turn = my_turn  # is it the player turn ?
-        self._boat_ready_ally: bool = False   # does the player finished placing his boat ?
-        self._boat_ready_enemy: bool = False  # does the opponent finished placing his boat ?
+        self._my_turn = my_turn  # est-ce au tour de ce joueur ?
+        self._boat_ready_ally: bool = False   # le joueur à t'il fini de placer ses bateaux ?
+        self._boat_ready_enemy: bool = False  # l'opposant à t'il fini de placer ses bateaux ?
 
         if len(self.boats_length) == 0:  # s'il n'y a pas de bateau à placé
             self._boat_ready_ally = True  # défini l'état de notre planche comme prête
@@ -175,7 +179,7 @@ class Game(BaseGame):
         self._boat_ready_enemy = boat_ready_enemy
         self._refresh_turn_text()
 
-    # function
+    # fonction
 
     def to_json(self) -> dict:
         return {
@@ -220,6 +224,7 @@ class Game(BaseGame):
 
     @property
     def save_path(self) -> Path:
+        # renvoie le chemin du fichier de sauvegarde
         ip_address, port = self.connection.getpeername()
 
         return path_save / (
@@ -230,6 +235,7 @@ class Game(BaseGame):
 
     @property
     def history_path(self):
+        # renvoie le chemin du fichier d'historique
         return path_history / (
             datetime.now().strftime("%Y-%m-%d %H-%M-%S") +
             self.get_save_suffix() +
@@ -237,10 +243,12 @@ class Game(BaseGame):
         )
 
     def save_to_path(self, path: Path):
+        # enregistre la partie dans un fichier
         with open(path, "w", encoding="utf-8") as file:
             json.dump(self.to_json(), file, ensure_ascii=False)
 
     def save(self, value: bool):
+        # fonction de callback lorsque l'adversaire accepte ou refuse la demande de sauvegarde
         self.chat_new_message(
             "System",
             "Sauvegarde de la partie..." if value else "Sauvegarde de la partie refusé.",
@@ -266,6 +274,7 @@ class Game(BaseGame):
         self.thread.stop()
 
     def chat_new_message(self, author: str, content: str, system: bool = False):
+        # envoie un message dans le chat
         deco_left, deco_right = "<>" if system else "[]"
         message: str = f"{deco_left}{author}{deco_right} - {content}"
         self.chat_log.text += "\n" + message
@@ -275,9 +284,11 @@ class Game(BaseGame):
     # network
 
     def network_on_chat(self, packet: PacketChat):
+        # lorsque l'adversaire envoie un message
         self.chat_new_message(self.name_enemy, packet.message)
 
     def network_on_boat_placed(self, packet: PacketBoatPlaced):
+        # lorsque l'adversaire indique avoir placé tous ses bateaux
         self.boat_ready_enemy = True
 
     def network_on_bomb_placed(self, packet: PacketBombPlaced):
@@ -315,6 +326,7 @@ class Game(BaseGame):
             self.game_end(won=False)
 
     def network_on_bomb_state(self, packet: PacketBombState):
+        # lorsque l'adversaire indique si la bombe à touché ou non
         if packet.bomb_state is BombState.ERROR:
             # si une erreur est survenue, on rejoue
             self.my_turn = True
@@ -343,12 +355,14 @@ class Game(BaseGame):
             self.game_end(won=True)
 
     def network_on_quit(self, packet: PacketQuit):
+        # lorsque l'adversaire souhaite quitter
         self.thread.stop()  # coupe la connexion
 
         from source.gui.scene import GameError
         self.window.set_scene(GameError, text="L'adversaire a quitté la partie.")
 
     def network_on_ask_save(self, packet: PacketAskSave):
+        # lorsque l'opposant souhaite sauvegarder
         now = datetime.now()
 
         if self.save_cooldown is not None:  # si un cooldown est défini

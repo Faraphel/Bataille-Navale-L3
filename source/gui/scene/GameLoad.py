@@ -12,6 +12,10 @@ if TYPE_CHECKING:
 
 
 class GameLoad(Scene):
+    """
+    Cette scène affiche une proposition de chargement d'une ancienne sauvegarde
+    """
+
     def __init__(self, window: "Window", path: Path, thread_host: Host, **kwargs):
         super().__init__(window, **kwargs)
 

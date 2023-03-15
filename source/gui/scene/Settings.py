@@ -2,7 +2,7 @@ from math import inf
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from source.gui import widget, texture, media
+from source.gui import widget, texture
 from source.gui.position import vw_full, vh_full, vw, vh
 from source.gui.scene.abc.Popup import Popup
 
@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class Settings(Popup):
+    """
+    Cette scène sert à changer les paramètres graphique et audio de la partie
+    """
+
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
 

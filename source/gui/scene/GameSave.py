@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class GameSave(Popup):
+    """
+    Cette scène affiche une proposition de sauvegarde de la partie
+    """
+
     def __init__(self, window: "Window", game_scene: "Game", **kwargs):
         super().__init__(window, **kwargs)
 

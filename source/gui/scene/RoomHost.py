@@ -14,6 +14,10 @@ if TYPE_CHECKING:
 
 
 class RoomHost(Scene):
+    """
+    Cette scène sert à attendre un second joueur pour l'hôte après avoir configuré la partie
+    """
+
     def __init__(self, window: "Window", port: int, username: str, settings: "PacketSettings", **kwargs):
         super().__init__(window, **kwargs)
 

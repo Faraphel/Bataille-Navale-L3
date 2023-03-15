@@ -10,6 +10,10 @@ if TYPE_CHECKING:
 
 
 class RoomJoin(Scene):
+    """
+    Cette scène sert à se connecter à un hôte pour lancer une partie
+    """
+
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
 

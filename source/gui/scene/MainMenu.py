@@ -9,6 +9,10 @@ if TYPE_CHECKING:
 
 
 class MainMenu(Scene):
+    """
+    Cette scène représente le menu principal
+    """
+
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
 

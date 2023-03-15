@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class BaseGame(Scene, ABC):
+    """
+    La classe de base pour les scènes représentant le jeu principal (une grille alliée, une grille ennemie)
+    """
+
     def __init__(self, window: "Window",
                  boats_length: list,
                  name_ally: str,
@@ -129,5 +133,6 @@ class BaseGame(Scene, ABC):
         )
 
     def _refresh_score_text(self):
+        # rafraichi le score allié et ennemie
         self.score_ally.text = str(self.grid_enemy.board.get_score())
         self.score_enemy.text = str(self.grid_ally.board.get_score())

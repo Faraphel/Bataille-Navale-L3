@@ -14,6 +14,10 @@ if TYPE_CHECKING:
 
 
 class HistoryMenu(Scene):
+    """
+    Cette scène affiche toutes les anciennes parties et permet de les revisionner
+    """
+
     PAGE_SIZE: int = 8
 
     def __init__(self, window: "Window", page: int = 0, **kwargs):

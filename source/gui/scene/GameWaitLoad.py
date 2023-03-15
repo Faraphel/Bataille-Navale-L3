@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class GameWaitLoad(Scene):
+    """
+    Cette scène sert de salle d'attente pour le client qui attend de charger ou non sa sauvegarde
+    """
+
     def __init__(self, window: "Window", path: Path, **kwargs):
         super().__init__(window, **kwargs)
 

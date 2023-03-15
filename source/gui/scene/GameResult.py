@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pyglet.clock
 
-from source.gui import texture, widget, media
+from source.gui import texture, widget
 from source.gui.position import vw_full, vh_full
 from source.gui.scene.abc.Popup import Popup
 
@@ -12,6 +12,10 @@ if TYPE_CHECKING:
 
 
 class GameResult(Popup):
+    """
+    Cette scène affiche une animation de victoire ou de défaite
+    """
+
     def __init__(self, window: "Window", game_scene: "Game", won: bool, **kwargs):
         super().__init__(window, **kwargs)
 

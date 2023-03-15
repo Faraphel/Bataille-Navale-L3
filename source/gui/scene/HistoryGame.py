@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class HistoryGame(BaseGame):
+    """
+    Cette scène sert à afficher une ancienne partie
+    """
+
     def __init__(self, window: "Window", history_path: Path, **kwargs):
 
         with open(history_path, "r", encoding="utf8") as file:
@@ -94,8 +98,9 @@ class HistoryGame(BaseGame):
 
         self._refresh_move_text()
 
-    # event
+    # événement
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: float, scroll_y: float):
+        # lorsque la molette est utilisée, affiche le mouvement précédent ou le mouvement suivant
         for _ in range(abs(int(scroll_y))):
             self.next_move() if scroll_y < 0 else self.previous_move()

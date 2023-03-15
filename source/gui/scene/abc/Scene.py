@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 
 class Scene(ABC, EventPropagationMixin):
     """
-    A scene that can be attached to a window.
-    It allows to switch the whole comportment of the window in a simpler way.
+    Une scène pouvant être attaché à une fenêtre.
+    Permet de changer le comportement entier et les widgets de la fenêtre plus simplement.
 
-    It can react to any "on_" event from the window.
+    Il peut réagir à n'importe quel événement de pyglet d'une fenêtre.
     """
 
     def __init__(self, window: "Window", **kwargs):
@@ -35,11 +35,11 @@ class Scene(ABC, EventPropagationMixin):
 
     def add_widget(self, widget_class: Type["Widget"], priority: int = 0, **widget_kwargs):
         """
-        Add a widget to the scene.
-        :param widget_class: the class of the widget to add.
-        :param priority: the priority of the widget.
-        :param widget_kwargs: kwargs for the creation of the widget object.
-        :return: the new created widget.
+        Ajoute un widget à la scène
+        :param widget_class: La classe du widget à ajouter
+        :param priority: la priorité du widget (force un widget à apparaître au-dessus des autres)
+        :param widget_kwargs: les arguments clé de la création du widget
+        :return: le widget créé
         """
 
         widget: "Widget" = widget_class(self, **widget_kwargs)
@@ -48,15 +48,15 @@ class Scene(ABC, EventPropagationMixin):
 
     def remove_widget(self, widget: "Widget") -> None:
         """
-        Remove a widget from the scene.
-        :param widget: the widget to remove.
+        Retire un widget de la scène
+        :param widget: le widget à retirer
         """
 
         self._widgets.remove(widget)
 
     def clear_widget(self) -> None:
         """
-        Clear the scene from all the widgets.
+        Supprime de la scène tous les widgets
         """
 
         self._widgets.clear()
@@ -66,7 +66,7 @@ class Scene(ABC, EventPropagationMixin):
     @property
     def valid(self) -> bool:
         """
-        Indique si la scène à tout ses éléments de formulaire valides
+        Indique si la scène à tous ses éléments de formulaire valides
         :return: True si tous les éléments (Input, ...) sont correctement rempli.
         """
 
@@ -79,7 +79,7 @@ class Scene(ABC, EventPropagationMixin):
 
     def on_draw(self) -> None:
         """
-        Draw all the objects in the scene.
+        Dessines tous les objets de la scène
         """
 
         self.batch.draw()

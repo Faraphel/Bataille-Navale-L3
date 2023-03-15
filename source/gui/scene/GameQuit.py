@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class GameQuit(Popup):
+    """
+    Cette scène affiche une confirmation pour quitter la partie
+    """
+
     def __init__(self, window: "Window", game_scene: "Game", **kwargs):
         super().__init__(window, **kwargs)
 

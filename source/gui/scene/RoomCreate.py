@@ -11,6 +11,10 @@ if TYPE_CHECKING:
 
 
 class RoomCreate(Scene):
+    """
+    Cette scène sert à paramétrer la partie avant de la lancer
+    """
+
     def __init__(self, window: "Window", **kwargs):
         super().__init__(window, **kwargs)
 
@@ -59,7 +63,7 @@ class RoomCreate(Scene):
             label_text="52321"
         )
 
-        # Username
+        # Pseudo
 
         self.add_widget(
             widget.Text,
@@ -84,7 +88,7 @@ class RoomCreate(Scene):
             label_text="Host"
         )
 
-        # Grid configuration
+        # configuration de la grille
 
         self.add_widget(
             widget.Text,
