@@ -2,9 +2,7 @@
 
 # Introduction
 Ce projet consiste à implémenter un jeu de bataille navale, jouable en multijoueur.  
-La librairie [Pyglet](https://github.com/pyglet/pyglet) a été utilisé pour l'interface graphique.  
-
-La bataille navale est un jeu constituant à TODO  
+La librairie [Pyglet](https://github.com/pyglet/pyglet) a été utilisé pour l'interface graphique.
 
 # Installation
 Ce projet est compatible avec Windows et Linux.
