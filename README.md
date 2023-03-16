@@ -36,3 +36,8 @@ Ce projet est compatible avec Windows et Linux.
 - Lancer le jeu avec `python3.11 main.pyw`
 
 </details>
+
+# Démonstration
+
+Une démonstration du jeu est disponible ici :  
+https://www.youtube.com/watch?v=VPV_RcBRZpM
