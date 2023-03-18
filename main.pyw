@@ -32,7 +32,7 @@ window = GameWindow(
 )
 
 # Change l'icône de cette fenêtre
-try: window.set_icon(pyglet.image.load(path_image / "/icon/icon.png"))
+try: window.set_icon(pyglet.image.load(path_image / "icon/icon.png"))
 except: pass  # NOQA E722
 
 window.set_minimum_size(720, 480)

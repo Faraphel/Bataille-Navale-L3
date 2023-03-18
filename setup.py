@@ -19,7 +19,7 @@ setup(
     executables=[
         Executable(
             "main.pyw",
-            icon=path_image / "/icon/icon.ico",
+            icon=path_image / "icon/icon.ico",
             base="win32gui",
             target_name="Bataille Navale.exe",
             shortcut_name="Bataille Navale",
